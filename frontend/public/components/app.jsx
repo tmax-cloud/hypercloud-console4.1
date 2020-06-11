@@ -64,7 +64,8 @@ _.each(namespacedPrefixes, p => {
 });
 
 const NamespaceRedirect = connectToFlags(FLAGS.CAN_LIST_NS)(({ flags }) => {
-  let activeNamespace = getActiveNamespace();
+  // let activeNamespace = getActiveNamespace();
+  let activeNamespace;
   let to;
   if (flagPending(flags[FLAGS.CAN_LIST_NS])) {
     // CAN_LIST_NS 로딩 될때까지 기다리기
