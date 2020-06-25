@@ -11,6 +11,9 @@ import { formatNamespacedRouteForResource } from '../ui/ui-actions';
 import { BuildConfigModel, BuildModel, ClusterServiceVersionModel, DeploymentConfigModel, ImageStreamModel, SubscriptionModel, InstallPlanModel, CatalogSourceModel } from '../models';
 import { referenceForModel } from '../module/k8s';
 import { authSvc } from '../module/auth';
+import { k8sGet } from '../module/k8s';
+import { ConfigMapModel } from '../models';
+import { getActiveNamespace } from '../ui/ui-actions';
 
 import { ClusterPicker } from './cluster-picker';
 
@@ -18,6 +21,7 @@ import * as operatorImg from '../imgs/operator.svg';
 import * as operatorActiveImg from '../imgs/operator-active.svg';
 import * as routingImg from '../imgs/routing.svg';
 import * as routingActiveImg from '../imgs/routing-active.svg';
+import * as aiOpsImg from '../imgs/ic_lnb_aiops.svg';
 import { history, stripBasePath } from './utils';
 
 import { withTranslation } from 'react-i18next';
@@ -264,7 +268,7 @@ class NavSection_ extends React.Component {
       <div className={classNames(sectionClassName, klass)}>
         <div id={id} className={secionTitleClassName} onClick={this.toggle}>
           {icon && <i className={iconClassName} aria-hidden="true"></i>}
-          {img && <img src={isActive && activeImg ? activeImg : img} />}
+          {img && <img style={{ color: '#72767B', opacity: '0.65' }} src={isActive && activeImg ? activeImg : img} />}
           {!href ? (
             text
           ) : (
@@ -351,7 +355,14 @@ class Nav extends React.Component {
     this.toggle = () => this.toggle_();
     this.state = {
       isOpen: false,
+      blockMenu: props.menu,
     };
+  }
+
+  componentDidUpdate() {
+    if (this.state.blockMenu !== this.props.menu) {
+      this.setState({ blockMenu: this.props.menu });
+    }
   }
 
   // Edge disobeys the spec and doesn't fire off wheel events: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7134034/
@@ -384,9 +395,10 @@ class Nav extends React.Component {
   }
 
   render() {
-    const { isOpen } = this.state;
+    const { isOpen, blockMenu } = this.state;
     const { isAdmin } = this.props;
     const { t } = this.props;
+    // console.log(blockMenu);
 
     return (
       <React.Fragment>
@@ -400,25 +412,26 @@ class Nav extends React.Component {
           {/* <ClusterPickerNavSection /> */}
           <div ref={this.scroller} onWheel={this.preventScroll} className="navigation-container">
             <NavSection text={t('RESOURCE:HOME')} icon="pficon pficon-home">
-              <HrefLink href="/status" name={t('RESOURCE:STATUS')} activePath="/status/" onClick={this.close} />
-              <HrefLink href="/search" name={t('RESOURCE:SEARCH')} onClick={this.close} startsWith={searchStartsWith} />
-              <ResourceNSLink resource="events" name={t('RESOURCE:EVENT')} onClick={this.close} />
+              {blockMenu.indexOf('status') === -1 && <HrefLink href="/status" name={t('RESOURCE:STATUS')} activePath="/status/" onClick={this.close} />}
+              {blockMenu.indexOf('search') === -1 && <HrefLink href="/search" name={t('RESOURCE:SEARCH')} onClick={this.close} startsWith={searchStartsWith} />}
+              {/* {blockMenu.indexOf('audit') === -1 && <ResourceNSLink resource="audits" name="감사 로그" onClick={this.close} />} */}
+              {blockMenu.indexOf('events') === -1 && <ResourceNSLink resource="events" name={t('RESOURCE:EVENT')} onClick={this.close} />}
               <HrefLink href="/grafana" name={t('RESOURCE:DASHBOARD')} />
             </NavSection>
 
             {/* Service Catalog 전체 추가 */}
             <NavSection text={t('RESOURCE:SERVICECATALOG')} icon="pficon pficon-catalog">
-              <ResourceNSLink resource="servicebrokers" name={ResourcePlural('ServiceBroker', t)} onClick={this.close} />
-              <ResourceNSLink resource="serviceclasses" name={ResourcePlural('ServiceClass', t)} onClick={this.close} />
-              <ResourceNSLink resource="serviceplans" name={ResourcePlural('ServicePlan', t)} onClick={this.close} />
-              <ResourceClusterLink resource="clusterservicebrokers" name={ResourcePlural('ClusterServiceBroker', t)} onClick={this.close} />
-              <ResourceClusterLink resource="clusterserviceclasses" name={ResourcePlural('ClusterServiceClass', t)} onClick={this.close} />
-              <ResourceClusterLink resource="clusterserviceplans" name={ResourcePlural('ClusterServicePlan', t)} onClick={this.close} />
-              <ResourceNSLink resource="serviceinstances" name={ResourcePlural('ServiceInstance', t)} onClick={this.close} />
-              <ResourceNSLink resource="servicebindings" name={ResourcePlural('ServiceBinding', t)} onClick={this.close} />
-              <ResourceNSLink resource="catalogserviceclaims" name={ResourcePlural('CatalogServiceClaim', t)} onClick={this.close} />
-              <ResourceNSLink resource="templates" name={ResourcePlural('Template', t)} onClick={this.close} />
-              <ResourceNSLink resource="templateinstances" name={ResourcePlural('TemplateInstance', t)} onClick={this.close} />
+              {blockMenu.indexOf('servicebrokers') === -1 && <ResourceNSLink resource="servicebrokers" name={ResourcePlural('ServiceBroker', t)} onClick={this.close} />}
+              {blockMenu.indexOf('serviceclasses') === -1 && <ResourceNSLink resource="serviceclasses" name={ResourcePlural('ServiceClass', t)} onClick={this.close} />}
+              {blockMenu.indexOf('serviceplans') === -1 && <ResourceNSLink resource="serviceplans" name={ResourcePlural('ServicePlan', t)} onClick={this.close} />}
+              {blockMenu.indexOf('clusterservicebrokers') === -1 && <ResourceClusterLink resource="clusterservicebrokers" name={ResourcePlural('ClusterServiceBroker', t)} onClick={this.close} />}
+              {blockMenu.indexOf('clusterserviceclasses') === -1 && <ResourceClusterLink resource="clusterserviceclasses" name={ResourcePlural('ClusterServiceClass', t)} onClick={this.close} />}
+              {blockMenu.indexOf('clusterserviceplans') === -1 && <ResourceClusterLink resource="clusterserviceplans" name={ResourcePlural('ClusterServicePlan', t)} onClick={this.close} />}
+              {blockMenu.indexOf('serviceinstances') === -1 && <ResourceNSLink resource="serviceinstances" name={ResourcePlural('ServiceInstance', t)} onClick={this.close} />}
+              {blockMenu.indexOf('servicebindings') === -1 && <ResourceNSLink resource="servicebindings" name={ResourcePlural('ServiceBinding', t)} onClick={this.close} />}
+              {blockMenu.indexOf('catalogserviceclaims') === -1 && <ResourceNSLink resource="catalogserviceclaims" name={ResourcePlural('CatalogServiceClaim', t)} onClick={this.close} />}
+              {blockMenu.indexOf('templates') === -1 && <ResourceNSLink resource="templates" name={ResourcePlural('Template', t)} onClick={this.close} />}
+              {blockMenu.indexOf('templateinstances') === -1 && <ResourceNSLink resource="templateinstances" name={ResourcePlural('TemplateInstance', t)} onClick={this.close} />}
             </NavSection>
 
             <NavSection text={t('RESOURCE:FEDERATION')} icon="pficon pficon-catalog">
@@ -589,7 +602,7 @@ class Nav extends React.Component {
             </NavSection>
 
             <NavSection text={t('RESOURCE:HOST')} icon="pficon pficon-server">
-              <ResourceClusterLink resource="nodes" name={ResourcePlural('Node', t)} onClick={this.close} />
+              {blockMenu.indexOf('nodes') === -1 && <ResourceClusterLink resource="nodes" name={ResourcePlural('Node', t)} onClick={this.close} />}
             </NavSection>
 
             <NavSection text={t('RESOURCE:AUTH')} icon="fa fa-id-card-o">
