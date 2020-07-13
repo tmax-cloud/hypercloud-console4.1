@@ -1,0 +1,126 @@
+$border-color: #b8bbbe;
+.odc-pipeline-vis-task {
+  position: relative;
+  width: 10em;
+  margin-top: 1.5em;
+
+  &__content {
+    width: inherit;
+    height: 2.5em;
+    white-space: normal;
+    border: 1px solid $border-color;
+    border-radius: 20px;
+    color: black;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    &:hover {
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.12);
+    }
+  }
+  &__connector {
+    display: none;
+
+    &::before,
+    &::after {
+      content: '';
+      width: 0.67em;
+      height: 1.2em;
+      position: absolute;
+      top: -2.75em;
+      border-top: 1px solid $border-color;
+    }
+
+    &::after {
+      left: -17px;
+      border-right: 1px solid #b8bbbe;
+      border-radius: 0 20px;
+    }
+
+    &::before {
+      right: -17px;
+      border-left: 1px solid #b8bbbe;
+      border-radius: 20px 0 0;
+    }
+  }
+
+  &:not(:first-child) {
+    margin-top: 1.5em;
+  }
+
+  &__stepcount {
+    margin: 0 4px;
+    white-space: nowrap;
+  }
+
+  &__status {
+    margin: 0 3px 0 7px;
+    width: 1.5em;
+    height: 1.5em;
+    flex-grow: 0;
+    flex-shrink: 0;
+    order: -1;
+  }
+
+  &__title-wrapper {
+    flex: 0 0 75px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    &:hover {
+      cursor: pointer;
+    }
+    &.is-text-center {
+      text-align: center;
+      margin: 0 auto;
+      flex: 0 0 100px;
+    }
+  }
+
+  &__title {
+    flex: 0 0 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Connect each task
+  &:not(:first-child) {
+    &::after,
+    &::before {
+      content: '';
+      border-radius: 0 0 0 1.33em;
+      top: -4.33em;
+      position: absolute;
+      border-bottom: 1px solid #b8bbbe;
+      width: 10px;
+      height: 5.75em;
+    }
+
+    // Right connecting lines
+    &::after {
+      right: -10px;
+      border-right: 1px solid $border-color;
+      border-radius: 0 0 12px;
+    }
+
+    // Left connecting lines
+    &::before {
+      left: -10px;
+      border-left: 1px solid $border-color;
+      border-radius: 0 0 0 12px;
+    }
+  }
+  &:nth-child(2) {
+    .odc-pipeline-vis-task__connector {
+      display: block;
+    }
+    &::after,
+    &::before {
+      top: -1.9em;
+      height: 3.3em;
+    }
+  }
+}

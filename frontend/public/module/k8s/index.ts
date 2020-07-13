@@ -17,12 +17,12 @@ export type OwnerReference = {
 };
 
 export type ObjectMetadata = {
-  annotations?: {[key: string]: string},
-  name: string,
-  namespace?: string,
-  labels?: {[key: string]: string},
-  ownerReferences?: OwnerReference[],
-  [key: string]: any,
+  annotations?: { [key: string]: string };
+  name?: string;
+  namespace?: string;
+  labels?: { [key: string]: string };
+  ownerReferences?: OwnerReference[];
+  [key: string]: any;
 };
 
 export type K8sResourceKind = {
@@ -31,26 +31,26 @@ export type K8sResourceKind = {
   metadata: ObjectMetadata;
   spec?: {
     selector?: {
-      matchLabels?: {[key: string]: any},
-    },
-    [key: string]: any
+      matchLabels?: { [key: string]: any };
+    };
+    [key: string]: any;
   };
-  status?: {[key: string]: any};
-  type?: {[key: string]: any};
+  status?: { [key: string]: any };
+  type?: { [key: string]: any };
 };
 
 export type ConfigMapKind = {
   apiVersion: string;
   kind: string;
   metadata: {
-    annotations?: {[key: string]: string},
-    name: string,
-    namespace?: string,
-    labels?: {[key: string]: string},
-    ownerReferences?: OwnerReference[],
-    [key: string]: any,
+    annotations?: { [key: string]: string };
+    name?: string;
+    namespace?: string;
+    labels?: { [key: string]: string };
+    ownerReferences?: OwnerReference[];
+    [key: string]: any;
   };
-  data: {[key: string]: string};
+  data: { [key: string]: string };
 };
 
 export type CustomResourceDefinitionKind = {
@@ -65,7 +65,7 @@ export type CustomResourceDefinitionKind = {
       shortNames?: string[];
     };
     scope?: 'Namespaced';
-  }
+  };
 } & K8sResourceKind;
 
 export type K8sKind = {
@@ -82,9 +82,9 @@ export type K8sKind = {
   apiVersion: string;
   apiGroup?: string;
   namespaced?: boolean;
-  selector?: {matchLabels?: {[key: string]: string}};
-  labels?: {[key: string]: string};
-  annotations?: {[key: string]: string};
+  selector?: { matchLabels?: { [key: string]: string } };
+  labels?: { [key: string]: string };
+  annotations?: { [key: string]: string };
   verbs?: string[];
 };
 

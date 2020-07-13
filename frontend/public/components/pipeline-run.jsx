@@ -6,6 +6,7 @@ import { Cog, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSum
 import { fromNow } from './utils/datetime';
 import { kindForReference, referenceForModel } from '../module/k8s';
 import { breadcrumbsForOwnerRefs } from './utils/breadcrumbs';
+import { PipelineRunVisualization } from './pipelineRuns/PipelineRunVisualization';
 import { PipelineRunModel } from '../models';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from './utils/lang/resource-plural';
@@ -31,27 +32,28 @@ const PipelineRunHeader = props => {
 
 const PipelineRunRow = () =>
   // eslint-disable-next-line no-shadow
-  function PipelineRunRow({ obj }) {
+  function PipelineRunRow({ obj: pipelineRun }) {
     return (
       <div className="row co-resource-list__item">
         <div className="col-xs-4 col-sm-4 co-resource-link-wrapper">
-          <ResourceCog actions={menuActions} kind="PipelineRun" resource={obj} />
-          <ResourceLink kind="PipelineRun" name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
+          <ResourceCog actions={menuActions} kind="PipelineRun" resource={pipelineRun} />
+          <ResourceLink kind="PipelineRun" name={pipelineRun.metadata.name} namespace={pipelineRun.metadata.namespace} title={pipelineRun.metadata.name} />
         </div>
-        <div className="col-xs-4 col-sm-4 co-break-word">{obj.metadata.namespace ? <ResourceLink kind="Namespace" name={obj.metadata.namespace} title={obj.metadata.namespace} /> : 'None'}</div>
-        <div className="col-xs-4 col-sm-4 hidden-xs">{fromNow(obj.metadata.creationTimestamp)}</div>
+        <div className="col-xs-4 col-sm-4 co-break-word">{pipelineRun.metadata.namespace ? <ResourceLink kind="Namespace" name={pipelineRun.metadata.namespace} title={pipelineRun.metadata.namespace} /> : 'None'}</div>
+        <div className="col-xs-4 col-sm-4 hidden-xs">{fromNow(pipelineRun.metadata.creationTimestamp)}</div>
       </div>
     );
   };
 
 const DetailsForKind = kind =>
-  function DetailsForKind_({ obj }) {
+  function DetailsForKind_({ obj: pipelineRun }) {
     const { t } = useTranslation();
     return (
       <React.Fragment>
         <div className="co-m-pane__body">
           <SectionHeading text={t('ADDITIONAL:OVERVIEWTITLE', { something: ResourcePlural('PIPELINERUN', t) })} />
-          <ResourceSummary resource={obj} podSelector="spec.podSelector" showNodeSelector={false} />
+          <PipelineRunVisualization pipelineRun={pipelineRun} />
+          <ResourceSummary resource={pipelineRun} podSelector="spec.podSelector" showNodeSelector={false} />
         </div>
       </React.Fragment>
     );

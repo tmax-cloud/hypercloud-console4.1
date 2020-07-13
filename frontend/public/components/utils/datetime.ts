@@ -98,7 +98,7 @@ export const formatDuration = (ms: number) => {
   if (!_.isFinite(ms) || ms < 0) {
     return '';
   }
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const totalSeconds = Math.round(ms / 1000);
   const secondsInHour = 60 * 60;
   const secondsInMinute = 60;
@@ -109,12 +109,12 @@ export const formatDuration = (ms: number) => {
 
   let formatted = '';
   if (hours) {
-    formatted += `${hours}${t('CONTENT:H')} `;
+    formatted += `${hours}h`;
   }
   if (hours || minutes) {
-    formatted += `${minutes}${t('CONTENT:M')} `;
+    formatted += `${minutes}m`;
   }
-  formatted += `${seconds}${t('CONTENT:S')}`;
+  formatted += `${seconds}s`;
 
   return formatted;
 };

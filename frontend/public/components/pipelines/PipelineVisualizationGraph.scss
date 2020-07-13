@@ -1,0 +1,80 @@
+$border-color: #b8bbbe;
+$gutter: 1.7em;
+
+.odc-pipeline-vis-graph {
+  margin: 16px 0;
+  overflow: auto;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  font-size: 12px;
+
+  // reset
+  &__stage-column {
+    list-style: none;
+    padding: 0;
+  }
+
+  &__stages {
+    display: inline-flex;
+    background: #f0f0f0;
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  &__stage {
+    margin: 0 10px;
+
+    &:not(:first-child) {
+      & .odc-pipeline-vis-task:first-child {
+        &::before {
+          content: '';
+          position: absolute;
+          top: 1.25em;
+
+          border-top: 1px solid $border-color;
+          width: $gutter;
+          height: 0;
+        }
+      }
+    }
+  }
+
+  &__stage.is-parallel {
+    & .odc-pipeline-vis-task {
+      &:first-child {
+        &::before {
+          content: '';
+          position: absolute;
+          top: 1.25em;
+          border-top: 1px solid $border-color;
+          width: $gutter;
+          height: 0;
+        }
+        &::before {
+          left: 0;
+          transform: translateX(-100%);
+        }
+        &::after {
+          right: 0;
+          transform: translateX(100%);
+        }
+      }
+    }
+    &:last-child {
+      & .odc-pipeline-vis-task:first-child {
+        &::after {
+          content: '';
+          width: $gutter / 2 + 0.05;
+        }
+      }
+    }
+  }
+  &__stage:not(.is-parallel) {
+    & .odc-pipeline-vis-task:first-child {
+      &::before {
+        left: 0;
+        transform: translateX(-100%);
+      }
+    }
+  }
+}
