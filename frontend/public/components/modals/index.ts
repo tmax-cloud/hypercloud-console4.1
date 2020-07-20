@@ -16,3 +16,17 @@ export * from './token-info-modal';
 export * from './delete-modal';
 export * from './service-instance-modal';
 export * from './add-resources-modal';
+
+
+export const taintsModal = (props) =>
+  import('./taints-modal' /* webpackChunkName: "taints-modal" */).then((m) => m.taintsModal(props));
+
+export const tolerationsModal = (props) =>
+  import('./tolerations-modal' /* webpackChunkName: "tolerations-modal" */).then((m) =>
+    m.tolerationsModal(props),
+  );
+
+export const expandPVCModal = (props) =>
+  import('./expand-pvc-modal' /* webpackChunkName: "expand-pvc-modal" */).then((m) =>
+    m.expandPVCModal(props),
+  );

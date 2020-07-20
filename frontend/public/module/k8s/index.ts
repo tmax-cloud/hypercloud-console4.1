@@ -136,3 +136,55 @@ export type SecretKind = {
   stringData?: { [key: string]: string };
   type: string;
 } & K8sResourceCommon;
+
+
+export type TaintEffect = '' | 'NoSchedule' | 'PreferNoSchedule' | 'NoExecute';
+
+export type Taint = {
+  key: string;
+  value: string;
+  effect: TaintEffect;
+};
+
+export enum K8sResourceConditionStatus {
+  True = 'True',
+  False = 'False',
+  Unknown = 'Unknown',
+}
+
+export type K8sResourceCondition = {
+  type: string;
+  status: keyof typeof K8sResourceConditionStatus;
+  lastTransitionTime?: string;
+  reason?: string;
+  message?: string;
+};
+
+export type NodeCondition = {
+  lastHeartbeatTime?: string;
+} & K8sResourceCondition;
+
+export type NodeKind = {
+  spec: {
+    taints?: Taint[];
+    unschedulable?: boolean;
+  };
+  status?: {
+    conditions?: NodeCondition[];
+    images?: {
+      names: string[];
+      sizeBytes?: number;
+    }[];
+    phase?: string;
+  };
+} & K8sResourceCommon;
+
+export type TolerationOperator = 'Exists' | 'Equal';
+
+export type Toleration = {
+  effect: TaintEffect;
+  key?: string;
+  operator: TolerationOperator;
+  tolerationSeconds?: number;
+  value?: string;
+};
