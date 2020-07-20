@@ -9,7 +9,7 @@
 //
 // And it's ok for users to make assumptions about capturing groups.
 import { ALL_NAMESPACES_KEY } from '../../const';
-
+import * as _ from 'lodash-es';
 export const legalNamePattern = /[a-z0-9](?:[-a-z0-9]*[a-z0-9])?/;
 
 const basePathPattern = new RegExp(`^/?${window.SERVER_FLAGS.basePath}`);
@@ -22,6 +22,10 @@ export const getNSPrefix = path => {
   path = stripBasePath(path);
   return namespacedPrefixes.filter(p => path.startsWith(p))[0];
 };
+
+
+export const getName = (value) =>
+  _.get(value, 'metadata.name');
 
 export const getNamespace = path => {
   path = stripBasePath(path);

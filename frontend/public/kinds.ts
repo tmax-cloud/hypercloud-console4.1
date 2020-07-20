@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Map as ImmutableMap } from 'immutable';
 import { match } from 'react-router-dom';
 
-import { K8sKind, K8sResourceKindReference, kindForReference, GroupVersionKind, isGroupVersionKind } from './module/k8s';
+import { K8sKind, ObjectMetadata, K8sResourceKindReference, kindForReference, GroupVersionKind, isGroupVersionKind } from './module/k8s';
 import * as k8sModels from './models';
 
 export const connectToModel = connect((state: State, props: {kind: K8sResourceKindReference} & any) => {
@@ -44,3 +44,39 @@ export const connectToPlural: ConnectToPlural = connect((state: State, props: {p
 });
 
 type State = {k8s: ImmutableMap<string, any>};
+
+export type AccessReviewResourceAttributes = {
+  group?: string;
+  resource?: string;
+  subresource?: string;
+  verb?: K8sVerb;
+  name?: string;
+  namespace?: string;
+};
+
+
+export type SelfSubjectAccessReviewKind = {
+  apiVersion: string;
+  kind: string;
+  metadata?: ObjectMetadata;
+  spec: {
+    resourceAttributes?: AccessReviewResourceAttributes;
+  };
+  status?: {
+    allowed: boolean;
+    denied?: boolean;
+    reason?: string;
+    evaluationError?: string;
+  };
+};
+
+
+export type K8sVerb =
+  | 'create'
+  | 'get'
+  | 'list'
+  | 'update'
+  | 'patch'
+  | 'delete'
+  | 'deletecollection'
+  | 'watch';

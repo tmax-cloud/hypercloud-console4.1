@@ -1,5 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import { K8sKind } from '../module/k8s';
+import { chart_color_green_400 as tektonGroupColor } from '@patternfly/react-tokens';
+// import { BadgeType } from '../packages/console-shared/src/components/badges/badge-factory';
+
+const color = tektonGroupColor.value;
 
 export const VirtualMachineModel: K8sKind = {
   kind: 'VirtualMachine',
@@ -1322,4 +1326,34 @@ export const CatalogServiceClaimModel: K8sKind = {
   namespaced: true,
   kind: 'CatalogServiceClaim',
   id: 'catalogserviceclaim',
+};
+
+export const ClusterTriggerBindingModel: K8sKind = {
+  apiGroup: 'triggers.tekton.dev',
+  apiVersion: 'v1alpha1',
+  label: 'Cluster Trigger Binding',
+  plural: 'clustertriggerbindings',
+  abbr: 'CTB',
+  namespaced: false,
+  kind: 'ClusterTriggerBinding',
+  id: 'clustertriggerbinding',
+  labelPlural: 'Cluster Trigger Bindings',
+  crd: true,
+  // badge: BadgeType.TECH,
+  color,
+};
+
+export const TriggerBindingModel: K8sKind = {
+  apiGroup: 'triggers.tekton.dev',
+  apiVersion: 'v1alpha1',
+  label: 'Trigger Binding',
+  plural: 'triggerbindings',
+  abbr: 'TB',
+  namespaced: true,
+  kind: 'TriggerBinding',
+  id: 'triggerbinding',
+  labelPlural: 'Trigger Bindings',
+  crd: true,
+  // badge: BadgeType.TECH,
+  color,
 };

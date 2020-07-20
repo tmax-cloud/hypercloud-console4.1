@@ -48,3 +48,19 @@ export class SafetyFirst<props, state> extends React.Component<props, state> {
     this.isMounted_ = true;
   }
 }
+
+export const useSafetyFirst = <S extends any>(
+  initialState: S | (() => S),
+): [S, React.Dispatch<React.SetStateAction<S>>] => {
+  const mounted = React.useRef(true);
+  React.useEffect(() => () => (mounted.current = false), []);
+
+  const [value, setValue] = React.useState(initialState);
+  const setValueSafe = React.useCallback((newValue: S) => {
+    if (mounted.current) {
+      setValue(newValue);
+    }
+  }, []);
+
+  return [value, setValueSafe];
+};

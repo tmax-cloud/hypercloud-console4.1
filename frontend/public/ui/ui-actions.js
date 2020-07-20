@@ -7,6 +7,11 @@ import { allModels } from '../module/k8s/k8s-models';
 // URL routes that can be namespaced
 export const namespacedResources = new Set();
 
+
+export const impersonateStateToProps = ({ UI }) => {
+  return { impersonate: UI.get('impersonate') };
+};
+
 allModels().forEach((v, k) => {
   if (!v.namespaced) {
     return;
