@@ -2875,9 +2875,9 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30001103"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001103.tgz#9166b10f1b4a3fa2e3375b9923cb203c49b5538b"
-  integrity sha512-CUcBkIV20SyOpH685l6LmFU3aSRPD3Cyq9LRAMjLJtYVbyhxlJ902Pu47rzWZ4hjby/yFuorbhRhEI/QDKigFA==
+  version "1.0.30001104"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001104.tgz#a8d68942c857435ad36a97486178d9d3c24e7b23"
+  integrity sha512-40cTUhuSN1p/zRMtTqxSZhp4aCFX4AuEwrWzSD4CRu+Zx/8Xe530zNs3wMGodaOE9A5PLP8XenrnVdBEcg8kAA==
 
 capture-exit@^1.2.0:
   version "1.2.0"
@@ -14691,10 +14691,10 @@ typescript-eslint-parser@16.0.1:
     lodash.unescape "4.0.1"
     semver "5.5.0"
 
-typescript@3.8.3:
-  version "3.8.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.8.3.tgz#409eb8544ea0335711205869ec458ab109ee1061"
-  integrity sha512-MYlEfn5VrLNsgudQTVJeNaQFUAI7DkhnOjdpAp4T+ku1TfQClewlbSuTVHiA+8skNBgaf02TL/kLOvig4y3G8w==
+typescript@3.7.2:
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.2.tgz#27e489b95fa5909445e9fef5ee48d81697ad18fb"
+  integrity sha512-ml7V7JfiN2Xwvcer+XAf2csGO1bPBdRbFCkYBczNZggrBZ9c7G3riSUeJmqEU5uOtXNPMhE3n+R4FA/3YOAWOQ==
 
 ua-parser-js@^0.7.18:
   version "0.7.21"
@@ -14974,9 +14974,9 @@ url-parse-lax@^3.0.0:
     prepend-http "^2.0.0"
 
 url-polyfill@^1.0.12:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/url-polyfill/-/url-polyfill-1.1.9.tgz#2c8d4224889a5c942800f708f5585368085603d9"
-  integrity sha512-q/R5sowGuRfKHm497swkV+s9cPYtZRkHxzpDjRhqLO58FwdWTIkt6Y/fJlznUD/exaKx/XnDzCYXz0V16ND7ow==
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/url-polyfill/-/url-polyfill-1.1.10.tgz#fd5bbcf66c9491fa682b0cb6d6a855e1643a9281"
+  integrity sha512-vSaPpaRgBrf41+Uky1myiSh6gpcbw8FpwHYnEy0abxndojOBnIs+yh/49gKYFLtUMP9qoNWjn6j9aUVy23Ie2A==
 
 url-search-params-polyfill@2.x:
   version "2.0.3"
