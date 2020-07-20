@@ -13,11 +13,11 @@ import { connectToModel } from '../../kinds';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from '../utils/lang/resource-plural';
 
-const CogItems: React.SFC<CogItemsProps> = ({ options, onClick }) => {
+const CogItems: React.SFC<any> = ({ options, onClick }) => {
   const visibleOptions = _.reject(options, o => _.get(o, 'hidden', false));
   const lis = _.map(visibleOptions, (o, i) => (
     <li key={i}>
-      <a onClick={e => onClick(e, o)}>{o.label}</a>
+      <a onClick={e => onClick(e, (o as any))}>{o.label}</a>
     </li>
   ));
   return <ul className="dropdown-menu co-m-cog__dropdown">{lis}</ul>;

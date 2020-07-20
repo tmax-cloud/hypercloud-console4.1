@@ -5,7 +5,7 @@ import { resourcePath } from './utils';
 import { fromNow } from './utils/datetime';
 import { K8sResourceKind } from '../module/k8s';
 
-const getBuildNumber = (resource: K8sResourceKind): number => _.get(resource, ['metadata', 'annotations', 'openshift.io/build.number']);
+const getBuildNumber = (resource: K8sResourceKind): any => _.get(resource, ['metadata', 'annotations', 'openshift.io/build.number']);
 const getStages = (status): any[] => (status && status.stages) || [];
 const getJenkinsStatus = (resource: K8sResourceKind) => {
   const json = _.get(resource, ['metadata', 'annotations', 'openshift.io/jenkins-status-json']);

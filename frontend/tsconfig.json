@@ -17,7 +17,8 @@
     "sourceMap": true,
     "noUnusedLocals": false,
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "suppressExcessPropertyErrors": true
   },
   "exclude": [
     "node_modules",
