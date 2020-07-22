@@ -21,8 +21,8 @@
 
   &__data-bar {
     --bar-gap-neg: calc(var(--bar-gap) * -1);
-
-    box-shadow: inset var(--bar-gap-neg) 0 0 #ffffff;
+    box-shadow: var(--bar-gap-neg) 0 0 #ffffff;
+    // box-shadow: inset var(--bar-gap-neg) 0 0 #ffffff;
     height: 100%;
     transition: flex-grow 300ms linear;
   }

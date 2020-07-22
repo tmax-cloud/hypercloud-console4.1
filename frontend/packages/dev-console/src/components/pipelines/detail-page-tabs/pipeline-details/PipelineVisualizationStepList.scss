@@ -2,7 +2,8 @@
   min-width: 10em;
 
   &__task-name {
-    font-weight: var(--pf-global--FontWeight--bold);
+    // font-weight: var(--pf-global--FontWeight--bold);
+    font-weight: 700;
     line-height: 1.5em;
     max-height: 3em;
 
@@ -32,26 +33,30 @@
   }
 
   &__icon-backdrop {
-    fill: var(--pf-global--Color--light-100);
+    // fill: var(--pf-global--Color--light-100);
+    fill: #ffffff;
   }
 
   &__name {
     flex: 1 1 auto;
     overflow: hidden;
-    padding-left: var(--pf-global--spacer--sm);
+    // padding-left: var(--pf-global--spacer--sm);
+    padding-left: 0.5rem;
     text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
 
     &.is-main-focus {
-      padding: 0 var(--pf-global--spacer--sm);
+      // padding: 0 var(--pf-global--spacer--sm);
+      padding: 0.5rem;
       text-align: center;
     }
   }
 
   &__duration {
     flex: 0 0 auto;
-    padding-left: var(--pf-global--spacer--sm);
+    // padding-left: var(--pf-global--spacer--sm);
+    padding-left: 0.5rem;
     text-align: right;
   }
 }
