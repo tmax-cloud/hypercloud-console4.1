@@ -53,6 +53,7 @@ export const PipelineVisualizationTask: React.FC<PipelineVisualizationTaskProp> 
   disableTooltip,
   selected,
 }) => {
+  // console.log(task);
   const taskStatus = task.status || {
     duration: '',
     reason: runStatus.Idle,
@@ -95,13 +96,15 @@ export const PipelineVisualizationTask: React.FC<PipelineVisualizationTaskProp> 
   } else {
     resources = [
       {
-        kind: referenceForModel(TaskModel),
+        // kind: referenceForModel(TaskModel),
+        kind: 'Task',
         name: task.taskRef.name,
         namespace,
         prop: 'task',
       },
     ];
   }
+  // console.log(resources);
   return <Firehose resources={resources}>{taskComponent}</Firehose>;
 };
 const TaskComponent: React.FC<TaskProps> = ({
@@ -115,6 +118,7 @@ const TaskComponent: React.FC<TaskProps> = ({
   selected,
 }) => {
   const stepList = _.get(task, ['data', 'spec', 'steps'], []);
+  // console.log(task);
   const stepStatusList: StepStatus[] = stepList.map((step) => createStepStatus(step, status));
   const showStatusState: boolean = isPipelineRun && !!status && !!status.reason;
   const visualName = name || _.get(task, ['metadata', 'name'], '');
@@ -141,19 +145,20 @@ const TaskComponent: React.FC<TaskProps> = ({
   );
   if (!disableTooltip) {
     taskPill = (
-      <Tooltip
-        position="bottom"
-        enableFlip={false}
-        content={
-          <PipelineVisualizationStepList
-            isSpecOverview={!isPipelineRun}
-            taskName={visualName}
-            steps={stepStatusList}
-          />
-        }
-      >
-        {taskPill}
-      </Tooltip>
+      <Tooltip className='tooltip-bg'
+      position="bottom"
+      enableFlip={false}
+      content={
+        <PipelineVisualizationStepList
+          isSpecOverview={!isPipelineRun}
+          taskName={visualName}
+          steps={stepStatusList}
+        />
+      }
+    >
+      {taskPill}
+    </Tooltip>
+      
     );
   }
 
