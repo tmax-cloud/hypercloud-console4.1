@@ -90,6 +90,36 @@ export type K8sKind = {
   color?: string;
 };
 
+export type MatchExpression =
+  | { key: string; operator: 'Exists' | 'DoesNotExist' }
+  | { key: string; operator: 'In' | 'NotIn' | 'Equals' | 'NotEquals'; values: string[] };
+
+export type MatchLabels = {
+  [key: string]: string;
+};
+
+export type Selector = {
+  matchLabels?: MatchLabels;
+  matchExpressions?: MatchExpression[];
+};
+
+
+export type TemplateParameter = {
+  name: string;
+  value?: string;
+  displayName?: string;
+  description?: string;
+  generate?: string;
+  required?: boolean;
+};
+
+export type TemplateKind = {
+  message?: string;
+  objects: any[];
+  parameters: TemplateParameter[];
+  labels?: any[];
+} & K8sResourceCommon;
+
 /**
  * GroupVersionKind unambiguously identifies a kind.
  * https://godoc.org/k8s.io/apimachinery/pkg/runtime/schema#GroupVersionKind
@@ -123,6 +153,12 @@ export type ContainerStatus = {
   image: string;
   imageID: string;
   containerID?: string;
+};
+
+export type ContainerPort = {
+  name?: string;
+  containerPort: number;
+  protocol: string;
 };
 
 export type K8sResourceCommon = {

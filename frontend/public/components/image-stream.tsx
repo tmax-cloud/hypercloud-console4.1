@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as _ from 'lodash-es';
+import * as semver from 'semver';
 
 // eslint-disable-next-line no-unused-vars
-import { K8sResourceKindReference } from '../module/k8s';
+import { K8sResourceKindReference, K8sResourceKind } from '../module/k8s';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
 import { Cog, SectionHeading, LabelList, navFactory, Overflow, ResourceCog, ResourceLink, ResourceSummary, Timestamp } from './utils';
 import { fromNow } from './utils/datetime';
@@ -158,3 +159,50 @@ export type ImageStreamsDetailsPageProps = {
   match: any,
 };
 /* eslint-enable no-undef, no-unused-vars */
+
+export const getAnnotationTags = (specTag: any) =>
+  _.get(specTag, 'annotations.tags', '').split(/\s*,\s*/);
+
+const isBuilderTag = (specTag: any) => {
+  // A spec tag has annotations tags, which is a comma-delimited string (e.g., 'builder,httpd').
+  const annotationTags = getAnnotationTags(specTag);
+  return _.includes(annotationTags, 'builder') && !_.includes(annotationTags, 'hidden');
+};
+
+const getStatusTags = (imageStream: K8sResourceKind): any => {
+  const statusTags = _.get(imageStream, 'status.tags');
+  return _.keyBy(statusTags, 'tag');
+};
+
+export const getBuilderTags = (imageStream: K8sResourceKind): any[] => {
+  const statusTags = getStatusTags(imageStream);
+  return _.filter(imageStream.spec.tags, (tag) => isBuilderTag(tag) && statusTags[tag.name]);
+};
+
+// An image stream is a builder image if
+// - It has a spec tag annotated with `builder` and not `hidden`
+// - It has a corresponding status tag
+export const isBuilder = (imageStream: K8sResourceKind) => !_.isEmpty(getBuilderTags(imageStream));
+
+// Sort tags in reverse order by semver, falling back to a string comparison if not a valid version.
+export const getBuilderTagsSortedByVersion = (imageStream: K8sResourceKind): any[] => {
+  return getBuilderTags(imageStream).sort(({ name: a }, { name: b }) => {
+    const v1 = semver.coerce(a);
+    const v2 = semver.coerce(b);
+    if (!v1 && !v2) {
+      return a.localeCompare(b);
+    }
+    if (!v1) {
+      return 1;
+    }
+    if (!v2) {
+      return -1;
+    }
+    return semver.rcompare(v1, v2);
+  });
+};
+
+export const getMostRecentBuilderTag = (imageStream: K8sResourceKind) => {
+  const tags = getBuilderTagsSortedByVersion(imageStream);
+  return _.head(tags);
+};
