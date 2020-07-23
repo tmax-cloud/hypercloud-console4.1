@@ -5,7 +5,7 @@ import { navFactory, viewYamlComponent } from '../../../../../public/components/
 import { pipelineRunStatus } from '../../utils/pipeline-filter-reducer';
 // import { rerunPipelineRunAndRedirect, stopPipelineRun } from '../../utils/pipeline-actions';
 import { PipelineRunDetails } from './detail-page-tabs/PipelineRunDetails';
-// import { PipelineRunLogsWithActiveTask } from './detail-page-tabs/PipelineRunLogs';
+import { PipelineRunLogsWithActiveTask } from './detail-page-tabs/PipelineRunLogs';
 
 export const PipelineRunDetailsPage: React.FC<DetailsPageProps> = (props) => (
   <DetailsPage
@@ -16,12 +16,12 @@ export const PipelineRunDetailsPage: React.FC<DetailsPageProps> = (props) => (
     pages={[
       navFactory.details(PipelineRunDetails),
       navFactory.editYaml(viewYamlComponent as any),
-      // {
-      //   href: 'logs',
-      //   path: 'logs/:name?',
-      //   name: 'Logs',
-      //   component: PipelineRunLogsWithActiveTask,
-      // },
+      {
+        href: 'logs',
+        path: 'logs/:name?',
+        name: 'Logs',
+        component: PipelineRunLogsWithActiveTask,
+      },
     ]}
   />
 );
