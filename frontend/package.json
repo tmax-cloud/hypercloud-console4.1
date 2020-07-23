@@ -68,6 +68,7 @@
     "core-js": "2.x",
     "cross-env": "^5.0.5",
     "file-saver": "1.3.x",
+    "formik": "2.0.3",
     "focus-trap-react": "^6.0.0",
     "d3": "^5.9.2",
     "font-awesome": "4.7.x",
@@ -115,12 +116,14 @@
     "redux-thunk": "2.x",
     "sanitize-html": "1.x",
     "showdown": "1.8.x",
+    "semver": "^6.0.0",
     "styled-components": "^5.1.1",
     "text-encoding": "0.x",
     "url-polyfill": "^1.0.12",
     "url-search-params-polyfill": "2.x",
     "whatwg-fetch": "2.x",
-    "xterm": "~3.8.1"
+    "xterm": "~3.8.1",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@types/dagre": "0.7.42",
