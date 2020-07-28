@@ -945,7 +945,6 @@ spec:
       source:
         http:
           url: 'https://download.cirros-cloud.net/contrib/0.3.0/cirros-0.3.0-i386-disk.img'
-      contentType: "archive"
       pvc:
         accessModes:
           - ReadWriteOnce
@@ -1431,14 +1430,64 @@ spec:
     kind: PipelineResource
     metadata:
       name: example-pipeline-resource-git
-      namespace: teespaceb2c
+      namespace: default
     spec:
       type: git
       params:
         - name: revision
           value: master
         - name: url
-          value: 'https://github.com/sample/git/url'
+          value: https://github.com/wizzbangcorp/wizzbang.git
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.PipelineResourceModel), 'pipelineresource-sample2'],
+    `
+    apiVersion: tekton.dev/v1alpha1
+    kind: PipelineResource
+    metadata:
+      name: example-pipeline-resource-git
+      namespace: default
+    spec:
+      type: git
+      params:
+        - name: revision
+          value: sample_revision
+        - name: httpsProxy
+          value: "my-sample.proxy.com"
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.PipelineResourceModel), 'pipelineresource-sample3'],
+    `
+    apiVersion: tekton.dev/v1alpha1
+    kind: PipelineResource
+    metadata:
+      name: example-pipeline-resources-image
+      namespace: default
+    spec:
+      type: image
+      params:
+        - name: url
+          value: gcr.io/staging-images/kritis
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.PipelineResourceModel), 'pipelineresource-sample4'],
+    `
+    apiVersion: tekton.dev/v1alpha1
+    kind: PipelineResource
+    metadata:
+      name: example-pipeline-resource-git-description
+      namespace: default
+    spec:
+      type: git
+      description: description of the resource.
+      params:
+        - name: revision
+          value: master
+        - name: url     
+          value: https://github.com/wizzbangcorp/wizzbang.git
 `,
   )
   .setIn(
@@ -1572,7 +1621,7 @@ metadata:
   name: example # (required) [string] registry's name
   namespace: example # (required) [string] registry's namespace
 spec:
-  image: registry:2.7.1 # (required)
+  image: registry:2.6.2 # (required)
   #description: example # (optional) [string] a brief description of the registry.
   loginId: example # (required) [string] username for registry login
   loginPassword: example # (required) [string] password for registry login
@@ -1618,16 +1667,21 @@ spec:
       name: sample-registry
       namespace: default
     spec:
-      image: <image ip addr>:5000/registry:latest
+      image: <image registry>/registry:2.6.2
       description: default image registry
       loginId: tmax
       loginPassword: tmax123
       service:
-         type: LoadBalancer
+        loadBalancer:
+          port: 443
       persistentVolumeClaim:
-         accessModes: [ReadWriteMany]
-         storageSize: 10Gi
-         storageClassName: csi-cephfs-sc
+        create: 
+          accessModes:
+            - ReadWriteMany
+          storageSize: 10Gi
+          storageClassName: csi-cephfs-sc
+          volumeMode: Filesystem    
+          deleteWithPvc: false
 `,
   )
   .setIn(
@@ -1639,7 +1693,7 @@ spec:
       name: sample-registry
       namespace: default
     spec:
-      image: <image ip addr>:5000/registry:latest
+      image: <image registry>/registry:2.6.2
       description: default image registry
       loginId: tmax
       loginPassword: tmax123
@@ -1647,13 +1701,17 @@ spec:
         nodeSelector:
           kubernetes.io/hostname: worker01
       service:
-         type: NodePort
+        loadBalancer:     
+          port: 443
       persistentVolumeClaim:
-         accessModes: [ReadWriteMany]
-         storageSize: 10Gi
-         storageClassName: csi-cephfs-sc
+        create:
+          accessModes:
+            - ReadWriteMany
+          storageSize: 10Gi
+          storageClassName: csi-cephfs-sc
+          volumeMode: Filesystem
+          deleteWithPvc: false
 `,
-
   )
   .setIn(
     [referenceForModel(k8sModels.TemplateModel), 'default'],
@@ -2869,64 +2927,121 @@ spec:
   .setIn(
     [referenceForModel(k8sModels.DeploymentModel), 'deployment-sample'],
     `
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-  labels:
-    app: nginx
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
+    apiVersion: apps/v1
+    kind: Deployment
     metadata:
+      name: example-deployment
+      namespace: default
       labels:
         app: nginx
     spec:
-      containers:
-      - name: nginx
-        image: nginx:1.14.2
-        ports:
-        - containerPort: 80
+      selector:
+        matchLabels:
+          app: nginx
+      template:
+        metadata:
+          labels:
+            app: nginx
+        spec:
+          containers:
+          - name: nginx
+            image: nginx:1.14.2
+            ports:
+            - containerPort: 80
 `,
   )
   .setIn(
     [referenceForModel(k8sModels.DeploymentModel), 'deployment-sample2'],
     `
-apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
-kind: Deployment
-metadata:
-  name: mysql2
-spec:
-  selector:
-    matchLabels:
-      app: mysql
-  strategy:
-    type: Recreate
-  template:
+    apiVersion: apps/v1
+    kind: Deployment
     metadata:
+      name: example-deployment
+      namespace: default
       labels:
-        app: mysql
+        app: nginx
     spec:
-      containers:
-      - image: mysql:5.6
-        name: mysql
-        env:
-          # Use secret in real usage
-        - name: MYSQL_ROOT_PASSWORD
-          value: password
-        ports:
-        - containerPort: 3306
-          name: mysql
-        volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-              claimName: mysql-pv-claim
+      selector:
+        matchLabels:
+          app: nginx
+      replicas: 3
+      minReadySeconds: 10
+      template:
+        metadata:
+          labels:
+            app: nginx
+        spec:
+          containers:
+          - name: nginx
+            image: nginx:1.14.2
+            ports:
+            - containerPort: 80
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.DeploymentModel), 'deployment-sample3'],
+    `
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: example-deployment
+      namespace: default
+      labels:
+        app: nginx
+    spec:
+      selector:
+        matchLabels:
+          app: nginx
+      replicas: 3
+      strategy:
+        rollingUpdate:
+          maxSurge: 30%
+          maxUnavailable: 30%
+        type: RollingUpdate
+      template:
+        metadata:
+          labels:
+            app: nginx
+        spec:
+          containers:
+          - name: nginx
+            image: nginx:1.14.2
+            ports:
+            - containerPort: 80
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.DeploymentModel), 'deployment-sample4'],
+    `
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: example-deployment
+      namespace: default
+      labels:
+        app: nginx
+    spec:
+      selector:
+        matchLabels:
+          app: nginx
+      template:
+        metadata:
+          labels:
+            app: nginx
+        spec:
+          containers:
+          - name: nginx
+            image: nginx:1.14.2
+            ports:
+            - containerPort: 80
+            volumeMounts:
+            - mountPath: /example_data
+              name: example-volume
+          volumes:
+          - name: example-volume
+            hostPath:
+              path: /example
+              type: Directory
 `,
   )
   .setIn(
@@ -3183,7 +3298,7 @@ spec:
       accessModes:
         - ReadWriteOnce
       persistentVolumeReclaimPolicy: Delete
-      storageClassName: hdd-ceph-fs
+      storageClassName: \${STORAGECLASSNAME}
       hostPath:
         path: "/tmp"
 `,
@@ -3201,7 +3316,7 @@ spec:
       accessModes:
         - ReadOnlyMany
       persistentVolumeReclaimPolicy: Retain
-      storageClassName: hdd-ceph-fs
+      storageClassName: \${STORAGECLASSNAME}
       hostPath:
         path: "/tmp"
 `,
@@ -3219,7 +3334,7 @@ spec:
       accessModes:
         - ReadWriteMany
       persistentVolumeReclaimPolicy: Delete
-      storageClassName: hdd-ceph-block
+      storageClassName: \${STORAGECLASSNAME}
       volumeMode: Block
       hostPath:
         path: "/tmp"
@@ -3238,7 +3353,7 @@ spec:
       accessModes:
         - ReadWriteOnce
       persistentVolumeReclaimPolicy: Recycle
-      storageClassName: hdd-ceph-fs
+      storageClassName: \${STORAGECLASSNAME}
       mountOptions:
         - hard
         - nfsvers=4.1
@@ -3260,7 +3375,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Recycle
-  storageClassName: slow
+  storageClassName: \${STORAGECLASSNAME}
   nfs:
     path: /tmp
     server: 172.17.0.2
@@ -3293,20 +3408,20 @@ spec:
     apiVersion: autoscaling/v2beta1
     kind: HorizontalPodAutoscaler
     metadata:
-      name: sample-cpu-scaling
+      name: example-hpa
       namespace: default
     spec:
       scaleTargetRef:
         apiVersion: apps/v1
         kind: Deployment
-        name: sample-name
+        name: example-deployment
       minReplicas: 1
       maxReplicas: 3
       metrics:
-        - type: Resource
-          resource:
-            name: cpu
-            targetAverageUtilization: 50
+      - type: Resource
+        resource:
+          name: cpu
+          targetAverageUtilization: 50
 `,
   )
   .setIn(
@@ -3315,19 +3430,20 @@ spec:
     apiVersion: autoscaling/v2beta1
     kind: HorizontalPodAutoscaler
     metadata:
-      name: sample-mem-scaling
+      name: example-hpa
       namespace: default
     spec:
       scaleTargetRef:
+        apiVersion: apps/v1
         kind: Deployment
-        name: sample-name
+        name: example-deployment
       minReplicas: 1
-      maxReplicas: 3
-      metrics:
-        - type: Resource
-          resource:
-            name: memory
-            targetAverageValue: 1G
+      maxReplicas: 5
+      metrics:              
+      - type: Resource
+        resource:
+          name: memory
+          targetAverageValue: 100Mi
 `,
   )
   .setIn(
@@ -3337,6 +3453,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: example
+  namespace: default
   labels:
     app: hello-hypercloud
 spec:
@@ -3358,9 +3475,9 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: example
+  namespace: default
   labels:
     app: hello-hypercloud
-  namespace: default
 spec:
   containers:
     - name: hello-hypercloud
@@ -3376,6 +3493,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: example2
+  namespace: default
   labels:
     app: hello-hypercloud
 spec:
@@ -3779,55 +3897,99 @@ spec:
   .setIn(
     [referenceForModel(k8sModels.DaemonSetModel), 'daemonset-sample'],
     `
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: example
-  namespace: default
-spec:
-  selector:
-    matchLabels:
-      app: hello-hypercloud
-  template:
+    apiVersion: apps/v1
+    kind: DaemonSet
     metadata:
-      labels:
-        app: hello-hypercloud
+      name: example-daemonset
+      namespace: default
     spec:
-      containers:
-        - name: hello-hypercloud
-          image: hypercloud/hello-hypercloud
-          ports:
-            - containerPort: 8080
+      selector:
+        matchLabels:
+          app: example-daemonset
+      template:
+        metadata:
+          labels:
+            app: example-daemonset
+        spec:
+          containers:
+            - name: example-daemonset-apache
+              image: httpd:latest
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 200Mi
+                requests:
+                  cpu: 100m
+                  memory: 200Mi
+              ports:
+                - containerPort: 80
 `,
   )
   .setIn(
     [referenceForModel(k8sModels.DaemonSetModel), 'daemonset-sample2'],
     `
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: resource-example
-  namespace: demo-ns
-spec:
-  selector:
-    matchLabels:
-      name: sample-fluentd
-  template:
+    apiVersion: apps/v1
+    kind: DaemonSet
     metadata:
-      labels:
-        name: sample-fluentd
+      name: example-daemonset
+      namespace: default
     spec:
-      containers:
-      - name: hello-fluentd
-        image: gcr.io/google-containers/fluentd-elasticsearch:1.20
-        resources:
-          limits:
-            memory: 200Mi
-          requests:
-            cpu: 100m
-            memory: 200Mi
+      selector:
+        matchLabels:
+          app: example-daemonset
+      template:
+        metadata:
+          labels:
+            app: example-daemonset
+        spec:
+          tolerations:
+          # this toleration is to have the daemonset runnable on master nodes
+          # remove it if your masters can't run pods
+          - key: node-role.kubernetes.io/master
+            effect: NoSchedule
+          containers:
+            - name: example-daemonset-apache
+              image: httpd:latest
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 200Mi
+                requests:
+                  cpu: 100m
+                  memory: 200Mi
+              ports:
+                - containerPort: 80
 `,
   )
+  .setIn(
+    [referenceForModel(k8sModels.DaemonSetModel), 'daemonset-sample3'],
+    `
+    apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      name: example-daemonset
+      namespace: default
+    spec:
+      selector:
+        matchLabels:
+          app: example-daemonset
+      updateStrategy:
+        type: RollingUpdate
+      minReadySeconds: 3
+      revisionHistoryLimit: 100
+      template:
+        metadata:
+          labels:
+            app: example-daemonset
+        spec:
+          containers:
+            - name: example-daemonset-apache
+              image: httpd:latest
+              ports:
+                - containerPort: 80
+`,
+  )
+
   .setIn(
     [referenceForModel(k8sModels.PersistentVolumeClaimModel), 'default'],
     `
@@ -3841,7 +4003,7 @@ spec:
   resources:
     requests:
       storage: 8Gi
-  storageClassName: slow
+  storageClassName: \${STORAGECLASSNAME}
   selector:
     matchLabels:
       release: "stable"
@@ -3863,7 +4025,7 @@ spec:
       resources:
         requests:
           storage: 1Gi
-      storageClassName: hdd-ceph-fs
+      storageClassName: \${STORAGECLASSNAME}
 `,
   )
   .setIn(
@@ -3880,7 +4042,7 @@ spec:
       resources:
         requests:
           storage: 1Gi
-      storageClassName: hdd-ceph-block
+      storageClassName: \${STORAGECLASSNAME}
       volumeMode: Block
 `,
   )
@@ -3899,7 +4061,7 @@ spec:
         requests:
           storage: 1Gi
       volumeName: sample-pv
-      storageClassName: storage-sample
+      storageClassName: \${STORAGECLASSNAME}
       volumeMode: Filesystem
 `,
   )
@@ -3917,12 +4079,12 @@ spec:
       resources:
         requests:
           storage: 1Gi
-       matchExpressions:
-         - key: localstorage
-           operator: In
-           values:
+      matchExpressions:
+        - key: localstorage
+          operator: In
+          values:
             - hdd
-      storageClassName: storage-sample 
+      storageClassName: \${STORAGECLASSNAME}
       volumeMode: Filesystem
 `,
   )
@@ -4018,42 +4180,169 @@ spec:
   .setIn(
     [referenceForModel(k8sModels.StatefulSetModel), 'statefulset-sample'],
     `
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: example
-  namespace: demo-ns
-spec:
-  serviceName: nginx
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
+    apiVersion: apps/v1
+    kind: StatefulSet
     metadata:
-      labels:
-        app: nginx
+      name: example-statefulset
+      namespace: default
     spec:
-      terminationGracePeriodSeconds: 10
-      containers:
-        - name: nginx
-          image: 'gcr.io/google_containers/nginx-slim:0.8'
-          ports:
-            - containerPort: 80
-              name: web
-          volumeMounts:
-            - name: www
-              mountPath: /usr/share/nginx/html
-  volumeClaimTemplates:
-    - metadata:
-        name: www
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: my-storage-class
-        resources:
-          requests:
-            storage: 1Gi
+      serviceName: example-statefulset
+      replicas: 3
+      selector:
+        matchLabels:
+          app: example-statefulset
+      template:
+        metadata:
+          labels:
+            app: example-statefulset
+        spec:
+          terminationGracePeriodSeconds: 10
+          containers:
+            - name: nginx
+              image: 'httpd:latest'
+              ports:
+                - containerPort: 80
+                  name: web
+              volumeMounts:
+                - name: www
+                  mountPath: /usr/share/httpd/html
+      volumeClaimTemplates:
+        - metadata:
+            name: www
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: csi-cephfs-sc
+            resources:
+              requests:
+                storage: 1Gi
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.StatefulSetModel), 'statefulset-sample2'],
+    `
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: example-statefulset
+      namespace: default
+    spec:
+      serviceName: example-statefulset
+      podManagementPolicy: Parallel
+      replicas: 3
+      selector:
+        matchLabels:
+          app: example-statefulset
+      template:
+        metadata:
+          labels:
+            app: example-statefulset
+        spec:
+          terminationGracePeriodSeconds: 10
+          containers:
+            - name: example-statefulset
+              image: 'httpd:latest'
+              ports:
+                - containerPort: 80
+                  name: web
+              volumeMounts:
+                - name: www
+                  mountPath: /usr/share/httpd/html
+      volumeClaimTemplates:
+        - metadata:
+            name: www
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: csi-cephfs-sc
+            resources:
+              requests:
+                storage: 1Gi
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.StatefulSetModel), 'statefulset-sample3'],
+    `
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: example-statefulset
+      namespace: default
+    spec:
+      serviceName: example-statefulset
+      replicas: 3
+      revisionHistoryLimit: 15
+      selector:
+        matchLabels:
+          app: example-statefulset
+      template:
+        metadata:
+          labels:
+            app: example-statefulset
+        spec:
+          terminationGracePeriodSeconds: 10
+          containers:
+            - name: example-statefulset
+              image: 'httpd:latest'
+              ports:
+                - containerPort: 80
+                  name: web
+              volumeMounts:
+                - name: www
+                  mountPath: /usr/share/httpd/html
+      volumeClaimTemplates:
+        - metadata:
+            name: www
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: csi-cephfs-sc
+            resources:
+              requests:
+                storage: 1Gi
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.StatefulSetModel), 'statefulset-sample4'],
+    `
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: example-statefulset
+      namespace: default
+    spec:
+      serviceName: example-statefulset
+      replicas: 3
+      updateStrategy:
+        type: RollingUpdate
+      selector:
+        matchLabels:
+          app: example-statefulset
+      template:
+        metadata:
+          labels:
+            app: example-statefulset
+        spec:
+          terminationGracePeriodSeconds: 10
+          containers:
+            - name: example-statefulset
+              image: 'httpd:latest'
+              ports:
+                - containerPort: 80
+                  name: web
+              volumeMounts:
+                - name: www
+                  mountPath: /usr/share/httpd/html
+      volumeClaimTemplates:
+        - metadata:
+            name: www
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: csi-cephfs-sc
+            resources:
+              requests:
+                storage: 1Gi
 `,
   )
   .setIn(
@@ -4599,8 +4888,198 @@ spec:
       name: example-tmax.co.kr
     otpEnable: f
     otp: 123456
-    ipRange: 192.168.0.0/16
+    ipRange: 
+      - 192.168.0.0/16
 
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.ClusterMenuPolicyModel), 'default'],
+    `
+    apiVersion: ui.tmax.io/v1
+    kind: ClusterMenuPolicy
+    metadata:
+      name: admin-tmax.co.kr
+    menus: 
+      - name: home
+        menu:
+        - name: status
+          type: hreflink
+          href: /status
+          activePath: /status
+        - name: search
+          type: hreflink
+          href: /search
+        - name: audit
+          type: resourcenslink
+        - name: event
+          type: resourcenslink
+        - name: grafana
+          type: hreflink
+          href: /grafana
+      - name: servicecatalog
+        menu:
+        - name: ServiceBroker
+          type: resourcenslink
+        - name: ServiceClass
+          type: resourcenslink
+        - name: ServicePlan
+          type: resourcenslink
+        - name: ClusterServiceBroker
+          type: resourceclusterlink
+        - name: ClusterServiceClass
+          type: resourceclusterlink
+        - name: ClusterServicePlan
+          type: resourceclusterlink
+        - name: ServiceInstance
+          type: resourcenslink
+        - name: ServiceBinding
+          type: resourcenslink
+        - name: CatalogServiceClaim
+          type: resourcenslink
+        - name: Template
+          type: resourcenslink
+        - name: TemplateInstance
+          type: resourcenslink
+      - name: workload
+        menu:
+        - name: Pod
+          type: resourcenslink
+        - name: Deployment
+          type: resourcenslink
+        - name: ReplicaSet
+          type: resourcenslink
+        - name: horizontalpodautoscaler
+          type: resourcenslink
+        - name: DaemonSet
+          type: resourcenslink
+        - name: StatefulSet
+          type: resourcenslink
+        - name: VirtualMachine
+          type: resourcenslink
+        - name: VirtualMachineInstance
+          type: resourcenslink
+        - name: ConfigMap
+          type: resourcenslink
+        - name: Secret
+          type: resourcenslink
+        - name: Job
+          type: resourcenslink
+        - name: CronJob
+          type: resourcenslink
+      - name: servicemesh
+        menu:
+        - name: VirtualService
+          type: resourcenslink
+        - name: DestinationRule
+          type: resourcenslink
+        - name: EnvoyFilter
+          type: resourcenslink
+        - name: Gateway
+          type: resourcenslink
+        - name: Sidecar
+          type: resourcenslink
+        - name: ServiceEntry
+          type: resourcenslink
+        - name: RequestAuthentication
+          type: resourcenslink
+        - name: PeerAuthentication
+          type: resourcenslink
+        - name: AuthorizationPolicy
+          type: resourcenslink
+        - name: kiali
+          type: hreflink
+          href: /kiali
+      - name: network
+        menu:
+        - name: Ingress
+          type: resourcenslink
+        - name: Service
+          type: resourcenslink
+      - name: storage
+        menu:
+        - name: StorageClass
+          type: resourceclusterlink
+        - name: DataVolume
+          type: resourcenslink
+        - name: PersistentVolumeClaim
+          type: resourcenslink
+        - name: PersistentVolume
+          type: resourceclusterlink
+      - name: cicd
+        menu:
+        - name: Task
+          type: resourcenslink
+        - name: TaskRun
+          type: resourcenslink
+        - name: Pipeline
+          type: resourcenslink
+        - name: PipelineRun
+          type: resourcenslink
+        - name: PipelineApproval
+          type: resourcenslink
+        - name: PipelineResource
+          type: resourcenslink
+        - name: Condition
+          type: resourcenslink
+      - name: aiops
+        menu:
+        - name: Notebook
+          type: resourcenslink
+        - name: Experiment
+          type: resourcenslink
+        - name: InferenceService
+          type: resourcenslink
+        - name: TrainingJob
+          type: resourcenslink
+        - name: WorkflowTemplate
+          type: resourcenslink
+        - name: Workflow
+          type: resourcenslink
+      - name: security
+        menu:
+        - name: PodSecurityPolicy
+          type: resourceclusterlink
+        - name: NetworkPolicy
+          type: resourcenslink
+      - name: image
+        menu:
+        - name: Registry
+          type: resourcenslink
+      - name: management
+        menu:
+        - name: Namespace
+          type: resourceclusterlink
+        - name: NamespaceClaim
+          type: resourceclusterlink
+        - name: LimitRange
+          type: resourcenslink
+        - name: ResourceQuota
+          type: resourcenslink
+        - name: ResourceQuotaClaim
+          type: resourcenslink
+        - name: CustomResourceDefinition
+          type: resourceclusterlink
+      - name: host
+        menu:
+        - name: Node
+          type: resourceclusterlink
+      - name: auth
+        menu:
+        - name: Role
+          type: resourcenslink
+        - name: RoleBinding
+          type: resourcenslink
+        - name: RoleBindingClaim
+          type: resourcenslink
+        - name: User
+          type: resourceclusterlink
+        - name: Usergroup
+          type: resourceclusterlink
+        - name: Usersecuritypolicy
+          type: resourceclusterlink
+        - name: ServiceAccount
+          type: resourcenslink
 `,
   )
   .setIn(
@@ -4763,6 +5242,182 @@ spec:
 `,
   )
   .setIn(
+    [referenceForModel(k8sModels.TrainingJobModel), 'default'],
+    `
+    apiVersion: kubeflow.org/v1
+    kind: TFJob
+    metadata:
+      name: tf-smoke-gpu
+      namespace: default
+    spec:
+      tfReplicaSpecs:
+        PS:
+          replicas: 1
+          template:
+            metadata:
+              creationTimestamp: null
+            spec:
+              containers:
+              - args:
+                - python
+                - tf_cnn_benchmarks.py
+                - --batch_size=32
+                - --model=resnet50
+                - --variable_update=parameter_server
+                - --flush_stdout=true
+                - --num_gpus=1
+                - --local_parameter_device=cpu
+                - --device=cpu
+                - --data_format=NHWC
+                image: gcr.io/kubeflow/tf-benchmarks-cpu
+                name: tensorflow
+                ports:
+                - containerPort: 2222
+                  name: tfjob-port
+                resources:
+                  limits:
+                    cpu: '1'
+                workingDir: /opt/tf-benchmarks/scripts/tf_cnn_benchmarks
+              restartPolicy: OnFailure
+        Worker:
+          replicas: 1
+          template:
+            metadata:
+              creationTimestamp: null
+            spec:
+              containers:
+              - args:
+                - python
+                - tf_cnn_benchmarks.py
+                - --batch_size=32
+                - --model=resnet50
+                - --variable_update=parameter_server
+                - --flush_stdout=true
+                - --num_gpus=1
+                - --local_parameter_device=cpu
+                - --device=gpu
+                - --data_format=NHWC
+                image: gcr.io/kubeflow/tf-benchmarks-gpu
+                name: tensorflow
+                ports:
+                - containerPort: 2222
+                  name: tfjob-port
+                resources:
+                  limits:
+                    nvidia.com/gpu: 1
+                workingDir: /opt/tf-benchmarks/scripts/tf_cnn_benchmarks
+              restartPolicy: OnFailure
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.TFJobModel), 'default'],
+    `
+    apiVersion: kubeflow.org/v1
+    kind: TFJob
+    metadata:
+      name: tf-smoke-gpu
+      namespace: default
+    spec:
+      tfReplicaSpecs:
+        PS:
+          replicas: 1
+          template:
+            metadata:
+              creationTimestamp: null
+            spec:
+              containers:
+              - args:
+                - python
+                - tf_cnn_benchmarks.py
+                - --batch_size=32
+                - --model=resnet50
+                - --variable_update=parameter_server
+                - --flush_stdout=true
+                - --num_gpus=1
+                - --local_parameter_device=cpu
+                - --device=cpu
+                - --data_format=NHWC
+                image: gcr.io/kubeflow/tf-benchmarks-cpu
+                name: tensorflow
+                ports:
+                - containerPort: 2222
+                  name: tfjob-port
+                resources:
+                  limits:
+                    cpu: '1'
+                workingDir: /opt/tf-benchmarks/scripts/tf_cnn_benchmarks
+              restartPolicy: OnFailure
+        Worker:
+          replicas: 1
+          template:
+            metadata:
+              creationTimestamp: null
+            spec:
+              containers:
+              - args:
+                - python
+                - tf_cnn_benchmarks.py
+                - --batch_size=32
+                - --model=resnet50
+                - --variable_update=parameter_server
+                - --flush_stdout=true
+                - --num_gpus=1
+                - --local_parameter_device=cpu
+                - --device=gpu
+                - --data_format=NHWC
+                image: gcr.io/kubeflow/tf-benchmarks-gpu
+                name: tensorflow
+                ports:
+                - containerPort: 2222
+                  name: tfjob-port
+                resources:
+                  limits:
+                    nvidia.com/gpu: 1
+                workingDir: /opt/tf-benchmarks/scripts/tf_cnn_benchmarks
+              restartPolicy: OnFailure
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.PyTorchJobModel), 'default'],
+    `
+    apiVersion: kubeflow.org/v1
+    kind: PyTorchJob
+    metadata:
+      name: pytorch-tcp-dist-mnist
+      namespace: default
+    spec:
+      pytorchReplicaSpecs:
+        Master:
+          replicas: 1
+          restartPolicy: OnFailure
+          template:
+            spec:
+              containers:
+                - name: pytorch
+                  image: gcr.io/kubeflow-ci/pytorch-dist-mnist_test:1.0
+                  ports:
+                  - name: pytorchjob-port
+                    containerPort: 23456
+                  resources:
+                    limits:
+                      nvidia.com/gpu: 1
+        Worker:
+          replicas: 1
+          restartPolicy: OnFailure
+          template:
+            spec:
+              containers:
+                - name: pytorch
+                  image: gcr.io/kubeflow-ci/pytorch-dist-mnist_test:1.0
+                  ports:
+                  - name: pytorchjob-port
+                    containerPort: 23456
+                  resources:
+                    limits:
+                      nvidia.com/gpu: 1
+`,
+  )
+  .setIn(
     [referenceForModel(k8sModels.InferenceServiceModel), 'default'],
     `
     apiVersion: serving.kubeflow.org/v1alpha2
@@ -4821,13 +5476,13 @@ spec:
       templates:
       - name: whalesay
         steps:
-          - - name: call-whalesay-template
-              templateRef:
-                name: workflow-template-whalesay-template
-                template: whalesay-template
-              arguments:
-                parameters:
-                - name: message
-                  value: "hello world"
+          - name: call-whalesay-template
+            templateRef:
+              name: workflow-template-whalesay-template
+              template: whalesay-template
+            arguments:
+              parameters:
+              - name: message
+                value: "hello world"
 `,
   );

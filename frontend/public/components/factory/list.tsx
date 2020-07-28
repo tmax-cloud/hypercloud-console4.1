@@ -16,6 +16,7 @@ import { routeStatus } from '../routes';
 import { secretTypeFilterReducer } from '../secret';
 import { bindingType, roleType } from '../RBAC';
 import { taskType } from '../task';
+import { tjKind } from '../training-job';
 import { LabelList, ResourceCog, ResourceLink, resourcePath, Selector, StatusBox, containerLinuxUpdateOperator, EmptyBox } from '../utils';
 import { useTranslation } from 'react-i18next';
 const fuzzyCaseInsensitive = (a, b) => fuzzy(_.toLower(a), _.toLower(b));
@@ -27,6 +28,8 @@ const listFilters = {
 
   // Filter role by task
   'task-kind': (filter, task) => filter.selected.has(taskType(task)),
+
+  'trainingjob-kind': (filter, kind) => filter.selected.has(tjKind(kind)),
 
   // Filter role by role kind
   'role-kind': (filter, role) => filter.selected.has(roleType(role)),
@@ -114,6 +117,13 @@ const listFilters = {
     const phase = pvc.status.phase;
     return phases.selected.has(phase) || !_.includes(phases.all, phase);
   },
+  'approval-status': (statuses, approval) => {
+    if (!statuses || !statuses.selected || !statuses.selected.size) {
+      return true;
+    }
+    const status = approval.status.result;
+    return statuses.selected.has(status) || !_.includes(statuses.all, status);
+  },
 };
 
 const getFilteredRows = (_filters, objects) => {
@@ -160,6 +170,19 @@ const sorts = {
   podPhase,
   podReadiness,
   string: val => JSON.stringify(val),
+  tjPhase: tj => {
+    let len = tj.status.conditions.length;
+    for (let i = len - 1; i >= 0; i--) {
+      if (tj.status.conditions[i].status) {
+        return tj.status.conditions[i].type;
+      }
+    }
+  },
+  tjComposition: tj => {
+    const specs = Object.entries(tj.spec);
+    const keys = Object.keys(specs[0][1]);
+    return keys[0];
+  },
 };
 
 export class ColHead extends React.Component<ColHeadProps> {

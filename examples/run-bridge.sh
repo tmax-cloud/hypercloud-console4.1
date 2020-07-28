@@ -1,17 +1,41 @@
 #!/bin/bash -e
 
+k8sIP='172.21.6.2'
+
+myIP=$(ipconfig | grep "IPv4" -a | head -1 | awk '{print $NF}')
+
+
+### k8s 환경에 ssh 최초 접속 시 다음 두 줄을 실행해주세요. 그러면 다음부터 password 없이 login할 수 있습니다.
+### ssh-keygen을 실행하면 파일명과 passphrase를 입력하라고 뜨는데, empty로 놔두고 Enter를 눌러 진행하면 됩니다.
+
+# ssh-keygen
+# ssh-copy-id -i ~/.ssh/id_rsa.pub root@$k8sIP
+
+
+nodePorts=$(ssh root@$k8sIP "
+    HC_PORT=\$(kubectl get svc -n hypercloud4-system hypercloud4-operator-service | awk '{print \$5}' | awk 'match(\$0, /:[0-9]+\//){print substr(\$0,RSTART+1,RLENGTH-2)}');
+    PROM_PORT=\$(kubectl get svc -n monitoring prometheus-k8s | awk '{print \$5}' | awk 'match(\$0, /:[0-9]+\//){print substr(\$0,RSTART+1,RLENGTH-2)}');
+    GRAFANA_PORT=\$(kubectl get svc -n monitoring grafana | awk '{print \$5}' | awk 'match(\$0, /:[0-9]+\//){print substr(\$0,RSTART+1,RLENGTH-2)}');
+    KIALI_PORT=\$(kubectl get svc -n istio-system kiali | awk '{print \$5}' | awk 'match(\$0, /:[0-9]+\//){print substr(\$0,RSTART+1,RLENGTH-2)}');
+    JAEGER_PORT=\$(kubectl get svc -n istio-system tracing | awk '{print \$5}' | awk 'match(\$0, /:[0-9]+\//){print substr(\$0,RSTART+1,RLENGTH-2)}');
+    APPROVAL_PORT=\$(kubectl get svc -n approval-system approval-proxy-server | awk '{print \$5}' | awk 'match(\$0, /:[0-9]+\//){print substr(\$0,RSTART+1,RLENGTH-2)}');
+    echo \"HC_PORT=\$HC_PORT PROM_PORT=\$PROM_PORT GRAFANA_PORT=\$GRAFANA_PORT KIALI_PORT=\$KIALI_PORT JAEGER_PORT=\$JAEGER_PORT APPROVAL_PORT=\$APPROVAL_PORT;\"
+")
+
+eval $nodePorts
+
+
 ./bin/bridge \
-    --listen=https://192.168.0.191:9000 \
-    --base-address=https://192.168.0.191:9000 \
+    --listen=https://$myIP:9000 \
+    --base-address=https://$myIP:9000 \
     --tls-cert-file=tls/tls.crt \
     --tls-key-file=tls/tls.key \
     --k8s-mode=off-cluster \
-    --k8s-mode-off-cluster-endpoint=https://192.168.6.196:6443 \
+    --k8s-mode-off-cluster-endpoint=https://$k8sIP:6443 \
     --k8s-mode-off-cluster-skip-verify-tls=true \
     --k8s-auth=bearer-token \
     --k8s-auth-bearer-token=@@ \
     --public-dir=./frontend/public/dist \
-    --hypercloud-endpoint=http://192.168.6.211:28677 \
-    --prometheus-endpoint=http://192.168.6.196:30562/api \
-    --grafana-endpoint=http://192.168.6.196:31527 \
+    --hypercloud-endpoint=http://$k8sIP:$HC_PORT \
+    --grafana-endpoint=http://$k8sIP:$GRAFANA_PORT \
     --release-mode=true \

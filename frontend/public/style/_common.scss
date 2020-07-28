@@ -30,6 +30,11 @@
     margin-right: 10px;
     min-width: 0; // enables truncation of selected item, if needed
   }
+  .btn-group-audit {
+    .dropdown button {
+      width: 120px;
+    }
+  }
   &--alt {
     margin-left: 0;
     margin-right: 0;
@@ -48,7 +53,7 @@
 }
 
 .co-m-pane__filter-bar-group--filter {
-  @media(min-width: $screen-xs-min) {
+  @media (min-width: $screen-xs-min) {
     flex: 1 1 auto;
     justify-content: flex-end;
   }
@@ -83,6 +88,38 @@
   flex: 1;
   margin-right: 10px;
   min-width: 0; // necessary for wrapping since its a flex child
+
+  .fa-question-circle {
+    margin-left: 10px;
+  }
+}
+
+.title-tooltip-inner {
+  .rc-tooltip-arrow {
+    visibility: hidden;
+  }
+  .rc-tooltip-inner {
+    background-color: white;
+    border-radius: 2px;
+    width: 500px;
+    color: #696969;
+    font-size: 14px;
+    padding: 10px 20px 20px 20px;
+  }
+  h5 {
+    margin: 0;
+    font-size: 16px;
+    color: #444444;
+    font-weight: normal;
+    letter-spacing: 0;
+    line-height: 16px;
+  }
+  hr {
+    margin: 12px 0 20px 0;
+  }
+  p {
+    margin: 0;
+  }
 }
 
 .co-inline-block {
@@ -158,7 +195,7 @@
 
 .co-btn--download,
 .co-btn--download:hover {
-  border: 1px solid #DDDDDD;
+  border: 1px solid #dddddd;
   border-radius: 2px;
 }
 
@@ -174,7 +211,7 @@
   padding-bottom: 30px;
   .input-group-btn {
     vertical-align: top;
-    @media(max-width: $grid-float-breakpoint-max) {
+    @media (max-width: $grid-float-breakpoint-max) {
       display: flex;
       min-width: 0;
       width: auto;
@@ -183,7 +220,7 @@
       }
     }
   }
-  @media(max-width: $grid-float-breakpoint-max) {
+  @media (max-width: $grid-float-breakpoint-max) {
     .input-group-select {
       display: block;
       .btn--dropdown {
@@ -201,10 +238,11 @@
   margin: 30px;
 }
 
-
 // Prevent iOS phones from zooming on form inputs
-@supports (-webkit-overflow-scrolling: touch) { // Target mobile Safari
-  @media (max-width: $grid-float-breakpoint-max) { // Target phones
+@supports (-webkit-overflow-scrolling: touch) {
+  // Target mobile Safari
+  @media (max-width: $grid-float-breakpoint-max) {
+    // Target phones
     input,
     select,
     .tag-item,
@@ -215,11 +253,11 @@
 }
 
 // Remove annoying default spinners browsers add to number fields.
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
@@ -238,7 +276,7 @@ input[type=number]::-webkit-outer-spin-button {
   color: #fff;
   font-size: 14px;
   padding: 2px 12px;
-  background-color: #D64456;
+  background-color: #d64456;
 }
 
 .co-break-word {
@@ -248,15 +286,15 @@ input[type=number]::-webkit-outer-spin-button {
 // append external-link icon to <a> so that it doesn't wrap without text
 // there must be no white space between the text and the closing </a> tag holding the pseudo element
 .co-external-link:after {
-  content: "\f08e";
-  display:inline-block;
+  content: '\f08e';
+  display: inline-block;
   font-family: 'FontAwesome';
   font-size: 75%;
   height: 16px;
-  position:relative;
+  position: relative;
   margin-left: 5px;
   margin-right: -25px; // width + margin-left
-  top:0;
+  top: 0;
   width: 20px;
 }
 .co-external-link {
@@ -317,4 +355,21 @@ input[type=number]::-webkit-outer-spin-button {
   @media (max-width: $screen-xs-max) {
     align-items: flex-end;
   }
+}
+.co-datepicker {
+  margin: 0 10px;
+  width: 90px;
+  height: 25px;
+  border: 1px solid #bbb;
+  border-radius: 2px;
+  color: #4d5258;
+  text-align: right;
+}
+
+.no-drag {
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
 }

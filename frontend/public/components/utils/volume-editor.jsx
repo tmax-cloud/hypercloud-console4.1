@@ -15,7 +15,7 @@ export class VolumeEditor extends React.Component {
     const { updateParentData, volumePairs, nameValueId, allowSorting, options } = this.props;
     let listLength = this.props.volumePairs.length;
     if (listLength < options.length) {
-      updateParentData({ volumePairs: allowSorting ? volumePairs.concat([['', '', '', '', volumePairs.length]]) : volumePairs.concat([['', '', '', '']]) }, nameValueId);
+      updateParentData({ volumePairs: allowSorting ? volumePairs.concat([['', '', '', false, volumePairs.length]]) : volumePairs.concat([['', '', '', false]]) }, nameValueId);
     } else {
       return;
     }
@@ -113,12 +113,10 @@ class VolumePairElement extends React.Component {
     );
 
     const selectOptions = options.map(option => {
-      return (
-        {
-          value: option.props.value,
-          label: option.props.children
-        }
-      );
+      return {
+        value: option.props ? option.props.value : option.value,
+        label: option.props ? option.props.children : option.children ? option.children : option.label, // 기존 폼에서는 children으로 사용, singleSelect는 label로 사용
+      };
     });
 
     return (
@@ -133,14 +131,12 @@ class VolumePairElement extends React.Component {
           {/* <select value={pair[VolumeEditorPair.PVC]} onChange={this._onChangePVC} className="form-control">
             {options}
           </select> react-select 라이브러리 사용하여 select 변경 */}
-          {options && <SingleSelect
-            options={selectOptions} name="PVC" value={pair[VolumeEditorPair.PVC]} onChange={this._onChangePVC}
-          />}
+          {options && <SingleSelect options={selectOptions} name="PVC" /* placeholder={t('ADDITIONAL:SELECT', { something: 'PVC' })} */ value={pair[VolumeEditorPair.PVC]} onChange={this._onChangePVC} />}
         </div>
         <div className="col-md-2 col-xs-2 pairs-list__targetPort-field">
           <select value={pair[VolumeEditorPair.ReadOnly]} onChange={this._onChangeReadOnly} className="form-control">
-            <option value="false">False</option>
-            <option value="true">True</option>
+            <option value="false">{t('CONTENT:NOTALLOW')}</option>
+            <option value="true">{t('CONTENT:ALLOW')}</option>
           </select>
         </div>
         <div className="col-md-1 col-xs-2">

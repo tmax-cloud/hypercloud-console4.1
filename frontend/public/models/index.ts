@@ -420,6 +420,20 @@ export const UserSecurityPolicyModel: K8sKind = {
   crd: false,
 };
 
+export const ClusterMenuPolicyModel: K8sKind = {
+  kind: 'ClusterMenuPolicy',
+  namespaced: false,
+  label: 'Cluster Menu Policy',
+  plural: 'clustermenupolicies',
+  apiGroup: 'ui.tmax.io',
+  apiVersion: 'v1',
+  abbr: 'CMP',
+  labelPlural: 'Cluster Menu Policies',
+  path: 'clustermenupolicies',
+  id: 'clustermenupolicy',
+  crd: false,
+};
+
 export const NamespaceClaimModel: K8sKind = {
   kind: 'NamespaceClaim',
   namespaced: false,
@@ -1227,6 +1241,19 @@ export const PipelineRunModel: K8sKind = {
   id: 'pipelinerun',
   crd: false,
 };
+export const ApprovalModel: K8sKind = {
+  kind: 'Approval',
+  namespaced: true,
+  label: 'Approval',
+  plural: 'approvals',
+  apiVersion: 'v1',
+  abbr: 'PA',
+  apiGroup: 'tmax.io',
+  labelPlural: 'Pipeline Approvals',
+  path: 'approvals',
+  id: 'approval',
+  crd: false,
+};
 export const PetsetModel: K8sKind = {
   apiVersion: 'v1',
   label: 'Petset',
@@ -1573,6 +1600,43 @@ export const ExperimentModel: K8sKind = {
   namespaced: true,
   kind: 'Experiment',
   id: 'experiment',
+};
+export const TrainingJobModel: K8sKind = {
+  label: 'Training Job',
+  labelPlural: 'Training Jobs',
+  apiVersion: 'v1',
+  path: 'trainingjobs',
+  apiGroup: 'kubeflow.org',
+  plural: 'trainingjobs',
+  abbr: 'TJ',
+  namespaced: true,
+  kind: 'TrainingJob',
+  id: 'trainingjob',
+  crd: false,
+};
+export const TFJobModel: K8sKind = {
+  label: 'TFJob',
+  labelPlural: 'TF Jobs',
+  apiVersion: 'v1',
+  path: 'tfjobs',
+  apiGroup: 'kubeflow.org',
+  plural: 'tfjobs',
+  abbr: 'TFJ',
+  namespaced: true,
+  kind: 'TFJob',
+  id: 'tfjob',
+};
+export const PyTorchJobModel: K8sKind = {
+  label: 'PyTorchJob',
+  labelPlural: 'PyTorch Jobs',
+  apiVersion: 'v1',
+  path: 'pytorchjobs',
+  apiGroup: 'kubeflow.org',
+  plural: 'pytorchjobs',
+  abbr: 'PTJ',
+  namespaced: true,
+  kind: 'PyTorchJob',
+  id: 'pytorchjob',
 };
 export const InferenceServiceModel: K8sKind = {
   label: 'Inference Service',

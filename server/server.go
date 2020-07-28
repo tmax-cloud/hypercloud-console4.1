@@ -51,6 +51,9 @@ const (
 	prometheusProxyEndpoint   = "/api/prometheus"
 	hypercloudProxyEndpoint   = "/api/hypercloud/"
 	grafanaProxyEndpoint      = "/api/grafana/"
+	// jaegerProxyEndpoint       = "/api/jaeger/"
+	// approvalProxyEndpoint     = "/api/approve/"
+	// kialiProxyEndpoint        = "/api/kiali/"
 	// NOTE: hypercloud api 프록시를 위해 hypercloudProxyEndpoint 추가 // 정동민
 )
 
@@ -111,7 +114,10 @@ type Server struct {
 	K8sClient             *http.Client
 	PrometheusProxyConfig *proxy.Config
 	HypercloudProxyConfig *proxy.Config
+	// JaegerProxyConfig     *proxy.Config
+	// ApprovalProxyConfig   *proxy.Config
 	GrafanaProxyConfig    *proxy.Config
+	// KialiProxyConfig      *proxy.Config
 	// NOTE: hypercloud api 프록시를 위해 HypercloudProxyConfig 추가 // 정동민
 }
 
@@ -268,10 +274,6 @@ func (s *Server) HTTPHandler() http.Handler {
 					id = bodyId
 				}
 
-				if strings.Contains(string(r.URL.Path), "login") {
-					plog.Println("id: " + id)
-				}
-
 				// user security policy를 가져오기 위한 서비스콜
 				path := "/apis/tmax.io/v1/usersecuritypolicies/" + id
 				urltocall := proxy.SingleJoiningSlash(s.K8sProxyConfig.Endpoint.String(), path)
@@ -292,7 +294,9 @@ func (s *Server) HTTPHandler() http.Handler {
 				result, message := s.verifyIpRange(urltocall, tokenForUserSecurityPolicy, clientAddr)
 				switch result {
 				case true:
-					plog.Info(message)
+					if strings.Contains(string(r.URL.Path), "login") {
+						plog.Info(message)
+					}
 					hf(s.StaticUser, w, r)
 					return
 				case false:
@@ -351,6 +355,25 @@ func (s *Server) HTTPHandler() http.Handler {
 			hypercloudProxy.ServeHTTP(w, r)
 		})),
 	)
+	// approvalProxyAPIPath := approvalProxyEndpoint
+	// approvalProxy := proxy.NewProxy(s.ApprovalProxyConfig)
+	// handle(approvalProxyAPIPath, http.StripPrefix(
+	// 	proxy.SingleJoiningSlash(s.BaseURL.Path, approvalProxyAPIPath),
+	// 	authHandlerWithUser(func(user *auth.User, w http.ResponseWriter, r *http.Request) {
+	// 		approvalProxy.ServeHTTP(w, r)
+	// 	})),
+	// )
+	// if s.JaegerProxyConfig != nil {
+	// 	jaegerProxyAPIPath := jaegerProxyEndpoint
+	// 	jaegerProxy := httputil.NewSingleHostReverseProxy(s.JaegerProxyConfig.Endpoint)
+	// 	handle(jaegerProxyAPIPath, http.StripPrefix(
+	// 		proxy.SingleJoiningSlash(s.BaseURL.Path, jaegerProxyAPIPath),
+	// 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 			jaegerProxy.ServeHTTP(w, r)
+	// 		})),
+	// 	)
+	// }
+
 	// NOTE: 여기까지
 	if s.prometheusProxyEnabled() {
 		// Only proxy requests to the Prometheus API, not the UI.
@@ -368,17 +391,6 @@ func (s *Server) HTTPHandler() http.Handler {
 	// NOTE: grafan proxy 등록 // 윤진수
 	if s.GrafanaProxyConfig != nil {
 		grafanaProxyAPIPath := grafanaProxyEndpoint
-		// grafanaProxy := proxy.NewProxy(s.GrafanaProxyConfig)
-		// director := func(req *http.Request) {
-		// req.Header.Add("X-Forwarded-Host", req.Host)
-		// req.Header.Add("X-Origin-Host", origin.Host)
-		// req.Header.Add("X-Frame-Options", "sameorigin")
-		// req.Header.Add("X-Forwarded-For", req.RemoteAddr)
-		// req.Header.Add("X-Frame-Options", "allowall")
-		// req.URL.Scheme = "http"
-		// req.URL.Host = origin.Host
-		// }
-		// grafanaProxy := &httputil.ReverseProxy{Director: director}
 		grafanaProxy := httputil.NewSingleHostReverseProxy(s.GrafanaProxyConfig.Endpoint)
 		handle(grafanaProxyAPIPath, http.StripPrefix(
 			proxy.SingleJoiningSlash(s.BaseURL.Path, grafanaProxyAPIPath),
@@ -388,6 +400,17 @@ func (s *Server) HTTPHandler() http.Handler {
 		)
 	}
 	// NOTE: 여기까지
+
+	
+	// NOTE: 여기까지
+	// 	kialiProxy := httputil.NewSingleHostReverseProxy(s.KialiProxyConfig.Endpoint)
+	// 	handle(kialiProxyAPIPath, http.StripPrefix(
+	// 		proxy.SingleJoiningSlash(s.BaseURL.Path, kialiProxyAPIPath),
+	// 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 			kialiProxy.ServeHTTP(w, r)
+	// 		})),
+	// 	)
+	// }
 
 	handle("/api/tectonic/version", authHandler(s.versionHandler))
 	handle("/api/tectonic/ldap/validate", authHandler(handleLDAPVerification))

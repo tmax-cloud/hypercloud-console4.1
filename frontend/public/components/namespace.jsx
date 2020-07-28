@@ -14,7 +14,7 @@ import { Cog, Dropdown, Firehose, LabelList, LoadingInline, navFactory, Resource
 import { createNamespaceModal, createProjectModal, deleteNamespaceModal, configureNamespacePullSecretModal } from './modals';
 import { RoleBindingsPage } from './RBAC';
 import { Bar, Line, requirePrometheus } from './graphs';
-import { NAMESPACE_LOCAL_STORAGE_KEY, ALL_NAMESPACES_KEY } from '../const';
+import { ALL_NAMESPACES_KEY } from '../const';
 import { FLAGS, featureReducerName, flagPending, setFlag, connectToFlags } from '../features';
 import { openshiftHelpBase } from './utils/documentation';
 import { createProjectMessageStateToProps } from '../ui/ui-reducers';
@@ -307,8 +307,6 @@ const Metering = ({ obj: { metadata } }) => {
 
 const autocompleteFilter = (text, item) => fuzzy(text, item);
 
-const defaultBookmarks = {};
-
 const namespaceDropdownStateToProps = state => {
   const activeNamespace = state.UI.get('activeNamespace');
   const canListNS = state[featureReducerName].get(FLAGS.CAN_LIST_NS);
@@ -320,9 +318,7 @@ const NamespaceSelectorComponent = ({ activeNamespace, items, model, title, onCh
   const { t } = useTranslation();
   return (
     <div className="co-namespace-selector">
-      {!(!localStorage.getItem('bridge/last-namespace-name') && activeNamespace === 'default') && (
-        <Dropdown className="co-namespace-selector__dropdown" menuClassName="co-namespace-selector__menu" noButton canFavorite items={items} titlePrefix={t(`RESOURCE:${model.kind.toUpperCase()}`)} title={title} onChange={onChange} selectedKey={activeNamespace || ALL_NAMESPACES_KEY} autocompleteFilter={autocompleteFilter} autocompletePlaceholder={t('CONTENT:SELECTNAMESPACE')} defaultBookmarks={defaultBookmarks} storageKey={NAMESPACE_LOCAL_STORAGE_KEY} shortCut="n" />
-      )}
+      {!(!localStorage.getItem('bridge/last-namespace-name') && activeNamespace === 'default') && <Dropdown className="co-namespace-selector__dropdown" menuClassName="co-namespace-selector__menu" noButton items={items} titlePrefix={t(`RESOURCE:${model.kind.toUpperCase()}`)} title={title} onChange={onChange} selectedKey={activeNamespace || ALL_NAMESPACES_KEY} autocompleteFilter={autocompleteFilter} autocompletePlaceholder={t('CONTENT:SELECTNAMESPACE')} shortCut="n" />}
     </div>
   );
 };
@@ -355,9 +351,9 @@ class NamespaceDropdown_ extends React.Component {
 
     if (canListNS) {
       items[ALL_NAMESPACES_KEY] = allNamespacesTitle;
-      if (!localStorage.getItem('bridge/last-namespace-name')) {
-        activeNamespace = '#ALL_NS#';
-      }
+      // if (!localStorage.getItem('bridge/last-namespace-name')) {
+      //   activeNamespace = '#ALL_NS#';
+      // }
     }
     _.map(data, 'metadata.name')
       .sort()
@@ -382,15 +378,16 @@ class NamespaceDropdown_ extends React.Component {
     if (!localStorage.getItem('bridge/last-namespace-name') && loaded) {
       if (!canListNS) {
         activeNamespace = data[0].metadata.name;
+        // localStorage.setItem('bridge/last-namespace-name', activeNamespace);
         dispatch(UIActions.setActiveNamespace(activeNamespace));
       } else {
         activeNamespace = allNamespacesTitle;
+        // localStorage.setItem('bridge/last-namespace-name', activeNamespace);
         dispatch(UIActions.setActiveNamespace('#ALL_NS#'));
       }
+      localStorage.setItem('bridge/last-namespace-name', activeNamespace);
     }
-
     const onChange = newNamespace => dispatch(UIActions.setActiveNamespace(newNamespace));
-
     return loaded && <NamespaceSelectorComponent model={model} items={items} title={title} activeNamespace={activeNamespace} onChange={onChange} selectedKey={title} />;
   }
 }
