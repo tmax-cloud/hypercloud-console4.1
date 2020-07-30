@@ -17,8 +17,8 @@ import { analyticsSvc } from '../module/analytics';
 import { GlobalNotifications } from './global-notifications';
 import { Masthead } from './masthead';
 import { NamespaceSelector } from './namespace';
-import CustomNav from './customNav';
-// import Nav from './nav';
+// import CustomNav from './customNav';
+import Nav from './nav';
 import { SearchPage } from './search';
 import { ResourceDetailsPage, ResourceListPage } from './resource-list';
 import { history, AsyncComponent, Loading, kindObj, AccessDenied } from './utils';
@@ -203,7 +203,7 @@ class App extends React.PureComponent {
       <React.Fragment>
         <Helmet titleTemplate={`%s · ${productName}`} defaultTitle={productName} />
         <Masthead setLoading={this.setLoading} />
-        <CustomNav />
+        <Nav />
         <div id="content">
           <Route path={namespacedRoutes} component={NamespaceSelector} />
           <GlobalNotifications />

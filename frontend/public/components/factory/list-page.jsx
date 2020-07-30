@@ -300,8 +300,8 @@ export const ListPage = props => {
       flatten={_resources => _.get(_resources, name || kind, {}).data}
       namespace={namespace}
       fake={fake}
-      tooltipTitle={tooltipTitle}
-      tooltipContentsElements={tooltipContentsElements}
+      tooltipTitle={props.tooltipTitle}
+      tooltipContentsElements={props.tooltipContentsElements}
     />
   );
 };

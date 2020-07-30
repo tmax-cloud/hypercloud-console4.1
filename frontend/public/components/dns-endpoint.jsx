@@ -16,14 +16,17 @@ const DNSEndpointHeader = props => {
   const { t } = useTranslation();
   return (
     <ListHeader>
-      <ColHead {...props} className="col-xs-4 col-sm-4" sortField="metadata.name">
+      <ColHead {...props} className="col-xs-2 col-sm-2" sortField="metadata.name">
         {t('CONTENT:NAME')}
       </ColHead>
-      <ColHead {...props} className="col-lg-4 col-md-4 col-sm-4 col-xs-4" sortField="metadata.namespace">
+      <ColHead {...props} className="col-lg-2 col-md-2 col-sm-4 col-xs-4" sortField="metadata.namespace">
         {t('CONTENT:NAMESPACE')}
       </ColHead>
-      <ColHead {...props} className="col-sm-4 hidden-xs" sortField="metadata.creationTimestamp">
-        {t('CONTENT:CREATED')}
+      <ColHead {...props} className="col-sm-6 hidden-6" sortField="spec.endpoints[0].dnsName">
+        {t('CONTENT:DNSNAME')}
+      </ColHead>
+      <ColHead {...props} className="col-sm-2 hidden-xs" sortField="spec.endpoints[0].targets[0]">
+        {t('CONTENT:TARGET')}
       </ColHead>
     </ListHeader>
   );
@@ -32,14 +35,20 @@ const DNSEndpointHeader = props => {
 const DNSEndpointRow = () =>
   // eslint-disable-next-line no-shadow
   function DNSEndpointRow({ obj }) {
+    const dnsName = obj.spec && obj.spec.endpoints && obj.spec.endpoints.map(cur => <p>{cur.dnsName}</p>);
+    const targets = obj.spec && obj.spec.endpoints && obj.spec.endpoints.map(cur => <p>{cur.targets.join(', ')}</p>);
+
     return (
       <div className="row co-resource-list__item">
-        <div className="col-xs-4 col-sm-4 co-resource-link-wrapper">
+        <div className="col-xs-2 col-sm-2 co-resource-link-wrapper">
           {!HDCModeFlag && <ResourceCog actions={menuActions} kind="DNSEndpoint" resource={obj} />}
           <ResourceLink kind="DNSEndpoint" name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
         </div>
-        <div className="col-xs-4 col-sm-4 hidden-xs">{obj.metadata.namespace}</div>
-        <div className="col-xs-4 col-sm-4 hidden-xs">{fromNow(obj.metadata.creationTimestamp)}</div>
+        <div className="col-xs-2 col-sm-2 hidden-xs">{obj.metadata.namespace}</div>
+        <div className="col-xs-6 col-sm-6 hidden-xs">
+          <div>{dnsName}</div>
+        </div>
+        <div className="col-xs-2 col-sm-2 hidden-xs">{targets}</div>
       </div>
     );
   };
