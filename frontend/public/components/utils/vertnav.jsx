@@ -8,6 +8,7 @@ import { EmptyBox, StatusBox } from './index';
 import { PodsPage } from '../pod';
 import { ImagesPage } from '../image';
 import { TrafficPage } from '../traffic';
+import { TracePage } from '../trace';
 import { AsyncComponent } from '../utils/async';
 
 const editYamlComponent = props => {
@@ -57,6 +58,15 @@ class TrafficComponent extends React.PureComponent {
   }
 }
 
+class TraceComponent extends React.PureComponent {
+  render() {
+    const {
+      metadata: { namespace, name },
+    } = this.props.obj;
+    return <TracePage showTitle={false} namespace={namespace} name={name} canCreate={false} />;
+  }
+}
+
 export const navFactory = {
   details: (component, name = '') => ({
     href: '',
@@ -88,6 +98,11 @@ export const navFactory = {
     name: name || 'Pods',
     component: component || PodsComponent,
   }),
+  statefulsets: (name, component) => ({
+    href: 'statefulsets',
+    name: name || 'StatefulSets',
+    component: component,
+  }),
   roles: (name, component) => ({
     href: 'roles',
     name: name || 'Role Bindings',
@@ -112,6 +127,11 @@ export const navFactory = {
     href: 'traffic',
     name: name || 'traffic',
     component: component || TrafficComponent,
+  }),
+  trace: (name, component) => ({
+    href: 'trace',
+    name: name || 'trace',
+    component: component || TraceComponent,
   }),
 };
 
@@ -150,13 +170,13 @@ export class VertNav extends React.PureComponent {
     componentProps.obj = props.obj.data;
     const extraResources = _.reduce(props.resourceKeys, (acc, key) => ({ ...acc, [key]: props[key].data }), {});
 
-    const routes = props.pages.map(p => {
+    const routes = props.pages.map((p => {
       const path = `${props.match.url}/${p.href}`;
       const render = () => {
         return <p.component {...componentProps} {...extraResources} />;
       };
       return <Route path={path} exact key={p.name} render={render} />;
-    });
+    }));
 
     return (
       <div className={props.className}>

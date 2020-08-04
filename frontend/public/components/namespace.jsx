@@ -14,7 +14,7 @@ import { Cog, Dropdown, Firehose, LabelList, LoadingInline, navFactory, Resource
 import { createNamespaceModal, createProjectModal, deleteNamespaceModal, configureNamespacePullSecretModal } from './modals';
 import { RoleBindingsPage } from './RBAC';
 import { Bar, Line, requirePrometheus } from './graphs';
-import { NAMESPACE_LOCAL_STORAGE_KEY, ALL_NAMESPACES_KEY } from '../const';
+import { ALL_NAMESPACES_KEY } from '../const';
 import { FLAGS, featureReducerName, flagPending, setFlag, connectToFlags } from '../features';
 import { openshiftHelpBase } from './utils/documentation';
 import { createProjectMessageStateToProps } from '../ui/ui-reducers';
@@ -56,31 +56,50 @@ const NamespaceHeader = props => {
   const { t } = useTranslation();
   return (
     <ListHeader>
-      <ColHead {...props} className="col-sm-4 col-xs-6" sortField="metadata.name">
+      <ColHead {...props} className="col-sm-3 col-xs-6" sortField="metadata.name">
         {t('CONTENT:NAME')}
       </ColHead>
-      <ColHead {...props} className="col-sm-4 col-xs-6" sortField="status.phase">
+      <ColHead {...props} className="col-sm-3 col-xs-6" sortField="status.phase">
         {t('CONTENT:STATUS')}
       </ColHead>
-      <ColHead {...props} className="col-sm-4 hidden-xs" sortField="metadata.labels">
+      <ColHead {...props} className="col-sm-3 col-xs-6" sortField="metadata.labels.mailSendDate">
+        {t('CONTENT:TRIALTIME')}
+      </ColHead>
+      <ColHead {...props} className="col-sm-3 hidden-xs" sortField="metadata.labels">
         {t('CONTENT:LABELS')}
       </ColHead>
     </ListHeader>
   );
 };
 
-const NamespaceRow = ({ obj: ns }) => (
-  <ResourceRow obj={ns}>
-    <div className="col-sm-4 col-xs-6 co-resource-link-wrapper">
-      <ResourceCog actions={nsMenuActions} kind="Namespace" resource={ns} />
-      <ResourceLink kind="Namespace" name={ns.metadata.name} title={ns.metadata.uid} />
-    </div>
-    <div className="col-sm-4 col-xs-6 co-break-word">{ns.status.phase}</div>
-    <div className="col-sm-4 hidden-xs">
-      <LabelList kind="Namespace" labels={ns.metadata.labels} />
-    </div>
-  </ResourceRow>
-);
+const TrialTime = ns => {
+  console.log(ns.metadata.labels);
+  if (ns.metadata.labels && ns.metadata.labels.trial) {
+    let createTime = new Date(ns.metadata.creationTimestamp.iMillis);
+    let endTime = ns.metadata.labels.period ? new Date(ns.metadata.creationTimestamp.iMillis + 30 * 1000 * 60 * 60 * 24 * Number(ns.metadata.labels.period)) : new Date(ns.metadata.creationTimestamp.iMillis + 30 * 1000 * 60 * 60 * 24);
+    let start = String(createTime.getFullYear()) + '-' + String(createTime.getMonth() + 1) + '-' + String(createTime.getDate());
+    let end = ns.metadata.labels.deletionDate ? ns.metadata.labels.deletionDate.split('T')[0] : String(endTime.getFullYear()) + '-' + String(endTime.getMonth() + 1) + '-' + String(endTime.getDate());
+    return `${start} ~ ${end}`;
+  }
+  return '';
+};
+
+const NamespaceRow = ({ obj: ns }) => {
+  let period = TrialTime(ns);
+  return (
+    <ResourceRow obj={ns}>
+      <div className="col-sm-3 col-xs-6 co-resource-link-wrapper">
+        <ResourceCog actions={nsMenuActions} kind="Namespace" resource={ns} />
+        <ResourceLink kind="Namespace" name={ns.metadata.name} title={ns.metadata.uid} />
+      </div>
+      <div className="col-sm-3 col-xs-6 co-break-word">{ns.status.phase}</div>
+      <div className="col-sm-3 col-xs-6 co-break-word">{period}</div>
+      <div className="col-sm-3 hidden-xs">
+        <LabelList kind="Namespace" labels={ns.metadata.labels} />
+      </div>
+    </ResourceRow>
+  );
+};
 
 export const NamespacesList = props => <List {...props} Header={NamespaceHeader} Row={NamespaceRow} />;
 export const NamespacesPage = props => {
@@ -288,8 +307,6 @@ const Metering = ({ obj: { metadata } }) => {
 
 const autocompleteFilter = (text, item) => fuzzy(text, item);
 
-const defaultBookmarks = {};
-
 const namespaceDropdownStateToProps = state => {
   const activeNamespace = state.UI.get('activeNamespace');
   const canListNS = state[featureReducerName].get(FLAGS.CAN_LIST_NS);
@@ -301,9 +318,7 @@ const NamespaceSelectorComponent = ({ activeNamespace, items, model, title, onCh
   const { t } = useTranslation();
   return (
     <div className="co-namespace-selector">
-      {!(!localStorage.getItem('bridge/last-namespace-name') && activeNamespace === 'default') && (
-        <Dropdown className="co-namespace-selector__dropdown" menuClassName="co-namespace-selector__menu" noButton canFavorite items={items} titlePrefix={t(`RESOURCE:${model.kind.toUpperCase()}`)} title={title} onChange={onChange} selectedKey={activeNamespace || ALL_NAMESPACES_KEY} autocompleteFilter={autocompleteFilter} autocompletePlaceholder={t('CONTENT:SELECTNAMESPACE')} defaultBookmarks={defaultBookmarks} storageKey={NAMESPACE_LOCAL_STORAGE_KEY} shortCut="n" />
-      )}
+      {!(!localStorage.getItem('bridge/last-namespace-name') && activeNamespace === 'default') && <Dropdown className="co-namespace-selector__dropdown" menuClassName="co-namespace-selector__menu" noButton items={items} titlePrefix={t(`RESOURCE:${model.kind.toUpperCase()}`)} title={title} onChange={onChange} selectedKey={activeNamespace || ALL_NAMESPACES_KEY} autocompleteFilter={autocompleteFilter} autocompletePlaceholder={t('CONTENT:SELECTNAMESPACE')} shortCut="n" />}
     </div>
   );
 };
@@ -336,9 +351,9 @@ class NamespaceDropdown_ extends React.Component {
 
     if (canListNS) {
       items[ALL_NAMESPACES_KEY] = allNamespacesTitle;
-      if (!localStorage.getItem('bridge/last-namespace-name')) {
-        activeNamespace = '#ALL_NS#';
-      }
+      // if (!localStorage.getItem('bridge/last-namespace-name')) {
+      //   activeNamespace = '#ALL_NS#';
+      // }
     }
     _.map(data, 'metadata.name')
       .sort()
@@ -363,17 +378,17 @@ class NamespaceDropdown_ extends React.Component {
     if (!localStorage.getItem('bridge/last-namespace-name') && loaded) {
       if (!canListNS) {
         activeNamespace = data[0].metadata.name;
+        // localStorage.setItem('bridge/last-namespace-name', activeNamespace);
         dispatch(UIActions.setActiveNamespace(activeNamespace));
       } else {
         activeNamespace = allNamespacesTitle;
+        // localStorage.setItem('bridge/last-namespace-name', activeNamespace);
         dispatch(UIActions.setActiveNamespace('#ALL_NS#'));
       }
+      localStorage.setItem('bridge/last-namespace-name', activeNamespace);
     }
-
     const onChange = newNamespace => dispatch(UIActions.setActiveNamespace(newNamespace));
-
     return loaded && <NamespaceSelectorComponent model={model} items={items} title={title} activeNamespace={activeNamespace} onChange={onChange} selectedKey={title} />;
-
   }
 }
 

@@ -9,6 +9,7 @@ import * as PropTypes from 'prop-types';
 import store from '../redux';
 import { productName } from '../branding';
 import LoginComponent from './login';
+import { AuditPage } from './audits';
 import { ALL_NAMESPACES_KEY } from '../const';
 import { connectToFlags, featureActions, flagPending, FLAGS } from '../features';
 import { detectMonitoringURLs } from '../monitoring';
@@ -16,19 +17,21 @@ import { analyticsSvc } from '../module/analytics';
 import { GlobalNotifications } from './global-notifications';
 import { Masthead } from './masthead';
 import { NamespaceSelector } from './namespace';
+// import CustomNav from './customNav';
 import Nav from './nav';
 import { SearchPage } from './search';
 import { ResourceDetailsPage, ResourceListPage } from './resource-list';
-import { history, AsyncComponent, Loading, kindObj } from './utils';
+import { history, AsyncComponent, Loading, kindObj, AccessDenied } from './utils';
 import { namespacedPrefixes } from './utils/link';
 import { UIActions, getActiveNamespace } from '../ui/ui-actions';
 import { ClusterServiceVersionModel, SubscriptionModel, AlertmanagerModel } from '../models';
 import { referenceForModel, k8sList } from '../module/k8s';
 import k8sActions from '../module/k8s/k8s-actions';
+import { k8sGet } from '../module/k8s';
 import '../vendor.scss';
 import '../style.scss';
 import { useTranslation } from 'react-i18next';
-import { getAccessToken, resetLoginState } from './utils/auth';
+import { getAccessToken, resetLoginState, getId } from './utils/auth';
 import { NoNamespace } from './nonamespaces';
 import { Grafana } from './grafana';
 
@@ -67,14 +70,13 @@ _.each(namespacedPrefixes, p => {
 });
 
 const NamespaceRedirect = connectToFlags(FLAGS.CAN_LIST_NS)(({ flags }) => {
-  let activeNamespace = getActiveNamespace();
   let to;
   if (flagPending(flags[FLAGS.CAN_LIST_NS])) {
     // CAN_LIST_NS 로딩 될때까지 기다리기
     return null;
   }
-
-  if (FLAGS.CAN_LIST_NS) {
+  let activeNamespace = getActiveNamespace();
+  if (flags[FLAGS.CAN_LIST_NS]) {
     // admin
     activeNamespace = ALL_NAMESPACES_KEY;
   } else if (activeNamespace === ALL_NAMESPACES_KEY) {
@@ -93,14 +95,12 @@ const NamespaceRedirect = connectToFlags(FLAGS.CAN_LIST_NS)(({ flags }) => {
 
 const ActiveNamespaceRedirect = ({ location }) => {
   const activeNamespace = getActiveNamespace();
-
   let to;
   if (activeNamespace === ALL_NAMESPACES_KEY) {
-    to = '/search/all-namespaces';
+    to = `${location.pathname}/all-namespaces`;
   } else if (activeNamespace) {
-    to = `/search/ns/${activeNamespace}`;
+    to = `${location.pathname}/ns/${activeNamespace}`;
   }
-
   to += location.search;
   return <Redirect to={to} />;
 };
@@ -167,18 +167,13 @@ class App extends React.PureComponent {
     window.addEventListener(
       'storage',
       function (evt) {
-        if (evt.key === 'forceLogout') {
+        if (evt.key === 'forceLogout' && !document.hasFocus()) {
           resetLoginState();
         }
       },
       false,
     );
   }
-  // changeRole_() {
-  //   this.setState({
-  //     isAdmin: !this.state.isAdmin,
-  //   });
-  // }
 
   setLoading_() {
     this.setState({
@@ -201,7 +196,6 @@ class App extends React.PureComponent {
   }
 
   render() {
-    // const props = this.props;
     // if (props.location.pathname.indexOf('new') > 0) {
     //   console.log('여기서 ns selector없애야함 ')
     // }
@@ -242,6 +236,7 @@ class App extends React.PureComponent {
             {/* <Route path="/noNamespace" exact loader={() => import('./nonamespaces').then(m => m.NoNamespace)} /> */}
             <Route path="/noNamespace" exact component={NoNamespace} />
             <Route path="/grafana" exact component={Grafana} />
+            {/* <Route path="/audit" exact component={AuditPage} /> */}
             <LazyRoute path="/cluster-health" exact loader={() => import('./cluster-health' /* webpackChunkName: "cluster-health" */).then(m => m.ClusterHealth)} />
             {/* <LazyRoute path="/start-guide" exact loader={() => import('./start-guide' ).then(m => m.StartGuidePage)} /> */}
             {/* <LazyRoute path={`/k8s/ns/:ns/${SubscriptionModel.plural}/new`} exact loader={() => import('./cloud-services').then(m => NamespaceFromURL(m.CreateSubscriptionYAML))} /> */}
@@ -256,6 +251,14 @@ class App extends React.PureComponent {
             <Route path="/search" exact component={ActiveNamespaceRedirect} />
             <LazyRoute path="/search/all-namespaces" exact loader={() => import('./search').then(m => NamespaceFromURL(m.SearchPage))} />
             <LazyRoute path="/search/ns/:ns" exact loader={() => import('./search').then(m => NamespaceFromURL(m.SearchPage))} />
+
+            <Route path="/grafana" exact component={ActiveNamespaceRedirect} />
+            <LazyRoute path="/grafana/all-namespaces" exact loader={() => import('./grafana').then(m => NamespaceFromURL(m.GrafanaPage))} />
+            <LazyRoute path="/grafana/ns/:ns" exact loader={() => import('./grafana').then(m => NamespaceFromURL(m.GrafanaPage))} />
+
+            <Route path="/kiali" exact component={ActiveNamespaceRedirect} />
+            <LazyRoute path="/kiali/all-namespaces" exact loader={() => import('./kiali').then(m => NamespaceFromURL(m.KialiPage))} />
+            <LazyRoute path="/kiali/ns/:ns" exact loader={() => import('./kiali').then(m => NamespaceFromURL(m.KialiPage))} />
 
             <Route path="/k8s/ns/:ns/customresourcedefinitions/:plural" exact component={ResourceListPage} />
             <Route path="/k8s/ns/:ns/customresourcedefinitions/:plural/:name" component={ResourceDetailsPage} />
@@ -272,14 +275,20 @@ class App extends React.PureComponent {
               // <LazyRoute path="/k8s/ns/:ns/roles/:name/add-rule" exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.EditRulePage)} />
               // <LazyRoute path="/k8s/ns/:ns/roles/:name/:rule/edit" exact loader={() => import('./RBAC' /* webpackChunkName: "rbac" */).then(m => m.EditRulePage)} />
             }
+            <LazyRoute path="/k8s/cluster/jobs/new/:type" exact kind="Job" loader={() => import('./jobs/create-job').then(m => m.CreateJob)} />
+            <LazyRoute path="/k8s/cluster/daemonsets/new/:type" exact kind="Daemonset" loader={() => import('./daemonsets/create-daemonset').then(m => m.CreateDaemonSet)} />
+            <LazyRoute path="/k8s/cluster/statefulsets/new/:type" exact kind="StatefulSet" loader={() => import('./statefulsets/create-statefulset').then(m => m.CreateStatefulSet)} />
             <LazyRoute path="/k8s/cluster/roles/new/:type" exact kind="role" loader={() => import('./roles/create-role').then(m => m.CreateRole)} />
             <LazyRoute path="/k8s/cluster/configmaps/new/:type" exact kind="ConfigMap" loader={() => import('./configmaps/create-configmap').then(m => m.CreateConfigMap)} />
             <LazyRoute path="/k8s/cluster/usergroups/new/:type" exact kind="Usergroup" loader={() => import('./usergroups/create-usergroup').then(m => m.CreateUserGroup)} />
             <LazyRoute path="/k8s/cluster/users/new/:type" exact kind="User" loader={() => import('./users/create-user').then(m => m.CreateUser)} />
             <LazyRoute path="/k8s/cluster/serviceaccounts/new/:type" exact kind="ServiceAccount" loader={() => import('./serviceAccounts/create-serviceAccount').then(m => m.CreateServiceAccount)} />
+            <LazyRoute path="/k8s/cluster/resourcequotas/new/:type" exact kind="ResourceQuota" loader={() => import('./resourceQuota/create-resourceQuota').then(m => m.CreateResourceQuota)} />
+            <LazyRoute path="/k8s/cluster/limitranges/new/:type" exact kind="LimitRange" loader={() => import('./limitRanges/create-limitRange').then(m => m.CreateLimitRange)} />
             <LazyRoute path="/k8s/ns/:ns/resourcequotaclaims/new/:type" exact kind="ResourceQuotaClaim" loader={() => import('./resourceQuotaClaims/create-resourceQuotaClaim').then(m => m.CreateResouceQuotaClaim)} />
             <LazyRoute path="/k8s/ns/:ns/rolebindingclaims/new/:type" exact kind="RoleBindingClaim" loader={() => import('./roleBindingClaims/create-roleBindingClaim').then(m => m.CreateRoleBindingClaim)} />
             <LazyRoute path="/k8s/cluster/namespaceclaims/new/:type" exact kind="NamespaceClaim" loader={() => import('./namespaceClaims/create-namespaceClaim').then(m => m.CreateNamespaceClaim)} />
+
             <LazyRoute path="/k8s/ns/:ns/deployments/new/:type" exact kind="Deployment" loader={() => import('./deployments/create-deployment').then(m => m.CreateDeployment)} />
             <LazyRoute path="/k8s/ns/:ns/ingresses/new/:type" exact kind="Ingress" loader={() => import('./ingresses/create-ingress').then(m => m.CreateIngress)} />
             <LazyRoute path="/k8s/ns/:ns/pipelineruns/new/:type" exact kind="PipelineRun" loader={() => import('./pipelineRuns/create-pipelineRun').then(m => m.CreatePipelineRun)} />
@@ -304,6 +313,8 @@ class App extends React.PureComponent {
             <Route path="/k8s/cluster/:plural/:name" component={ResourceDetailsPage} />
             <LazyRoute path="/k8s/ns/:ns/pods/:podName/containers/:name" loader={() => import('./container').then(m => m.ContainersDetailsPage)} />
             <LazyRoute path="/k8s/ns/:ns/:plural/new" exact loader={() => import('./create-yaml' /* webpackChunkName: "create-yaml" */).then(m => NamespaceFromURL(m.CreateYAML))} />
+            <Route path="/k8s/ns/:ns/audits" exact component={AuditPage} />
+            <Route path="/k8s/all-namespaces/audits" exact component={AuditPage} />
             <Route path="/k8s/ns/:ns/:plural/:name" component={ResourceDetailsPage} />
             <Route path="/k8s/ns/:ns/:plural" exact component={ResourceListPage} />
             <Route path="/k8s/all-namespaces/:plural" exact component={ResourceListPage} />

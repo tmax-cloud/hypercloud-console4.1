@@ -28,7 +28,7 @@ export const CompactExpandButtons = ({ expand = false, onExpandChange = _.noop }
 };
 
 /** @type {React.SFC<{label: string, onChange: React.ChangeEventHandler<any>, defaultValue: string}}>} */
-export const TextFilter = ({ label, onChange, defaultValue, style, className, autoFocus, id }) => {
+export const TextFilter = ({ label, onChange, defaultValue, style, className, autoFocus, id, onKeyUp }) => {
   if (_.isUndefined(autoFocus)) {
     if (window.matchMedia('(min-width: 800px)').matches) {
       autoFocus = true;
@@ -39,7 +39,21 @@ export const TextFilter = ({ label, onChange, defaultValue, style, className, au
   }
   const { t } = useTranslation();
   // return <input type="text" autoCapitalize="none" style={style} className={classNames('form-control text-filter', className)} tabIndex={0} placeholder={`Filter ${label}...`} onChange={onChange} autoFocus={autoFocus} defaultValue={defaultValue} onKeyDown={e => e.key === 'Escape' && e.target.blur()} />;
-  return <input type="text" autoCapitalize="none" style={style} className={classNames('form-control text-filter', className)} tabIndex={0} placeholder={(id === 'event' && t('CONTENT:FILTERLABELHOLDEREVENT')) || (id === 'rule' && t('CONTENT:FILTERLABELHOLDERRULE')) || t('CONTENT:FILTERLABELHOLDER')} onChange={onChange} autoFocus={autoFocus} defaultValue={defaultValue} onKeyDown={e => e.key === 'Escape' && e.target.blur()} />;
+  return (
+    <input
+      type="text"
+      autoCapitalize="none"
+      style={style}
+      className={classNames('form-control text-filter', className)}
+      tabIndex={0}
+      placeholder={(id === 'event' && t('CONTENT:FILTERLABELHOLDEREVENT')) || (id === 'rule' && t('CONTENT:FILTERLABELHOLDERRULE')) || (id === 'audit' && '메시지로 검색') || t('CONTENT:FILTERLABELHOLDER')}
+      onChange={onChange}
+      autoFocus={autoFocus}
+      defaultValue={defaultValue}
+      onKeyDown={e => e.key === 'Escape' && e.target.blur()}
+      onKeyUp={id === 'audit' ? onKeyUp : null}
+    />
+  );
 };
 
 TextFilter.displayName = 'TextFilter';
@@ -174,10 +188,10 @@ export const FireMan_ = connect(null, { filterList: k8sActions.filterList })(
         }
       }
 
-      const { title } = this.props;
+      const { title, tooltipTitle, tooltipContentsElements } = this.props;
       return (
         <React.Fragment>
-          {title && <NavTitle title={title} />}
+          {title && <NavTitle title={title} tooltipTitle={tooltipTitle} tooltipContentsElements={tooltipContentsElements} />}
           <div className="co-m-pane__filter-bar">
             {createLink && <div className="co-m-pane__filter-bar-group">{createLink}</div>}
             {canExpand && (
@@ -286,6 +300,8 @@ export const ListPage = props => {
       flatten={_resources => _.get(_resources, name || kind, {}).data}
       namespace={namespace}
       fake={fake}
+      tooltipTitle={props.tooltipTitle}
+      tooltipContentsElements={props.tooltipContentsElements}
     />
   );
 };

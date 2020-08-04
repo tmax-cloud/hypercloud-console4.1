@@ -36,7 +36,7 @@ export const shouldLogout = url => {
 };
 
 const validateStatus = (response, url) => {
-  if (url.indexOf('logout') > 0) {
+  if (url.indexOf('logout') > 0 && url.indexOf('audit') === -1) {
     if (response.status === 200) {
       return response;
     }
@@ -47,6 +47,7 @@ const validateStatus = (response, url) => {
 
   if (response.status === 401 && shouldLogout(url)) {
     authSvc.logout(window.location.pathname);
+    return response;
   }
 
   const contentType = response.headers.get("content-type");
@@ -202,7 +203,7 @@ export const coFetchJSON = (url, method = "GET", options = {}) => {
       return Promise.resolve({});
     }
 
-    if (url.indexOf('logout') > 0) {
+    if (url.indexOf('logout') > 0 && url.indexOf('audit') === -1) {
       return response;
     }
 

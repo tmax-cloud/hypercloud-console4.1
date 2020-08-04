@@ -2,6 +2,7 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
+import { ResourcePlural } from './utils/lang/resource-plural';
 import {
   Cog,
   navFactory,
@@ -66,18 +67,18 @@ const ServiceBrokerHeader = props => {
 // template-instance status 값
 const ServiceBrokerPhase = instance => {
   let phase = '';
-
-  instance.status.conditions.forEach(cur => {
-    if (cur.type === 'Ready') {
-      if (cur.status === 'True') {
-        phase = 'Running';
-      } else {
-        phase = 'Error';
+  if (instance.status) {
+    instance.status.conditions.forEach(cur => {
+      if (cur.type === 'Ready') {
+        if (cur.status === 'True') {
+          phase = 'Running';
+        } else {
+          phase = 'Error';
+        }
       }
-    }
-  });
-  return phase;
-
+    });
+    return phase;
+  }
 };
 
 const ServiceBrokerRow = () =>
@@ -122,7 +123,7 @@ const Details = ({ obj: servicebroker }) => {
       <ScrollToTopOnMount />
 
       <div className="co-m-pane__body">
-        <SectionHeading text="Pod Overview" />
+        <SectionHeading text={t('ADDITIONAL:OVERVIEWTITLE', { something: ResourcePlural('SERVICEBROKER', t) })} />
         <div className="row">
           <div className="col-sm-6">
             <ResourceSummary resource={servicebroker} />
@@ -188,12 +189,12 @@ ServiceBrokersPage.displayName = 'ServiceBrokersPage';
 export const ServiceBrokersDetailsPage = props => (
   <DetailsPage
     {...props}
-    breadcrumbsFor={obj =>
-      breadcrumbsForOwnerRefs(obj).concat({
-        name: 'ServiceBroker Details',
-        path: props.match.url
-      })
-    }
+    // breadcrumbsFor={obj =>
+    //   breadcrumbsForOwnerRefs(obj).concat({
+    //     name: 'ServiceBroker Details',
+    //     path: props.match.url
+    //   })
+    // }
     kind="ServiceBroker"
     menuActions={menuActions}
     pages={[
