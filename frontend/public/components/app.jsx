@@ -1,5 +1,5 @@
 import * as _ from 'lodash-es';
-import React, { useState } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { Provider } from 'react-redux';
@@ -19,15 +19,11 @@ import { Masthead } from './masthead';
 import { NamespaceSelector } from './namespace';
 // import CustomNav from './customNav';
 import Nav from './nav';
-import { SearchPage } from './search';
 import { ResourceDetailsPage, ResourceListPage } from './resource-list';
-import { history, AsyncComponent, Loading, kindObj, AccessDenied } from './utils';
+import { history, AsyncComponent, Loading } from './utils';
 import { namespacedPrefixes } from './utils/link';
 import { UIActions, getActiveNamespace } from '../ui/ui-actions';
-import { ClusterServiceVersionModel, SubscriptionModel, AlertmanagerModel } from '../models';
-import { referenceForModel, k8sList } from '../module/k8s';
 import k8sActions from '../module/k8s/k8s-actions';
-import { k8sGet } from '../module/k8s';
 import '../vendor.scss';
 import '../style.scss';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +35,6 @@ import './utils/i18n';
 
 // Edge lacks URLSearchParams
 import 'url-search-params-polyfill';
-import { ProvidePlugin } from 'webpack';
 
 // React Router's proptypes are incorrect. See https://github.com/ReactTraining/react-router/pull/5393
 Route.propTypes.path = PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]);
