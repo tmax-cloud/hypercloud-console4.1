@@ -147,7 +147,7 @@
     "jest": "21.x",
     "jest-cli": "21.x",
     "mini-css-extract-plugin": "0.4.x",
-    "node-sass": "4.8.x",
+    "node-sass": "^4.14.1",
     "patch-package": "^6.2.2",
     "postinstall-postinstall": "^2.1.0",
     "protractor": "5.x",
