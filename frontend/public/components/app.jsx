@@ -27,9 +27,10 @@ import k8sActions from '../module/k8s/k8s-actions';
 import '../vendor.scss';
 import '../style.scss';
 import { useTranslation } from 'react-i18next';
-import { getAccessToken, resetLoginState, getId } from './utils/auth';
+import { getAccessToken, resetLoginState, setAccessToken, setRefreshToken, setId } from './utils/auth';
 import { NoNamespace } from './nonamespaces';
 import { Grafana } from './grafana';
+import Keycloak from 'keycloak-js';
 
 import './utils/i18n';
 
@@ -59,10 +60,6 @@ function NamespaceFromURL(Component) {
 }
 
 const namespacedRoutes = [];
-_.each(namespacedPrefixes, p => {
-  namespacedRoutes.push(`${p}/ns/:ns`);
-  namespacedRoutes.push(`${p}/all-namespaces`);
-});
 
 const NamespaceRedirect = connectToFlags(FLAGS.CAN_LIST_NS)(({ flags }) => {
   let to;
@@ -197,7 +194,7 @@ class App extends React.PureComponent {
     return (
       <React.Fragment>
         <Helmet titleTemplate={`%s · ${productName}`} defaultTitle={productName} />
-        <Masthead setLoading={this.setLoading} />
+        <Masthead setLoading={this.setLoading} keycloak={keycloak} />
         <Nav />
         <div id="content">
           <Route path={namespacedRoutes} component={NamespaceSelector} />
@@ -327,12 +324,6 @@ class App extends React.PureComponent {
   }
 }
 
-_.each(featureActions, store.dispatch);
-store.dispatch(k8sActions.getResources());
-store.dispatch(detectMonitoringURLs);
-
-analyticsSvc.push({ tier: 'tectonic' });
-
 // Used by GUI tests to check for unhandled exceptions
 window.windowError = false;
 
@@ -379,14 +370,75 @@ if ('serviceWorker' in navigator) {
       .catch(e => console.warn('Error unregistering service workers', e));
   }
 }
-render(
-  <Provider store={store}>
-    <Router history={history} basename={window.SERVER_FLAGS.basePath}>
-      <Switch>
-        <Route path="/login" component={LoginComponent} />
-        <Route path="/" component={App} />
-      </Switch>
-    </Router>
-  </Provider>,
-  document.getElementById('app'),
-);
+
+const startApp = () => {
+  _.each(namespacedPrefixes, p => {
+    namespacedRoutes.push(`${p}/ns/:ns`);
+    namespacedRoutes.push(`${p}/all-namespaces`);
+  });
+
+  _.each(featureActions, store.dispatch);
+  store.dispatch(k8sActions.getResources());
+  store.dispatch(detectMonitoringURLs);
+
+  analyticsSvc.push({ tier: 'tectonic' });
+};
+
+//keycloak init options
+const keycloak = new Keycloak({
+  realm: 'tmax',
+  url: 'https://172.22.6.11/auth',
+  clientId: 'hypercloud4',
+});
+
+keycloak.logout = keycloak.logout.bind(keycloak, { redirectUri: document.location.origin + '?first' });
+
+keycloak
+  .init()
+  .then(auth => {
+    if (!auth) {
+      keycloak.login();
+      return;
+    }
+    setAccessToken(keycloak.idToken);
+    setRefreshToken(keycloak.idToken);
+    setId(keycloak.idTokenParsed.preferred_username);
+
+    startApp();
+
+    render(
+      <Provider store={store}>
+        <Router history={history} basename={window.SERVER_FLAGS.basePath}>
+          <Route path="/" component={App} />
+        </Router>
+      </Provider>,
+      document.getElementById('app'),
+    );
+  })
+  .catch(function () {
+    render(<div>Failed to initialize Keycloak</div>, document.getElementById('app'));
+  });
+keycloak.onReady = function () {
+  console.log('[keycloak] onReady');
+};
+keycloak.onAuthSuccess = function () {
+  console.log('[keycloak] onAuthSuccess');
+};
+keycloak.onAuthError = function () {
+  console.log('[keycloak] onAuthError');
+};
+keycloak.onAuthRefreshSuccess = function () {
+  console.log('[keycloak] onAuthRefreshSuccess');
+};
+keycloak.onAuthRefreshError = function () {
+  console.log('[keycloak] onAuthRefreshError');
+};
+keycloak.onAuthLogout = function () {
+  console.log('[keycloak] onAuthLogout');
+  keycloak.logout();
+};
+keycloak.onTokenExpired = function () {
+  console.log('[keycloak] onTokenExpired ');
+  keycloak.logout();
+};
+// console.log('keycloak', keycloak);

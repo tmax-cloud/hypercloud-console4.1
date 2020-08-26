@@ -73,6 +73,7 @@
     "js-base64": "^2.4.5",
     "js-sha512": "^0.8.0",
     "js-yaml": "3.x",
+    "keycloak-js": "10.0.2",
     "lodash-es": "4.x",
     "mxgraph-js": "^1.0.1",
     "mxgraph-react": "^1.0.3",
