@@ -38,4 +38,7 @@ eval $nodePorts
     --public-dir=./frontend/public/dist \
     --hypercloud-endpoint=http://$k8sIP:$HC_PORT \
     --grafana-endpoint=http://$k8sIP:$GRAFANA_PORT \
+    --keycloak-realm=tmax \
+    --keycloak-auth-url=https://172.22.6.11/auth \
+    --keycloak-client-id=hypercloud4 \
     --release-mode=true \
