@@ -13,13 +13,13 @@ const ConditionHeader = props => {
     const { t } = useTranslation();
     return (
         <ListHeader>
-            <ColHead {...props} className="col-xs-2 col-sm-2" sortField="metadata.name">
+            <ColHead {...props} className="col-xs-4 col-sm-4" sortField="metadata.name">
                 {t('CONTENT:NAME')}
             </ColHead>
-            <ColHead {...props} className="col-xs-2 col-sm-2" sortField="metadata.namespace">
+            <ColHead {...props} className="col-xs-4 col-sm-4" sortField="metadata.namespace">
                 {t('CONTENT:NAMESPACE')}
             </ColHead>
-            <ColHead {...props} className="col-sm-1 hidden-xs" sortField="metadata.creationTimestamp">
+            <ColHead {...props} className="col-sm-4 hidden-xs" sortField="metadata.creationTimestamp">
                 {t('CONTENT:CREATED')}
             </ColHead>
         </ListHeader>
@@ -31,12 +31,12 @@ const ConditionRow = () =>
     function ConditionRow({ obj }) {
         return (
             <div className="row co-resource-list__item">
-                <div className="col-xs-2 col-sm-2 co-resource-link-wrapper">
+                <div className="col-xs-4 col-sm-4 co-resource-link-wrapper">
                     <ResourceCog actions={menuActions} kind="Condition" resource={obj} />
                     <ResourceLink kind="Condition" name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
                 </div>
-                <div className="col-xs-2 col-sm-2 co-break-word">{obj.metadata.namespace}</div>
-                <div className="col-xs-1 col-sm-1 hidden-xs">{fromNow(obj.metadata.creationTimestamp)}</div>
+                <div className="col-xs-4 col-sm-4 co-break-word">{obj.metadata.namespace}</div>
+                <div className="col-xs-4 col-sm-4 hidden-xs">{fromNow(obj.metadata.creationTimestamp)}</div>
             </div>
         );
     };

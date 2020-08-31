@@ -272,7 +272,7 @@ class App extends React.PureComponent {
             <LazyRoute path="/k8s/cluster/limitranges/new/:type" exact kind="LimitRange" loader={() => import('./limitRanges/create-limitRange').then(m => m.CreateLimitRange)} />
             <LazyRoute path="/k8s/cluster/namespaces/new/:type" exact kind="Namespace" loader={() => import('./namespaces/create-namespace').then(m => m.CreateNamespace)} />
             <LazyRoute path="/k8s/cluster/registries/new/:type" exact kind="Registry" loader={() => import('./registries/create-registry').then(m => m.CreateRegistry)} />
-            <LazyRoute path="/k8s/ns/:ns/resourcequotaclaims/new/:type" exact kind="ResourceQuotaClaim" loader={() => import('./resourceQuotaClaims/create-resourceQuotaClaim').then(m => m.CreateResouceQuotaClaim)} />
+            <LazyRoute path="/k8s/cluster/resourcequotaclaims/new/:type" exact kind="ResourceQuotaClaim" loader={() => import('./resourceQuotaClaims/create-resourceQuotaClaim').then(m => m.CreateResouceQuotaClaim)} />
             <LazyRoute path="/k8s/ns/:ns/rolebindingclaims/new/:type" exact kind="RoleBindingClaim" loader={() => import('./roleBindingClaims/create-roleBindingClaim').then(m => m.CreateRoleBindingClaim)} />
             <LazyRoute path="/k8s/cluster/namespaceclaims/new/:type" exact kind="NamespaceClaim" loader={() => import('./namespaceClaims/create-namespaceClaim').then(m => m.CreateNamespaceClaim)} />
 
@@ -285,6 +285,7 @@ class App extends React.PureComponent {
             <LazyRoute path="/k8s/ns/:ns/pipelineresources/new/:type" exact kind="PipelineResource" loader={() => import('./pipelineResources/create-pipelineResource').then(m => m.CreatePipelineResources)} />
             <LazyRoute path="/k8s/ns/:ns/services/new/:type" exact kind="Service" loader={() => import('./services/create-service').then(m => m.CreateService)} />
             <LazyRoute path="/k8s/ns/:ns/serviceinstances/new/:type" exact kind="ServiceInstance" loader={() => import('./service-instances/create-service-instance').then(m => m.CreateServiceInstance)} />
+            <LazyRoute path="/k8s/cluster/serviceinstances/new/:type" exact kind="ServiceInstance" loader={() => import('./service-instances/create-service-instance').then(m => m.CreateServiceInstance)} />
             <LazyRoute path="/k8s/ns/:ns/templateinstances/new/:type" exact kind="TemplateInstance" loader={() => import('./templateInstances/create-templateInstance').then(m => m.CreateTemplateInstance)} />
             <LazyRoute path="/k8s/ns/:ns/secrets/new/:type" exact kind="Secret" loader={() => import('./secrets/create-secret' /* webpackChunkName: "create-secret" */).then(m => m.CreateSecret)} />
             <LazyRoute path="/k8s/ns/:ns/secrets/:name/edit" exact kind="Secret" loader={() => import('./secrets/create-secret' /* webpackChunkName: "create-secret" */).then(m => m.EditSecret)} />
