@@ -34,12 +34,10 @@ class NamespaceClaimFormComponent extends React.Component {
       },
       resourceName: '',
       spec: {
-        hard: {},
-        limits: [
-          {
-            type: 'Container',
-          },
-        ],
+        hard: {
+          'limits.cpu': '',
+          'limits.memory': '',
+        },
       },
     });
 
