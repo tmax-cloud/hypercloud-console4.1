@@ -168,6 +168,15 @@ export const enum SelectKeyValueEditorPair {
   Index,
 }
 
+export const enum ResourceLimitEditorPair {
+  Type,
+  LimitType,
+  Cpu,
+  Memory,
+  Storage,
+  Index
+}
+
 export const enum RoleEditorPair {
   Group,
   Resource,

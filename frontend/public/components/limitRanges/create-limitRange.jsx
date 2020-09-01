@@ -7,7 +7,8 @@ import { ButtonBar, history, kindObj, SelectorInput } from '../utils';
 import { useTranslation } from 'react-i18next';
 import { formatNamespacedRouteForResource } from '../../ui/ui-actions';
 import { NsDropdown } from '../RBAC';
-import { SelectKeyValueEditor } from '../utils/select-key-value-editor';
+import { ResourceLimitEditor } from '../utils/resource-limit-editor';
+import { ResourceLimitEditorPair } from '../utils/index';
 
 const Section = ({ label, children, isRequired, paddingTop }) => {
   return (
@@ -33,9 +34,6 @@ class LimitRangeFormComponent extends React.Component {
       },
       spec: {
         limits: [
-          {
-            type: 'Container',
-          },
         ],
       },
     });
@@ -45,13 +43,13 @@ class LimitRangeFormComponent extends React.Component {
       limitRange: limitRange,
       inProgress: false,
       type: 'form',
-      quota: [['', '']],
+      limits: [['', '', '', '', '']],
       isDuplicated: false,
     };
     this.onNameChanged = this.onNameChanged.bind(this);
     this.onNamespaceChanged = this.onNamespaceChanged.bind(this);
     this.onLabelChanged = this.onLabelChanged.bind(this);
-    this._updateQuota = this._updateQuota.bind(this);
+    this._updateLimits = this._updateLimits.bind(this);
     this.save = this.save.bind(this);
   }
 
@@ -81,10 +79,11 @@ class LimitRangeFormComponent extends React.Component {
     }
     this.setState({ limitRange: limitRange });
   }
-  _updateQuota(quota) {
+
+  _updateLimits(limits) {
     this.setState({
-      quota: quota.keyValuePairs,
-      isDuplicated: quota.isDuplicated,
+      limits: limits.resourceLimitsPairs,
+      isDuplicated: limits.isDuplicated,
     });
   }
 
@@ -99,21 +98,23 @@ class LimitRangeFormComponent extends React.Component {
       return;
     }
 
-    let quota = {};
-    this.state.quota.forEach(arr => {
-      const key = arr[0] === 'etc' ? arr[1] : arr[0];
-      if (key) {
-        const minOrMax = mappedKey.split('.')[0];
-        const cpuOrMemory = mappedKey.split('.')[2];
-        quota[minOrMax] = {};
-        quota[minOrMax][cpuOrMemory] = arr[2];
+    let limits = [];
+    this.state.limits.forEach(limit => {
+      let newLimit = {};
+      const limitType = limit[ResourceLimitEditorPair.Type];
+      newLimit['type'] = limitType;
+      newLimit[limit[ResourceLimitEditorPair.LimitType]] = {};
+      if (limitType === 'PersistentVolumeClaim') {
+        newLimit[limit[ResourceLimitEditorPair.LimitType]]['storage'] = limit[ResourceLimitEditorPair.Storage];
       } else {
-        quota[key] = arr[2];
+        newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu];
+        newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory];
       }
+      limits.push(newLimit);
     });
 
-    if (quota !== {}) {
-      Object.assign(newLimitRange.spec.limits[0], quota);
+    if (limits !== []) {
+      Object.assign(newLimitRange.spec.limits, limits);
     }
 
     const ko = kindObj(kind);
@@ -129,26 +130,41 @@ class LimitRangeFormComponent extends React.Component {
   render() {
     const { t } = this.props;
 
-    const limitRangeOptions = [
+    const typeOptions = [
       {
-        value: 'max.limits.cpu',
-        label: 'Max CPU Limits',
+        value: 'Pod',
+        label: t("RESOURCE:POD"),
       },
       {
-        value: 'min.limits.cpu',
-        label: 'Min CPU Limits',
+        value: 'Container',
+        label: t("RESOURCE:CONTAINER")
       },
       {
-        value: 'max.limits.memory',
-        label: 'Max Memory Limits',
+        value: 'PersistentVolumeClaim',
+        label: t("RESOURCE:PERSISTENTVOLUMECLAIM")
+      },
+    ];
+
+    const limitTypeOptions = [
+      {
+        value: 'default',
+        label: 'Default',
       },
       {
-        value: 'min.limits.memory',
-        label: 'Min Memory Limits',
+        value: 'defaultRequest',
+        label: 'Default Request',
       },
       {
-        value: 'etc',
-        label: t('CONTENT:OTHERS'),
+        value: 'max',
+        label: 'Max',
+      },
+      {
+        value: 'min',
+        label: 'Min',
+      },
+      {
+        value: 'maxLimitRequestRatio',
+        label: 'Max Limit Request Ratio',
       },
     ];
 
@@ -173,8 +189,8 @@ class LimitRangeFormComponent extends React.Component {
                 <p>{t('VALIDATION:LABEL_FORM')}</p>
               </div>
             </Section>
-            <Section label={t('CONTENT:PODRESOURCELIMITSRANGE')} isRequired={false} paddingTop={'5px'}>
-              <SelectKeyValueEditor desc={t('STRING:LIMITRANGE-CREATE-2')} t={t} options={limitRangeOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
+            <Section label={t('CONTENT:RESOURCELIMITS')} isRequired={false} paddingTop={'5px'}>
+              <ResourceLimitEditor desc={t('STRING:LIMITRANGE-CREATE-2')} t={t} typeOptions={typeOptions} limitTypeOptions={limitTypeOptions} resourceLimitsPairs={this.state.limits} SelectTypeString="selectType" SelectLimitTypeString="selectLimitType" valueString="value" updateParentData={this._updateLimits} isDuplicated={this.state.isDuplicated} />
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
               <button type="submit" className="btn btn-primary" id="save-changes">
@@ -190,13 +206,6 @@ class LimitRangeFormComponent extends React.Component {
     );
   }
 }
-
-LimitRangeFormComponent.limitRangeOptions = [
-  ['Max CPU Limits', 'max.limits.cpu'],
-  ['Min CPU Limits', 'min.limits.cpu'],
-  ['Max Memory Limits', 'max.limits.memory'],
-  ['Min Memory Limits', 'min.limits.memory'],
-];
 
 export const CreateLimitRange = ({ match: { params } }) => {
   const { t } = useTranslation();
