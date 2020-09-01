@@ -37,7 +37,10 @@ class ResourceQuotaClaimFormComponent extends React.Component {
       },
       resourceName: '',
       spec: {
-        hard: {},
+        hard: {
+          'limits.cpu': '',
+          'limits.memory': '',
+        },
       },
     });
 
@@ -91,6 +94,11 @@ class ResourceQuotaClaimFormComponent extends React.Component {
     }
     this.setState({ resourceQuotaClaim });
   }
+  onQuotaChanged = (event) => {
+    let resourceQuotaClaim = { ...this.state.resourceQuotaClaim };
+    resourceQuotaClaim.spec.hard[event.target.id] = String(event.target.value);
+    this.setState({ resourceQuotaClaim });
+  }
   _updateQuota(quota) {
     this.setState({
       quota: quota.keyValuePairs,
@@ -99,7 +107,6 @@ class ResourceQuotaClaimFormComponent extends React.Component {
   }
 
   isRequiredFilled = (k8sResource, item, element) => {
-    console.log('isRequiredFilled', k8sResource, item, element);
     const { t } = this.props;
     if (k8sResource.metadata[item] === '') {
       switch (item) {
@@ -165,6 +172,8 @@ class ResourceQuotaClaimFormComponent extends React.Component {
 
     // quota 데이터 가공
     let quota = {};
+    quota["limits.cpu"] = this.state.resourceQuotaClaim.spec.hard["limits.cpu"];
+    quota["limits.memory"] = this.state.resourceQuotaClaim.spec.hard["limits.memory"];
     this.state.quota.forEach(arr => {
       const key = arr[0] === 'etc' ? arr[1] : arr[0];
       quota[key] = arr[2];
@@ -188,14 +197,6 @@ class ResourceQuotaClaimFormComponent extends React.Component {
     const { t } = this.props;
 
     const resourceQuotaClaimOptions = [
-      {
-        value: 'limits.cpu',
-        label: 'CPU Limits',
-      },
-      {
-        value: 'limits.memory',
-        label: 'Memory Limits',
-      },
       {
         value: 'requests.cpu',
         label: 'CPU Requests',
@@ -241,7 +242,26 @@ class ResourceQuotaClaimFormComponent extends React.Component {
               <input className="form-control" type="text" onChange={this.onResourceNameChanged} value={this.state.resourceQuotaClaim.resourceName} onFocus={this.onFocusResourceName} id="resource-quota-claim-resource-name" />
               {this.state.inputError.resourceName && <p className="cos-error-title">{this.state.inputError.resourceName}</p>}
             </Section>
-            <Section label={t('CONTENT:NAMESPACERESOURCEQUOTA')} isRequired={false} paddingTop={'5px'}>
+            <Section label={t('CONTENT:NAMESPACERESOURCEQUOTA')} isRequired={true} paddingTop={'5px'}>
+              <div className="row">
+                <div className="col-md-2 col-xs-2 pairs-list__name-field">
+                  <div>CPU Limits</div>
+                </div>
+                <div className="col-md-2 col-xs-2 pairs-list__name-field" id='cpu'>
+                  <input className="form-control" type="text"
+                    onChange={this.onQuotaChanged} id="limits.cpu"
+                    placeholder='CPU' value={this.state.resourceQuotaClaim.spec.hard['limits.cpu']} required />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-2 col-xs-2 pairs-list__name-field">
+                  <div>Memory Limits</div>
+                </div>
+                <div className="col-md-2 col-xs-2 pairs-list__name-field" id='memory'>
+                  <input className="form-control" type="text" id="limits.memory"
+                    onChange={this.onQuotaChanged} placeholder='Memory' value={this.state.resourceQuotaClaim.spec.hard['limits.memory']} required />
+                </div>
+              </div>
               <SelectKeyValueEditor desc={t('STRING:RESOURCEQUOTA-CREATE-2')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={resourceQuotaClaimOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>

@@ -23,7 +23,7 @@ class NamespaceClaimFormComponent extends React.Component {
   constructor(props) {
     super(props);
     const existingNamespaceClaim = _.pick(props.obj, ['metadata', 'type']);
-    const namespaceclaim = _.defaultsDeep({}, props.fixed, existingNamespaceClaim, {
+    const namespaceClaim = _.defaultsDeep({}, props.fixed, existingNamespaceClaim, {
       apiVersion: 'tmax.io/v1',
       kind: 'NamespaceClaim',
       metadata: {
@@ -34,18 +34,16 @@ class NamespaceClaimFormComponent extends React.Component {
       },
       resourceName: '',
       spec: {
-        hard: {},
-        limits: [
-          {
-            type: 'Container',
-          },
-        ],
+        hard: {
+          'limits.cpu': '',
+          'limits.memory': '',
+        },
       },
     });
 
     this.state = {
       namespaceClaimTypeAbstraction: this.props.namespaceClaimTypeAbstraction,
-      namespaceclaim: namespaceclaim,
+      namespaceClaim: namespaceClaim,
       inProgress: false,
       type: 'form',
       quota: [['', '']],
@@ -63,17 +61,17 @@ class NamespaceClaimFormComponent extends React.Component {
   }
 
   onResourceNameChanged(event) {
-    let namespaceclaim = { ...this.state.namespaceclaim };
-    namespaceclaim.resourceName = String(event.target.value);
-    this.setState({ namespaceclaim });
+    let namespaceClaim = { ...this.state.namespaceClaim };
+    namespaceClaim.resourceName = String(event.target.value);
+    this.setState({ namespaceClaim });
   }
   onNameChanged(event) {
-    let namespaceclaim = { ...this.state.namespaceclaim };
-    namespaceclaim.metadata.name = String(event.target.value);
-    this.setState({ namespaceclaim });
+    let namespaceClaim = { ...this.state.namespaceClaim };
+    namespaceClaim.metadata.name = String(event.target.value);
+    this.setState({ namespaceClaim: namespaceClaim });
   }
   onLabelChanged(event) {
-    let namespaceclaim = { ...this.state.namespaceclaim };
+    let namespaceClaim = { ...this.state.namespaceClaim };
     if (event.length !== 0) {
       event.forEach(item => {
         if (item.split('=')[1] === undefined) {
@@ -82,10 +80,15 @@ class NamespaceClaimFormComponent extends React.Component {
           return;
         }
         document.getElementById('labelErrMsg').style.display = 'none';
-        namespaceclaim.metadata.labels[item.split('=')[0]] = item.split('=')[1];
+        namespaceClaim.metadata.labels[item.split('=')[0]] = item.split('=')[1];
       });
     }
-    this.setState({ namespaceclaim });
+    this.setState({ namespaceClaim: namespaceClaim });
+  }
+  onQuotaChanged = (event) => {
+    let namespaceClaim = { ...this.state.namespaceClaim };
+    namespaceClaim.spec.hard[event.target.id] = String(event.target.value);
+    this.setState({ namespaceClaim });
   }
   _updateQuota(quota) {
     this.setState({
@@ -94,7 +97,6 @@ class NamespaceClaimFormComponent extends React.Component {
     });
   }
   isRequiredFilled = (k8sResource, item, element) => {
-    console.log('isRequiredFilled', k8sResource, item, element);
     const { t } = this.props;
     if (k8sResource.metadata[item] === '') {
       switch (item) {
@@ -132,9 +134,9 @@ class NamespaceClaimFormComponent extends React.Component {
 
   save(e) {
     e.preventDefault();
-    const { kind, metadata } = this.state.namespaceclaim;
+    const { kind, metadata } = this.state.namespaceClaim;
     this.setState({ inProgress: true });
-    const newNamespaceclaim = _.assign({}, this.state.namespaceclaim);
+    const newNamespaceclaim = _.assign({}, this.state.namespaceClaim);
 
     if (!this.isRequiredFilled(newNamespaceclaim, 'name', 'INPUT') || !this.isRequiredFilled(newNamespaceclaim, 'resourceName', 'INPUT')) {
       this.setState({ inProgress: false });
@@ -146,8 +148,9 @@ class NamespaceClaimFormComponent extends React.Component {
       return;
     }
 
-    // quota 데이터 가공
     let quota = {};
+    quota["limits.cpu"] = this.state.namespaceClaim.spec.hard["limits.cpu"];
+    quota["limits.memory"] = this.state.namespaceClaim.spec.hard["limits.memory"];
     this.state.quota.forEach(arr => {
       const key = arr[0] === 'etc' ? arr[1] : arr[0];
       quota[key] = arr[2];
@@ -173,14 +176,6 @@ class NamespaceClaimFormComponent extends React.Component {
 
     const resourceQuotaClaimOptions = [
       {
-        value: 'limits.cpu',
-        label: 'CPU Limits',
-      },
-      {
-        value: 'limits.memory',
-        label: 'Memory Limits',
-      },
-      {
         value: 'requests.cpu',
         label: 'CPU Requests',
       },
@@ -201,14 +196,14 @@ class NamespaceClaimFormComponent extends React.Component {
     return (
       <div className="rbac-edit-binding co-m-pane__body">
         <Helmet>
-          <title>{t('ADDITIONAL:CREATEBUTTON', { something: t(`RESOURCE:${this.state.namespaceclaim.kind.toUpperCase()}`) })}</title>
+          <title>{t('ADDITIONAL:CREATEBUTTON', { something: t(`RESOURCE:${this.state.namespaceClaim.kind.toUpperCase()}`) })}</title>
         </Helmet>
         <form className="co-m-pane__body-group co-create-secret-form" onSubmit={this.save}>
-          <h1 className="co-m-pane__heading">{t('ADDITIONAL:CREATEBUTTON', { something: t(`RESOURCE:${this.state.namespaceclaim.kind.toUpperCase()}`) })}</h1>
+          <h1 className="co-m-pane__heading">{t('ADDITIONAL:CREATEBUTTON', { something: t(`RESOURCE:${this.state.namespaceClaim.kind.toUpperCase()}`) })}</h1>
           <p className="co-m-pane__explanation">{t('STRING:NAMESPACECLAIM-CREATE-0')}</p>
           <fieldset disabled={!this.props.isCreate}>
             <Section label={t('CONTENT:NAME')} isRequired={true}>
-              <input className="form-control" type="text" onChange={this.onNameChanged} onFocus={this.onFocusName} value={this.state.namespaceclaim.metadata.name} id="namespace-claim-name" />
+              <input className="form-control" type="text" onChange={this.onNameChanged} onFocus={this.onFocusName} value={this.state.namespaceClaim.metadata.name} id="namespace-claim-name" />
               {this.state.inputError.name && <p className="cos-error-title">{this.state.inputError.name}</p>}
             </Section>
             <Section label={t('CONTENT:LABELS')} isRequired={false}>
@@ -218,10 +213,29 @@ class NamespaceClaimFormComponent extends React.Component {
               </div>
             </Section>
             <Section label={t('CONTENT:RESOURCENAME')} isRequired={true}>
-              <input className="form-control" type="text" onChange={this.onResourceNameChanged} value={this.state.namespaceclaim.resourceName} onFocus={this.onFocusResourceName} id="namespace-claim-resource-name" />
+              <input className="form-control" type="text" onChange={this.onResourceNameChanged} value={this.state.namespaceClaim.resourceName} onFocus={this.onFocusResourceName} id="namespace-claim-resource-name" />
               {this.state.inputError.resourceName && <p className="cos-error-title">{this.state.inputError.resourceName}</p>}
             </Section>
-            <Section label={t('CONTENT:NAMESPACERESOURCEQUOTA')} isRequired={false} paddingTop={'5px'}>
+            <Section label={t('CONTENT:NAMESPACERESOURCEQUOTA')} isRequired={true} paddingTop={'5px'}>
+              <div className="row">
+                <div className="col-md-2 col-xs-2 pairs-list__name-field">
+                  <div>CPU Limits</div>
+                </div>
+                <div className="col-md-2 col-xs-2 pairs-list__name-field" id='cpu'>
+                  <input className="form-control" type="text"
+                    onChange={this.onQuotaChanged} id="limits.cpu"
+                    placeholder='CPU' value={this.state.namespaceClaim.spec.hard['limits.cpu']} required />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-2 col-xs-2 pairs-list__name-field">
+                  <div>Memory Limits</div>
+                </div>
+                <div className="col-md-2 col-xs-2 pairs-list__name-field" id='memory'>
+                  <input className="form-control" type="text" id="limits.memory"
+                    onChange={this.onQuotaChanged} placeholder='Memory' value={this.state.namespaceClaim.spec.hard['limits.memory']} required />
+                </div>
+              </div>
               <SelectKeyValueEditor desc={t('STRING:NAMESPACECLAIM-CREATE-1')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={resourceQuotaClaimOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>

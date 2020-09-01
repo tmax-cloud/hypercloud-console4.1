@@ -18,7 +18,8 @@ class DeleteModal extends PromiseComponent {
 
   _submit(event) {
     event.preventDefault();
-    const { kind, resource } = this.props;
+    // href: url to move after deletion. (resourceListPathFromModel로 path 추출이 불가한 경우 사용. ex) clusterroles => roles)
+    const { kind, resource, href } = this.props;
 
     //https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/
     const propagationPolicy = this.state.isChecked ? kind.propagationPolicy : 'Orphan';
@@ -29,7 +30,7 @@ class DeleteModal extends PromiseComponent {
       // If we are currently on the deleted resource's page, redirect to the resource list page
       const re = new RegExp(`/${resource.metadata.name}(/|$)`);
       if (re.test(window.location.pathname)) {
-        const listPath = resourceListPathFromModel(kind, _.get(resource, 'metadata.namespace'));
+        const listPath = !!href ? href : resourceListPathFromModel(kind, _.get(resource, 'metadata.namespace'));
         history.push(listPath);
       }
     });

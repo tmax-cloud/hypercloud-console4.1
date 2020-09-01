@@ -86,6 +86,13 @@ export const ResourceQuotaClaimList = props => {
 };
 ResourceQuotaClaimList.displayName = ResourceQuotaClaimList;
 
+export const resourceQuotaClaimPhaseFilterReducer = resourceQuotaClaim => {
+  switch (resourceQuotaClaim?.status?.status) {
+    default:
+      return resourceQuotaClaim?.status?.status;
+  }
+};
+
 export const ResourceQuotaClaimsPage = props => {
   const { t } = useTranslation();
   const createItems = {
@@ -96,7 +103,22 @@ export const ResourceQuotaClaimsPage = props => {
     items: createItems,
     createLink: type => (type === 'yaml' ? `/k8s/ns/${props.namespace || 'default'}/resourcequotaclaims/new` : '/k8s/cluster/resourcequotaclaims/new/form'),
   };
-  return <ListPage {...props} ListComponent={ResourceQuotaClaimList} canCreate={true} kind="ResourceQuotaClaim" createProps={createProps} {...props} createButtonText={t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural(props.kind, t) })} />;
+
+  const filters = [
+    {
+      type: 'namespaceclaim-status',
+      selected: ['Success', 'Awaiting', 'Reject', 'Error'],
+      reducer: resourceQuotaClaimPhaseFilterReducer,
+      items: [
+        { id: 'Awaiting', title: t('CONTENT:Awaiting') },
+        { id: 'Success', title: t('CONTENT:Success') },
+        { id: 'Reject', title: t('CONTENT:Reject') },
+        { id: 'Error', title: t('CONTENT:Error') },
+      ],
+    },
+  ];
+
+  return <ListPage {...props} ListComponent={ResourceQuotaClaimList} canCreate={true} kind="ResourceQuotaClaim" createProps={createProps} {...props} createButtonText={t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural(props.kind, t) })} rowFilters={filters} />;
 };
 ResourceQuotaClaimsPage.displayName = 'ResourceQuotaClaimsPage';
 

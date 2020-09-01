@@ -10,6 +10,7 @@ import { flatten as bindingsFlatten } from './bindings';
 import { flagPending, connectToFlags, FLAGS } from '../../features';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from '../utils/lang/resource-plural';
+import { deleteModal } from './../modals/delete-modal';
 
 export const isSystemRole = role => _.startsWith(role.metadata.name, 'system:');
 
@@ -31,7 +32,21 @@ const menuActions = [
     };
   },
   Cog.factory.Edit,
-  Cog.factory.Delete,
+  // Instead Cog.factory.Delete
+  (kind, obj) => {
+    const { t } = useTranslation();
+    const ns = localStorage.getItem('bridge/last-namespace-name');
+    return {
+      label: t('ADDITIONAL:DELETE', { something: ResourcePlural(kind.kind, t) }),
+      callback: () =>
+        deleteModal({
+          kind: kind,
+          resource: obj,
+          t: t,
+          href: `/k8s/ns/${ns === '#ALL_NS#' ? 'all-namespaces' : ns}/roles`,
+        }),
+    };
+  },
 ];
 
 const Header = props => {

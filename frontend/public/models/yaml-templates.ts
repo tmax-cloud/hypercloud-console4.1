@@ -3182,44 +3182,32 @@ spec:
   .setIn(
     [referenceForModel(k8sModels.PodModel), 'pod-sample'],
     `
-apiVersion: v1
-kind: Pod
-metadata:
-  name: example
-  namespace: default
-  labels:
-    app: hello-hypercloud
-spec:
-  containers:
-    - name: hello-hypercloud
-      image: hypercloud/hello-hypercloud
-      ports:
-        - containerPort: 8080
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: example-pod
+      namespace: default
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu:trusty
+        command: ["sh", "-c", "echo Hello HyperCloud! && sleep 3600"]
 `,
   )
   .setIn(
     [referenceForModel(k8sModels.PodModel), 'pod-sample2'],
     `
-apiVersion: v1
-kind: Pod
-metadata:
-  name: example2
-  namespace: default
-  labels:
-    app: hello-hypercloud
-spec:
-  containers:
-  - name: hello-hypercloud
-    image: hypercloud/hello-hypercloud
-    resources:  
-      requests:
-        cpu: 0.1
-        memory: 200M
-      limits:
-        cpu: 0.5
-        memory: 1G
-    ports:
-    - containerPort: 8080
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: example-pod
+      namespace: default
+    spec:
+      nodeName: hostname
+      containers:
+      - name: ubuntu
+        image: ubuntu:trusty
+        command: ["sh", "-c", "echo Hello HyperCloud! && sleep 3600"]
 `,
   )
   .setIn(
