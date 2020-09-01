@@ -216,7 +216,7 @@ class NamespaceClaimFormComponent extends React.Component {
               <input className="form-control" type="text" onChange={this.onResourceNameChanged} value={this.state.namespaceClaim.resourceName} onFocus={this.onFocusResourceName} id="namespace-claim-resource-name" />
               {this.state.inputError.resourceName && <p className="cos-error-title">{this.state.inputError.resourceName}</p>}
             </Section>
-            <Section label={t('CONTENT:NAMESPACERESOURCEQUOTA')} isRequired={false} paddingTop={'5px'}>
+            <Section label={t('CONTENT:NAMESPACERESOURCEQUOTA')} isRequired={true} paddingTop={'5px'}>
               <div className="row">
                 <div className="col-md-2 col-xs-2 pairs-list__name-field">
                   <div>CPU Limits</div>
