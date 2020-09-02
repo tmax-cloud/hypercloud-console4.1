@@ -912,7 +912,9 @@
     "PRESET": "프리셋",
     "VOLUMEMOUNT": "볼륨 마운트",
     "VOLUMEMOUNTPATH": "볼륨 마운트 경로",
-    "DECIDEDAT": "결정 시간"
+    "DECIDEDAT": "결정 시간",
+    "SERVICECLASSLIST": "서비스 클래스 목록",
+    "SERVICECLASSCLASSIFICATION": "서비스 클래스 분류"
   },
   "RESOURCE": {
     "HOME": "홈",
@@ -1013,6 +1015,7 @@
     "CATALOGSERVICECLAIM": "카탈로그 서비스 클레임",
     "DASHBOARD": "대시보드",
     "GRAFANA": "그라파나",
-    "KIALI": "키알리"
+    "KIALI": "키알리",
+    "NAMESPACESERVICECLASS": "네임스페이스 서비스 클래스 "
   }
 }

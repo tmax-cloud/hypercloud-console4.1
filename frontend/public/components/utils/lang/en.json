@@ -917,7 +917,9 @@
     "MAILFROM": "Mail From",
     "TITLE": "Title",
     "CONTENT": "Content",
-    "DECIDEDAT": "Decided at"
+    "DECIDEDAT": "Decided at",
+    "SERVICECLASSLIST" : "Service Class List",
+    "SERVICECLASSCLASSIFICATION": "Service Class Classification"
   },
   "RESOURCE": {
     "HOME": "Home",
@@ -1017,6 +1019,7 @@
     "CATALOGSERVICECLAIM": "Catalog Service Claim",
     "DASHBOARD": "Dashboard",
     "GRAFANA": "Grafana",
-    "KIALI": "Kiali"
+    "KIALI": "Kiali",
+    "NAMESPACESERVICECLASS": "Namespace Service Class"
   }
 }
