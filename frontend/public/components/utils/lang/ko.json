@@ -910,7 +910,8 @@
     "RESOURCEPATH": "리소스 저장 경로",
     "PRESET": "프리셋",
     "VOLUMEMOUNT": "볼륨 마운트",
-    "VOLUMEMOUNTPATH": "볼륨 마운트 경로"
+    "VOLUMEMOUNTPATH": "볼륨 마운트 경로",
+    "DECIDEDAT": "결정 시간"
   },
   "RESOURCE": {
     "HOME": "홈",
