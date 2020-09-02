@@ -953,6 +953,7 @@
     "TASKRUN": "태스크 런",
     "PIPELINE": "파이프라인",
     "PIPELINERUN": "파이프라인 런",
+    "PIPELINETASK": "파이프라인 태스크",
     "PIPELINERESOURCE": "파이프라인 리소스",
     "SECURITY": "보안",
     "PODSECURITYPOLICY": "파드 보안 정책",
