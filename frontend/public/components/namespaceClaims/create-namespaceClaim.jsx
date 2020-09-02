@@ -237,7 +237,7 @@ class NamespaceClaimFormComponent extends React.Component {
                 <div className="col-md-2 col-xs-2 pairs-list__name-field" id='cpu'>
                   <input className="form-control" type="text"
                     onChange={this.onQuotaChanged} id="limits.cpu"
-                    placeholder='CPU' value={this.state.namespaceClaim.spec.hard['limits.cpu']} required />
+                    value={this.state.namespaceClaim.spec.hard['limits.cpu']} required />
                 </div>
                 <div className="col-md-1 col-xs-1 pairs-list__name-field" id='cpu-units'>
                   <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.cpuLimitsUnit} onChange={this.onCPULimitsUnitChanged} />
@@ -251,7 +251,7 @@ class NamespaceClaimFormComponent extends React.Component {
               <div className="row" style={{ marginBottom: '20px' }}>
                 <div className="col-md-2 col-xs-2 pairs-list__name-field" id='memory'>
                   <input className="form-control" type="text" id="limits.memory"
-                    onChange={this.onQuotaChanged} placeholder='Memory' value={this.state.namespaceClaim.spec.hard['limits.memory']} required />
+                    onChange={this.onQuotaChanged} value={this.state.namespaceClaim.spec.hard['limits.memory']} required />
                 </div>
                 <div className="col-md-1 col-xs-1 pairs-list__name-field" id='memory-units'>
                   <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.memoryLimitsUnit} onChange={this.onMemoryLimitsUnitChanged} />
