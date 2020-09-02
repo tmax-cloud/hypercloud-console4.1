@@ -100,100 +100,7 @@ class SysEvent extends React.Component {
   }
 }
 
-const resourceList = {
-  all: '전체 리소스 타입',
-  mutatingwebhookconfigurations: 'mutatingwebhookconfigurations',
-  validatingwebhookconfigurations: 'validatingwebhookconfigurations',
-  customresourcedefinitions: 'customresourcedefinitions',
-  apiservices: 'apiservices',
-  controllerrevisions: 'controllerrevisions',
-  daemonsets: 'daemonsets',
-  deployments: 'deployments',
-  replicasets: 'replicasets',
-  statefulsets: 'statefulsets',
-  meshpolicies: 'meshpolicies',
-  policies: 'policies',
-  horizontalpodautoscalers: 'horizontalpodautoscalers',
-  cronjobs: 'cronjobs',
-  jobs: 'jobs',
-  cdis: 'cdis',
-  cephblockpools: 'cephblockpools',
-  cephclusters: 'cephclusters',
-  cephfilesystems: 'cephfilesystems',
-  cephnfses: 'cephnfses',
-  cephobjectstores: 'cephobjectstores',
-  cephobjectstoreusers: 'cephobjectstoreusers',
-  adapters: 'adapters',
-  attributemanifests: 'attributemanifests',
-  handlers: 'handlers',
-  httpapispecbindings: 'httpapispecbindings',
-  httpapispecs: 'httpapispecs',
-  instances: 'instances',
-  quotaspecbindings: 'quotaspecbindings',
-  quotaspecs: 'quotaspecs',
-  rules: 'rules',
-  templates: 'templates',
-  ingresses: 'ingresses',
-  kubevirts: 'kubevirts',
-  virtualmachineinstancemigrations: 'virtualmachineinstancemigrations',
-  virtualmachineinstancepresets: 'virtualmachineinstancepresets',
-  virtualmachineinstancereplicasets: 'virtualmachineinstancereplicasets',
-  virtualmachineinstances: 'virtualmachineinstances',
-  virtualmachines: 'virtualmachines',
-  destinationrules: 'destinationrules',
-  envoyfilters: 'envoyfilters',
-  gateways: 'gateways',
-  serviceentries: 'serviceentries',
-  sidecars: 'sidecars',
-  virtualservices: 'virtualservices',
-  poddisruptionbudgets: 'poddisruptionbudgets',
-  podsecuritypolicies: 'podsecuritypolicies',
-  clusterrolebindings: 'clusterrolebindings',
-  clusterroles: 'clusterroles',
-  rolebindings: 'rolebindings',
-  roles: 'roles',
-  clusterrbacconfigs: 'clusterrbacconfigs',
-  rbacconfigs: 'rbacconfigs',
-  servicerolebindings: 'servicerolebindings',
-  serviceroles: 'serviceroles',
-  authorizationpolicies: 'authorizationpolicies',
-  peerauthentications: 'peerauthentications',
-  requestauthentications: 'requestauthentications',
-  clusterservicebrokers: 'clusterservicebrokers',
-  clusterserviceclasses: 'clusterserviceclasses',
-  clusterserviceplans: 'clusterserviceplans',
-  servicebindings: 'servicebindings',
-  servicebrokers: 'servicebrokers',
-  serviceclasses: 'serviceclasses',
-  serviceinstances: 'serviceinstances',
-  serviceplans: 'serviceplans',
-  csidrivers: 'csidrivers',
-  csinodes: 'csinodes',
-  storageclasses: 'storageclasses',
-  volumeattachments: 'volumeattachments',
-  clustertasks: 'clustertasks',
-  conditions: 'conditions',
-  pipelineresources: 'pipelineresources',
-  pipelineruns: 'pipelineruns',
-  pipelines: 'pipelines',
-  taskruns: 'taskruns',
-  tasks: 'tasks',
-  catalogserviceclaims: 'catalogserviceclaims',
-  clients: 'clients',
-  images: 'images',
-  namespaceclaims: 'namespaceclaims',
-  registries: 'registries',
-  resourcequotaclaims: 'resourcequotaclaims',
-  templateinstances: 'templateinstances',
-  tokens: 'tokens',
-  usergroups: 'usergroups',
-  users: 'users',
-  usersecuritypolicies: 'usersecuritypolicies',
-  pods: 'pods',
-};
 
-const statusList = { all: '전체 상태', success: 'Success', failure: 'Failure' };
-const codeList = { all: '전체 코드', 100: '100 (Informational)', 200: '200 (Successful)', 300: '300 (Redirection)', 400: '400 (Client error)', 500: '500 (Server error)' };
 
 class AuditPage_ extends React.Component {
   constructor(props) {
@@ -201,13 +108,109 @@ class AuditPage_ extends React.Component {
     let date = new Date();
     date.setDate(date.getDate() - 7);
 
+    const { t } = props;
+
+    this.codeList = { all: t('STRING:AUDIT-LIST_3'), 100: '100 (Informational)', 200: '200 (Successful)', 300: '300 (Redirection)', 400: '400 (Client error)', 500: '500 (Server error)' };
+    this.statuslist = { all: t('STRING:AUDIT-LIST_2'), success: 'Success', failure: 'Failure' };
+    this.resourcelist = {
+      all: t('STRING:AUDIT-LIST_0'),
+      mutatingwebhookconfigurations: 'mutatingwebhookconfigurations',
+      validatingwebhookconfigurations: 'validatingwebhookconfigurations',
+      customresourcedefinitions: 'customresourcedefinitions',
+      apiservices: 'apiservices',
+      controllerrevisions: 'controllerrevisions',
+      daemonsets: 'daemonsets',
+      deployments: 'deployments',
+      replicasets: 'replicasets',
+      statefulsets: 'statefulsets',
+      meshpolicies: 'meshpolicies',
+      policies: 'policies',
+      horizontalpodautoscalers: 'horizontalpodautoscalers',
+      cronjobs: 'cronjobs',
+      jobs: 'jobs',
+      cdis: 'cdis',
+      cephblockpools: 'cephblockpools',
+      cephclusters: 'cephclusters',
+      cephfilesystems: 'cephfilesystems',
+      cephnfses: 'cephnfses',
+      cephobjectstores: 'cephobjectstores',
+      cephobjectstoreusers: 'cephobjectstoreusers',
+      adapters: 'adapters',
+      attributemanifests: 'attributemanifests',
+      handlers: 'handlers',
+      httpapispecbindings: 'httpapispecbindings',
+      httpapispecs: 'httpapispecs',
+      instances: 'instances',
+      quotaspecbindings: 'quotaspecbindings',
+      quotaspecs: 'quotaspecs',
+      rules: 'rules',
+      templates: 'templates',
+      ingresses: 'ingresses',
+      kubevirts: 'kubevirts',
+      virtualmachineinstancemigrations: 'virtualmachineinstancemigrations',
+      virtualmachineinstancepresets: 'virtualmachineinstancepresets',
+      virtualmachineinstancereplicasets: 'virtualmachineinstancereplicasets',
+      virtualmachineinstances: 'virtualmachineinstances',
+      virtualmachines: 'virtualmachines',
+      destinationrules: 'destinationrules',
+      envoyfilters: 'envoyfilters',
+      gateways: 'gateways',
+      serviceentries: 'serviceentries',
+      sidecars: 'sidecars',
+      virtualservices: 'virtualservices',
+      poddisruptionbudgets: 'poddisruptionbudgets',
+      podsecuritypolicies: 'podsecuritypolicies',
+      clusterrolebindings: 'clusterrolebindings',
+      clusterroles: 'clusterroles',
+      rolebindings: 'rolebindings',
+      roles: 'roles',
+      clusterrbacconfigs: 'clusterrbacconfigs',
+      rbacconfigs: 'rbacconfigs',
+      servicerolebindings: 'servicerolebindings',
+      serviceroles: 'serviceroles',
+      authorizationpolicies: 'authorizationpolicies',
+      peerauthentications: 'peerauthentications',
+      requestauthentications: 'requestauthentications',
+      clusterservicebrokers: 'clusterservicebrokers',
+      clusterserviceclasses: 'clusterserviceclasses',
+      clusterserviceplans: 'clusterserviceplans',
+      servicebindings: 'servicebindings',
+      servicebrokers: 'servicebrokers',
+      serviceclasses: 'serviceclasses',
+      serviceinstances: 'serviceinstances',
+      serviceplans: 'serviceplans',
+      csidrivers: 'csidrivers',
+      csinodes: 'csinodes',
+      storageclasses: 'storageclasses',
+      volumeattachments: 'volumeattachments',
+      clustertasks: 'clustertasks',
+      conditions: 'conditions',
+      pipelineresources: 'pipelineresources',
+      pipelineruns: 'pipelineruns',
+      pipelines: 'pipelines',
+      taskruns: 'taskruns',
+      tasks: 'tasks',
+      catalogserviceclaims: 'catalogserviceclaims',
+      clients: 'clients',
+      images: 'images',
+      namespaceclaims: 'namespaceclaims',
+      registries: 'registries',
+      resourcequotaclaims: 'resourcequotaclaims',
+      templateinstances: 'templateinstances',
+      tokens: 'tokens',
+      usergroups: 'usergroups',
+      users: 'users',
+      usersecuritypolicies: 'usersecuritypolicies',
+      pods: 'pods',
+    };
+
     this.state = {
       namespace: '',
-      actionList: { all: '전체 액션' },
-      resourceType: resourceList.all,
-      action: '전체 액션',
-      status: statusList.all,
-      code: codeList.all,
+      actionList: { all: t('STRING:AUDIT-LIST_1') },
+      resourceType: this.resourcelist.all,
+      action: t('STRING:AUDIT-LIST_1'),
+      status: this.statuslist.all,
+      code: this.codeList.all,
       textFilter: '',
       data: [],
       start: date,
@@ -216,6 +219,8 @@ class AuditPage_ extends React.Component {
       pages: 0,
       paginationPos: '215px',
     };
+
+
 
     this.onChangeResourceType = e => this.onChangeResourceType_(e);
     this.onChangeAction = e => this.onChangeAction_(e);
@@ -231,7 +236,7 @@ class AuditPage_ extends React.Component {
     if (e !== 'all') {
       this.setState({ resourceType: e });
     } else {
-      this.setState({ resourceType: resourceList.all });
+      this.setState({ resourceType: this.resourcelist.all });
     }
     this.setState({ offset: 0 });
 
@@ -257,10 +262,10 @@ class AuditPage_ extends React.Component {
     if (this.state.namespace !== undefined) {
       uri += `&namespace=${this.state.namespace}`;
     }
-    if (this.state.status !== statusList.all) {
+    if (this.state.status !== this.statuslist.all) {
       uri += `&status=${this.state.status}`;
     }
-    if (this.state.code !== codeList.all) {
+    if (this.state.code !== this.codeList.all) {
       uri += `&code=${this.state.code}`;
     }
 
@@ -284,16 +289,16 @@ class AuditPage_ extends React.Component {
     if (value !== 'all') {
       uri += `&verb=${value}`;
     }
-    if (this.state.resourceType !== resourceList.all) {
+    if (this.state.resourceType !== this.resourcelist.all) {
       uri += `&resource=${this.state.resourceType}`;
     }
     if (this.state.namespace !== undefined) {
       uri += `&namespace=${this.state.namespace}`;
     }
-    if (this.state.status !== statusList.all) {
+    if (this.state.status !== this.statuslist.all) {
       uri += `&status=${this.state.status}`;
     }
-    if (this.state.code !== codeList.all) {
+    if (this.state.code !== this.codeList.all) {
       uri += `&code=${this.state.code}`;
     }
     coFetchJSON(uri)
@@ -316,7 +321,7 @@ class AuditPage_ extends React.Component {
       });
     } else {
       this.setState({
-        status: statusList.all,
+        status: this.statuslist.all,
       });
     }
 
@@ -326,7 +331,7 @@ class AuditPage_ extends React.Component {
     if (value !== 'all') {
       uri += `&status=${value}`;
     }
-    if (this.state.resourceType !== resourceList.all) {
+    if (this.state.resourceType !== this.resourcelist.all) {
       uri += `&resource=${this.state.resourceType}`;
     }
     if (this.state.namespace !== undefined) {
@@ -336,7 +341,7 @@ class AuditPage_ extends React.Component {
     if (this.state.action !== this.state.actionList.all) {
       uri += `&verb=${this.state.action}`;
     }
-    if (this.state.code !== codeList.all) {
+    if (this.state.code !== this.codeList.all) {
       uri += `&code=${this.state.code}`;
     }
     coFetchJSON(uri).then(response => {
@@ -355,7 +360,7 @@ class AuditPage_ extends React.Component {
       });
     } else {
       this.setState({
-        code: codeList.all,
+        code: this.codeList.all,
       });
     }
 
@@ -365,13 +370,13 @@ class AuditPage_ extends React.Component {
     if (value !== 'all') {
       uri += `&code=${value}`;
     }
-    if (this.state.resourceType !== resourceList.all) {
+    if (this.state.resourceType !== this.resourcelist.all) {
       uri += `&resource=${this.state.resourceType}`;
     }
     if (this.state.namespace !== undefined) {
       uri += `&namespace=${this.state.namespace}`;
     }
-    if (this.state.status !== statusList.all) {
+    if (this.state.status !== this.statuslist.all) {
       uri += `&status=${this.state.status}`;
     }
     if (this.state.action !== this.state.actionList.all) {
@@ -407,7 +412,7 @@ class AuditPage_ extends React.Component {
       uri += `&endTime=${this.state.end.getTime()}`;
     }
 
-    if (this.state.resourceType !== resourceList.all) {
+    if (this.state.resourceType !== this.resourcelist.all) {
       uri += `&resource=${this.state.resourceType}`;
     }
     if (this.state.action !== this.state.actionList.all) {
@@ -416,10 +421,10 @@ class AuditPage_ extends React.Component {
     if (this.state.namespace !== undefined) {
       uri += `&namespace=${this.state.namespace}`;
     }
-    if (this.state.status !== statusList.all) {
+    if (this.state.status !== this.statuslist.all) {
       uri += `&status=${this.state.status}`;
     }
-    if (this.state.code !== codeList.all) {
+    if (this.state.code !== this.codeList.all) {
       uri += `&code=${this.state.code}`;
     }
     coFetchJSON(uri).then(response => {
@@ -452,7 +457,7 @@ class AuditPage_ extends React.Component {
       uri += `&startTime=${date_.getTime()}`;
     }
 
-    if (this.state.resourceType !== resourceList.all) {
+    if (this.state.resourceType !== this.resourcelist.all) {
       uri += `&resource=${this.state.resourceType}`;
     }
     if (this.state.action !== this.state.actionList.all) {
@@ -461,10 +466,10 @@ class AuditPage_ extends React.Component {
     if (this.state.namespace !== undefined) {
       uri += `&namespace=${this.state.namespace}`;
     }
-    if (this.state.status !== statusList.all) {
+    if (this.state.status !== this.statuslist.all) {
       uri += `&status=${this.state.status}`;
     }
-    if (this.state.code !== codeList.all) {
+    if (this.state.code !== this.codeList.all) {
       uri += `&code=${this.state.code}`;
     }
     coFetchJSON(uri).then(response => {
@@ -488,16 +493,16 @@ class AuditPage_ extends React.Component {
     if (this.state.action !== this.state.actionList.all) {
       uri += `&verb=${this.state.action}`;
     }
-    if (this.state.resourceType !== resourceList.all) {
+    if (this.state.resourceType !== this.resourcelist.all) {
       uri += `&resource=${this.state.resourceType}`;
     }
     if (this.state.namespace !== undefined) {
       uri += `&namespace=${this.state.namespace}`;
     }
-    if (this.state.status !== statusList.all) {
+    if (this.state.status !== this.statuslist.all) {
       uri += `&status=${this.state.status}`;
     }
-    if (this.state.code !== codeList.all) {
+    if (this.state.code !== this.codeList.all) {
       uri += `&code=${this.state.code}`;
     }
     coFetchJSON(uri).then(response => {
@@ -523,16 +528,16 @@ class AuditPage_ extends React.Component {
     if (this.state.action !== this.state.actionList.all) {
       uri += `&verb=${this.state.action}`;
     }
-    if (this.state.resourceType !== resourceList.all) {
+    if (this.state.resourceType !== this.resourcelist.all) {
       uri += `&resource=${this.state.resourceType}`;
     }
     if (this.state.namespace !== undefined) {
       uri += `&namespace=${this.state.namespace}`;
     }
-    if (this.state.status !== statusList.all) {
+    if (this.state.status !== this.statuslist.all) {
       uri += `&status=${this.state.status}`;
     }
-    if (this.state.code !== codeList.all) {
+    if (this.state.code !== this.codeList.all) {
       uri += `&code=${this.state.code}`;
     }
     coFetchJSON(uri).then(response => {
@@ -552,10 +557,10 @@ class AuditPage_ extends React.Component {
     this.setState({
       namespace: namespace,
       offset: 0,
-      resourceType: resourceList.all,
+      resourceType: this.resourcelist.all,
       action: this.state.actionList.all,
-      status: statusList.all,
-      code: codeList.all,
+      status: this.statuslist.all,
+      code: this.codeList.all,
     });
     let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
 
@@ -620,13 +625,13 @@ class AuditPage_ extends React.Component {
           <NavTitle title={t('RESOURCE:AUDIT')} />
           <div className="co-m-pane__filter-bar" style={{ marginBottom: 0 }}>
             <div className="co-m-pane__filter-bar-group">
-              <Dropdown title={this.state.resourceType} className="btn-group btn-group-audit" items={resourceList} onChange={this.onChangeResourceType} />
+              <Dropdown title={this.state.resourceType} className="btn-group btn-group-audit" items={this.resourcelist} onChange={this.onChangeResourceType} />
               <Dropdown title={this.state.action} className="btn-group" items={actionList} onChange={this.onChangeAction} />
-              <Dropdown title={this.state.status} className="btn-group" items={statusList} onChange={this.onChangeStatus} />
-              <Dropdown style={{ marginRight: '30px' }} title={this.state.code} className="btn-group" items={codeList} onChange={this.onChangeCode} />
-              조회 기간
+              <Dropdown title={this.state.status} className="btn-group" items={this.statuslist} onChange={this.onChangeStatus} />
+              <Dropdown style={{ marginRight: '30px' }} title={this.state.code} className="btn-group" items={this.codeList} onChange={this.onChangeCode} />
+              {t('STRING:AUDIT-LIST_5')}
               <DatePicker className="co-datepicker" placeholderText="From" startDate={start} endDate={end} selected={start} onChange={this.onChangeStartDate} />
-              to
+              {t('STRING:AUDIT-LIST_4')}
               <DatePicker className="co-datepicker" placeholderText="To" startDate={start} endDate={end} selected={end} onChange={this.onChangeEndDate} minDate={start} maxDate={new Date()} />
             </div>
             <div className="co-m-pane__filter-bar-group co-m-pane__filter-bar-group--filter">

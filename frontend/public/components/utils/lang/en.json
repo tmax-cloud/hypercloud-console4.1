@@ -416,7 +416,13 @@
     "TASKRUN-SIDEBAR_0": "Create a task run that runs a task",
     "TASKRUN-SIDEBAR_1": "Create a Pod and run a task by using resources created by a pipeline resource.",
     "TASKRUN-SIDEBAR_2": "Create a task run by setting parameters",
-    "TASKRUN-SIDEBAR_3": "Create a task run that runs a task by getting flags and sample URL items as parameters."
+    "TASKRUN-SIDEBAR_3": "Create a task run that runs a task by getting flags and sample URL items as parameters.",
+    "AUDIT-LIST_0": "All Resource Types",
+    "AUDIT-LIST_1": "All Actions",
+    "AUDIT-LIST_2": "All Status",
+    "AUDIT-LIST_3": "All Codes",
+    "AUDIT-LIST_4": "to",
+    "AUDIT-LIST_5": "Inquiry Period"
   },
   "CONTENT": {
     "TASKPARAMETERCONFIG": "Task Paramter Config",

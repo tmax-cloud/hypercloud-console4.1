@@ -415,7 +415,13 @@
     "TASKRUN-SIDEBAR_0": "태스크를 실행하는 태스크 런 생성",
     "TASKRUN-SIDEBAR_1": "파이프라인 리소스에서 생성한 리소스를 이용하여 파드가 생성되고 태스크를 실행할 수 있습니다.",
     "TASKRUN-SIDEBAR_2": "태스크를 실행할 때 파라미터를 설정하여 태스크 런 생성",
-    "TASKRUN-SIDEBAR_3": "Flags 및 샘플 URL 항목을 파라미터 형태로 받아 태스크를 실행하는 태스크 런을 생성할 수 있습니다."
+    "TASKRUN-SIDEBAR_3": "Flags 및 샘플 URL 항목을 파라미터 형태로 받아 태스크를 실행하는 태스크 런을 생성할 수 있습니다.",
+    "AUDIT-LIST_0": "전체 리소스 타입",
+    "AUDIT-LIST_1": "전체 액션",
+    "AUDIT-LIST_2": "전체 상태",
+    "AUDIT-LIST_3": "전체 코드",
+    "AUDIT-LIST_4": "~",
+    "AUDIT-LIST_5": "조회 기간"
   },
   "CONTENT": {
     "ADD": "추가",
