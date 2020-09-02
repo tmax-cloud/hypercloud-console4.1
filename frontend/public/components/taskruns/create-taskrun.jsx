@@ -706,7 +706,7 @@ class TaskRunFormComponent extends React.Component {
             </Section>
             <Section label={t('STRING:TASKRUN-CREATE_5')} isRequired={false}>
               <ServiceAccountDropdown id="service-account" t={t} onChange={this.onServiceAccountChanged} namespace={this.state.selectedNamespace} selectedKey={this.state.selectedServiceAccount} />
-              <span>You can execute the Task in your TaskRun with a specific set of credentials by specifying a ServiceAccount. If you do not explicitly specify this, the TaskRun executes with the credentials specified in the configmap-defaults ConfigMap. If this default is not specified, TaskRuns will execute with the default service account set for the target namespace.</span>
+              <span>{t('STRING:TASKRUN-CREATE_7')}</span>
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
               <button type="submit" className="btn btn-primary" id="save-changes">

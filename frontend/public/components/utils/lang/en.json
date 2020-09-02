@@ -397,6 +397,7 @@
     "TASKRUN-CREATE_4": "Min",
     "TASKRUN-CREATE_5": "Service Account Settings",
     "TASKRUN-CREATE_6": "Select a service account.",
+    "TASKRUN-CREATE_7": "You can execute the Task in your TaskRun with a specific set of credentials by specifying a ServiceAccount. If you do not explicitly specify this, the TaskRun executes with the credentials specified in the configmap-defaults ConfigMap. If this default is not specified, TaskRuns will execute with the default service account set for the target namespace.",
     "VM-SIDEBAR_0": "Windows Virtual Machine Sample",
     "VM-SIDEBAR_1": "Creates VM objects for Windows virtual machine.\n.spec.template.spec.Affinity.nodeAffinity- Node affinity setting\n.spec.template.domain.devices.disk – Instance-attached disk setting\n.spec.template.domain.devices.interfaces- Network interface setting\n.spec.template.domain.gpus – CPU device setting .spec.template.domain.cpu – CPU setting\n.spec.template.domain.memory – Memory setting",
     "VM-SIDEBAR_2": "Ubuntu Virtual Machine Sample",
