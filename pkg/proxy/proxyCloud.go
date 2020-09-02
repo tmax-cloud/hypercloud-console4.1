@@ -85,7 +85,8 @@ func decodeSubprotocolCloud(encodedProtocol string) (string, error) {
 	return string(decodedProtocol), err
 }
 
-var headerBlacklistCloud = []string{"Cookie", "X-CSRFToken"}
+// var headerBlacklistCloud = []string{"Cookie", "X-CSRFToken"}
+var headerBlacklistCloud = []string{"X-CSRFToken"}
 
 // hypercloud websocket connection 전용 proxy 코드
 func (p *Proxy) ServeHTTPCloud(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +106,7 @@ func (p *Proxy) ServeHTTPCloud(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	for _, h := range headerBlacklist {
+	for _, h := range headerBlacklistCloud {
 		r.Header.Del(h)
 	}
 
