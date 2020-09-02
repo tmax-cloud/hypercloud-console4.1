@@ -352,7 +352,7 @@ const withServiceInstanceForm = SubForm =>
             {/* stepper */}
             {currentStep === 0 && (
               <div className="rbac-edit-binding">
-                <Section label={'서비스 클래스 분류'}>
+                <Section label={t('CONTENT:SERVICECLASSCLASSIFICATION')}>
                   <form>
                     <label className="radio-inline" style={{ marginRight: '50px' }}>
                       <input type="radio" name = "ServiceClass" value="Cluster" checked={this.state.serviceClass === 'Cluster'} 
@@ -360,7 +360,7 @@ const withServiceInstanceForm = SubForm =>
                     </label>
                     <label className="radio-inline" style={{ marginRight: '50px' }}>
                       <input type="radio" name = "ServiceClass" value="Namespace" checked={this.state.serviceClass === 'Namespace'}
-                      onChange={this.setKind}/> {'네임스페이스 서비스 클래스'}
+                      onChange={this.setKind}/> {t('RESOURCE:NAMESPACESERVICECLASS')}
                     </label>
                   </form>
                 </Section>
@@ -375,7 +375,7 @@ const withServiceInstanceForm = SubForm =>
                 <div>
                   <div className = "row form-group">
                     <div className = "col-xs-2 control-label">
-                      <b style={{fontSize : "16px"}}>{"서비스 클래스 목록"}</b>
+                      <b style={{fontSize : "16px"}}>{t('CONTENT:SERVICECLASSLIST')}</b>
                     </div>
                     {/* <div className = "co-m-pane__filter-bar-group co-m-pane__filter-bar-group--filter">
                       <TextFilter id="serviceClass" autoFocus={true} onChange={e => this.applyFilter(textFilter, e.target.value)}></TextFilter>
