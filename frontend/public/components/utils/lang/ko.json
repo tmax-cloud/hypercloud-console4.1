@@ -320,7 +320,7 @@
     "PIPELINERESOURCE-SIDEBAR_1": "git resource를 이용하여 파이프라인 리소스 생성을 수행하고자 할때 사용할 수 있습니다.",
     "PIPELINERESOURCE-SIDEBAR_2": "Proxy(http/https)를 이용하여 파이프라인 리소스 생성",
     "PIPELINERESOURCE-SIDEBAR_3": "이미 구축된 프록시 서버를 이용하여  SSL를 사용하여 파이프라인 리소스를 생성을 할 수 있습니다.\nSSL Proxy 를 사용하지 않는경우 noProxy로 설정할 수 있습니다.(- name: noProxy/ value: 'no.proxy.com')",
-    "PIPELINERESOURCE-SIDEBAR_4": "Image resource 이용하여 pipelineresource 생성",
+    "PIPELINERESOURCE-SIDEBAR_4": "이미지 리소스를 이용하여 파이프라인 리소스 생성",
     "PIPELINERESOURCE-SIDEBAR_5": "원격 저장소의 이미지 리소스를 이용하여 파이프라인 리소스 생성을 수행하고자 할때 사용할 수 있습니다.\n일반적으로 모든 레지스트리에 푸시하는데 사용할 수 있습니다.",
     "PIPELINERESOURCE-SIDEBAR_6": "파이프라인 리소스 생성시 설명 작성",
     "PIPELINERESOURCE-SIDEBAR_7": "설명을 이용하여 리소스에 대한 설명을 추가하여파이프라인 리소스 생성을 수행하고자 할때 사용할 수 있습니다.",
@@ -399,6 +399,7 @@
     "TASKRUN-CREATE_4": "분",
     "TASKRUN-CREATE_5": "서비스 어카운트 지정",
     "TASKRUN-CREATE_6": "서비스 어카운트 선택",
+    "TASKRUN-CREATE_7": "서비스 계정을 지정하면 특정 자격 증명으로 태스크 런에서 해당 태스크를 실행할 수 있습니다. 지정하지 않을 경우, 태스크 런은 configmap-defaults ConfigMap에 지정된 자격 증명으로 실행됩니다. 기본값을 지정하지 않으면, 태스크 런은 대상 네임스페이스에 대해 설정된 기본 서비스 계정으로 실행됩니다.",
     "VM-SIDEBAR_0": "Windows 가상머신 샘플",
     "VM-SIDEBAR_1": "Windows 가상머신에 대한 VM 오브젝트를 생성하는데 사용할 수 있습니다.\n.spec.template.spec.Affinity.nodeAffinity - 생성 시 선호 노드 설정\n.spec.template.domain.devices.disk - 인스턴스에 attach할 디스크 설정\n.spec.template.domain.devices.interfaces - 네트워크 인터페이스에 대한 설정\n.spec.template.domain.gpus - attach할 GPU device 설정\n.spec.template.domain.cpu - attach할 CPU 설정\n.spec.template.domain.memory - attach할 Memory 설정",
     "VM-SIDEBAR_2": "Ubuntu 가상머신 샘플",
@@ -418,7 +419,13 @@
     "TASKRUN-SIDEBAR_0": "태스크를 실행하는 태스크 런 생성",
     "TASKRUN-SIDEBAR_1": "파이프라인 리소스에서 생성한 리소스를 이용하여 파드가 생성되고 태스크를 실행할 수 있습니다.",
     "TASKRUN-SIDEBAR_2": "태스크를 실행할 때 파라미터를 설정하여 태스크 런 생성",
-    "TASKRUN-SIDEBAR_3": "Flags 및 샘플 URL 항목을 파라미터 형태로 받아 태스크를 실행하는 태스크 런을 생성할 수 있습니다."
+    "TASKRUN-SIDEBAR_3": "Flags 및 샘플 URL 항목을 파라미터 형태로 받아 태스크를 실행하는 태스크 런을 생성할 수 있습니다.",
+    "AUDIT-LIST_0": "전체 리소스 타입",
+    "AUDIT-LIST_1": "전체 액션",
+    "AUDIT-LIST_2": "전체 상태",
+    "AUDIT-LIST_3": "전체 코드",
+    "AUDIT-LIST_4": "~",
+    "AUDIT-LIST_5": "조회 기간"
   },
   "CONTENT": {
     "ADD": "추가",
@@ -452,7 +459,7 @@
     "LIVENESSPROBE": "활성 프로브",
     "RESOURCEREQUESTS": "리소스 요청 ",
     "LIFECYCLEHOOKS": "라이프사이클 훅",
-    "ALERTS": "Alerts",
+    "ALERTS": "경고",
     "RESOURCENAME": "리소스 이름",
     "RESOURCETYPE": "리소스 타입",
     "SELECTTYPE": "셀렉트 타입",
@@ -541,7 +548,7 @@
     "KUBERNETESAPI": "쿠버네티스 API",
     "HYPERCLOUDCONSOLE": "하이퍼클라우드 콘솔",
     "ALERTSFIRING": "경고 발생",
-    "CRASHLOOPINGPODS": "Crashlopping Pods",
+    "CRASHLOOPING": "Crashlooping",
     "CONTROLPLANESTATUS": "컨트롤 플레인 상태 ",
     "APISERVERSUP": "API 서버 정상",
     "CONTROLLERMANAGERSUP": "컨트롤러 관리자 정상",
@@ -907,7 +914,10 @@
     "RESOURCEPATH": "리소스 저장 경로",
     "PRESET": "프리셋",
     "VOLUMEMOUNT": "볼륨 마운트",
-    "VOLUMEMOUNTPATH": "볼륨 마운트 경로"
+    "VOLUMEMOUNTPATH": "볼륨 마운트 경로",
+    "DECIDEDAT": "결정 시간",
+    "SERVICECLASSLIST": "서비스 클래스 목록",
+    "SERVICECLASSCLASSIFICATION": "서비스 클래스 분류"
   },
   "RESOURCE": {
     "HOME": "홈",
@@ -1008,6 +1018,7 @@
     "CATALOGSERVICECLAIM": "카탈로그 서비스 클레임",
     "DASHBOARD": "대시보드",
     "GRAFANA": "그라파나",
-    "KIALI": "키알리"
+    "KIALI": "키알리",
+    "NAMESPACESERVICECLASS": "네임스페이스 서비스 클래스 "
   }
 }

@@ -70,7 +70,7 @@ const Graphs = requirePrometheus(
                 <Status title={t('CONTENT:ALERTSFIRING')} name={t('CONTENT:ALERTS')} query={`sum(ALERTS{alertstate="firing", alertname!="DeadMansSwitch" ${namespace ? `, namespace="${namespace}"` : ''}})`} href={alertsURL} target="_blank" rel="noopener" />
               </div>
               <div className="col-md-3 col-sm-6">
-                <Status title={t('CONTENT:CRASHLOOPINGPODS')} name={t('RESOURCE:POD')} query={`count(increase(kube_pod_container_status_restarts_total${namespace ? `{namespace="${namespace}"}` : ''}[5m]) > 5 )`} href={`/k8s/${namespace ? `ns/${namespace}` : 'all-namespaces'}/pods?rowFilter-pod-status=CrashLoopBackOff`} />
+                <Status title={t('CONTENT:CRASHLOOPING') + ' ' + t('RESOURCE:POD')} name={t('RESOURCE:POD')} query={`count(increase(kube_pod_container_status_restarts_total${namespace ? `{namespace="${namespace}"}` : ''}[5m]) > 5 )`} href={`/k8s/${namespace ? `ns/${namespace}` : 'all-namespaces'}/pods?rowFilter-pod-status=CrashLoopBackOff`} />
               </div>
             </div>
           </div>

@@ -400,6 +400,7 @@
     "TASKRUN-CREATE_4": "Min",
     "TASKRUN-CREATE_5": "Service Account Settings",
     "TASKRUN-CREATE_6": "Select a service account.",
+    "TASKRUN-CREATE_7": "You can execute the Task in your TaskRun with a specific set of credentials by specifying a ServiceAccount. If you do not explicitly specify this, the TaskRun executes with the credentials specified in the configmap-defaults ConfigMap. If this default is not specified, TaskRuns will execute with the default service account set for the target namespace.",
     "VM-SIDEBAR_0": "Windows Virtual Machine Sample",
     "VM-SIDEBAR_1": "Creates VM objects for Windows virtual machine.\n.spec.template.spec.Affinity.nodeAffinity- Node affinity setting\n.spec.template.domain.devices.disk – Instance-attached disk setting\n.spec.template.domain.devices.interfaces- Network interface setting\n.spec.template.domain.gpus – CPU device setting .spec.template.domain.cpu – CPU setting\n.spec.template.domain.memory – Memory setting",
     "VM-SIDEBAR_2": "Ubuntu Virtual Machine Sample",
@@ -419,7 +420,13 @@
     "TASKRUN-SIDEBAR_0": "Create a task run that runs a task",
     "TASKRUN-SIDEBAR_1": "Create a Pod and run a task by using resources created by a pipeline resource.",
     "TASKRUN-SIDEBAR_2": "Create a task run by setting parameters",
-    "TASKRUN-SIDEBAR_3": "Create a task run that runs a task by getting flags and sample URL items as parameters."
+    "TASKRUN-SIDEBAR_3": "Create a task run that runs a task by getting flags and sample URL items as parameters.",
+    "AUDIT-LIST_0": "All Resource Types",
+    "AUDIT-LIST_1": "All Actions",
+    "AUDIT-LIST_2": "All Status",
+    "AUDIT-LIST_3": "All Codes",
+    "AUDIT-LIST_4": "to",
+    "AUDIT-LIST_5": "Inquiry Period"
   },
   "CONTENT": {
     "TASKPARAMETERCONFIG": "Task Paramter Config",
@@ -540,7 +547,7 @@
     "KUBERNETESAPI": "Kubernetes API",
     "HYPERCLOUDCONSOLE": "HyperCloud Console",
     "ALERTSFIRING": "Alerts Firing",
-    "CRASHLOOPINGPODS": "Crashlopping Pods",
+    "CRASHLOOPING": "Crashlooping",
     "CONTROLPLANESTATUS": "Control Plane Status",
     "APISERVERSUP": "API Servers Up",
     "CONTROLLERMANAGERSUP": "Controller Managers Up",
@@ -912,7 +919,10 @@
     "MAILSERVER": "Mail Server",
     "MAILFROM": "Mail From",
     "TITLE": "Title",
-    "CONTENT": "Content"
+    "CONTENT": "Content",
+    "DECIDEDAT": "Decided at",
+    "SERVICECLASSLIST" : "Service Class List",
+    "SERVICECLASSCLASSIFICATION": "Service Class Classification"
   },
   "RESOURCE": {
     "HOME": "Home",
@@ -1012,6 +1022,7 @@
     "CATALOGSERVICECLAIM": "Catalog Service Claim",
     "DASHBOARD": "Dashboard",
     "GRAFANA": "Grafana",
-    "KIALI": "Kiali"
+    "KIALI": "Kiali",
+    "NAMESPACESERVICECLASS": "Namespace Service Class"
   }
 }
