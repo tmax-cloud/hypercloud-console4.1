@@ -537,7 +537,7 @@
     "KUBERNETESAPI": "Kubernetes API",
     "HYPERCLOUDCONSOLE": "HyperCloud Console",
     "ALERTSFIRING": "Alerts Firing",
-    "CRASHLOOPINGPODS": "Crashlopping Pods",
+    "CRASHLOOPING": "Crashlooping",
     "CONTROLPLANESTATUS": "Control Plane Status",
     "APISERVERSUP": "API Servers Up",
     "CONTROLLERMANAGERSUP": "Controller Managers Up",
