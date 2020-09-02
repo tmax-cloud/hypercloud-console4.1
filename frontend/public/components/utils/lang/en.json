@@ -957,6 +957,7 @@
     "TASKRUN": "Task Run",
     "PIPELINE": "Pipeline",
     "PIPELINERUN": "Pipeline Run",
+    "PIPELINETASK": "Pipeline Task",
     "PIPELINERESOURCE": "Pipeline Resource",
     "CONDITION": "Pipeline Condition",
     "APPROVAL": "Pipeline Approval",
