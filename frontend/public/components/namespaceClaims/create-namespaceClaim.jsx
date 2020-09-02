@@ -7,6 +7,7 @@ import { k8sCreate, k8sUpdate } from '../../module/k8s';
 import { ButtonBar, history, kindObj, SelectorInput } from '../utils';
 import { useTranslation } from 'react-i18next';
 import { SelectKeyValueEditor } from '../utils/select-key-value-editor';
+import SingleSelect from '../utils/select';
 
 const Section = ({ label, children, isRequired, paddingTop }) => {
   return (
@@ -52,6 +53,8 @@ class NamespaceClaimFormComponent extends React.Component {
         name: null,
         resourceName: null,
       },
+      cpuLimitsUnit: 'Gi',
+      memoryLimitsUnit: 'Gi'
     };
     this.onResourceNameChanged = this.onResourceNameChanged.bind(this);
     this.onNameChanged = this.onNameChanged.bind(this);
@@ -132,6 +135,14 @@ class NamespaceClaimFormComponent extends React.Component {
     });
   };
 
+  onCPULimitsUnitChanged = e => {
+    this.setState({ cpuLimitsUnit: e.value });
+  };
+
+  onMemoryLimitsUnitChanged = e => {
+    this.setState({ memoryLimitsUnit: e.value });
+  };
+
   save(e) {
     e.preventDefault();
     const { kind, metadata } = this.state.namespaceClaim;
@@ -149,8 +160,8 @@ class NamespaceClaimFormComponent extends React.Component {
     }
 
     let quota = {};
-    quota["limits.cpu"] = this.state.namespaceClaim.spec.hard["limits.cpu"];
-    quota["limits.memory"] = this.state.namespaceClaim.spec.hard["limits.memory"];
+    quota["limits.cpu"] = this.state.namespaceClaim.spec.hard["limits.cpu"] + this.state.cpuLimitsUnit;
+    quota["limits.memory"] = this.state.namespaceClaim.spec.hard["limits.memory"] + this.state.memoryLimitsUnit;
     this.state.quota.forEach(arr => {
       const key = arr[0] === 'etc' ? arr[1] : arr[0];
       quota[key] = arr[2];
@@ -221,19 +232,29 @@ class NamespaceClaimFormComponent extends React.Component {
                 <div className="col-md-2 col-xs-2 pairs-list__name-field">
                   <div>CPU Limits</div>
                 </div>
+              </div>
+              <div className="row">
                 <div className="col-md-2 col-xs-2 pairs-list__name-field" id='cpu'>
                   <input className="form-control" type="text"
                     onChange={this.onQuotaChanged} id="limits.cpu"
                     placeholder='CPU' value={this.state.namespaceClaim.spec.hard['limits.cpu']} required />
+                </div>
+                <div className="col-md-1 col-xs-1 pairs-list__name-field" id='cpu-units'>
+                  <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.cpuLimitsUnit} onChange={this.onCPULimitsUnitChanged} />
                 </div>
               </div>
               <div className="row">
                 <div className="col-md-2 col-xs-2 pairs-list__name-field">
                   <div>Memory Limits</div>
                 </div>
+              </div>
+              <div className="row" style={{ marginBottom: '20px' }}>
                 <div className="col-md-2 col-xs-2 pairs-list__name-field" id='memory'>
                   <input className="form-control" type="text" id="limits.memory"
                     onChange={this.onQuotaChanged} placeholder='Memory' value={this.state.namespaceClaim.spec.hard['limits.memory']} required />
+                </div>
+                <div className="col-md-1 col-xs-1 pairs-list__name-field" id='memory-units'>
+                  <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.memoryLimitsUnit} onChange={this.onMemoryLimitsUnitChanged} />
                 </div>
               </div>
               <SelectKeyValueEditor desc={t('STRING:NAMESPACECLAIM-CREATE-1')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={resourceQuotaClaimOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
@@ -248,7 +269,7 @@ class NamespaceClaimFormComponent extends React.Component {
             </ButtonBar>
           </fieldset>
         </form>
-      </div>
+      </div >
     );
   }
 }
@@ -257,3 +278,16 @@ export const CreateNamespaceClaim = ({ match: { params } }) => {
   const { t } = useTranslation();
   return <NamespaceClaimFormComponent t={t} fixed={{ metadata: { namespace: params.ns } }} namespaceClaimTypeAbstraction={params.type} titleVerb="Create" isCreate={true} />;
 };
+
+NamespaceClaimFormComponent.limitsUnitOptions = [
+  { value: 'Mi', label: 'Mi' },
+  { value: 'Gi', label: 'Gi' },
+  { value: 'Ti', label: 'Ti' },
+  { value: 'Pi', label: 'Pi' },
+  { value: 'Ei', label: 'Ei' },
+  { value: 'M', label: 'M' },
+  { value: 'G', label: 'G' },
+  { value: 'T', label: 'T' },
+  { value: 'P', label: 'P' },
+  { value: 'E', label: 'E' },
+];
