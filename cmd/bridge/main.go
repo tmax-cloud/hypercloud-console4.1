@@ -310,6 +310,7 @@ func main() {
 		srv.HyperflowProxyConfig = &proxy.Config{
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        kubeflowEndpoint,
+			Origin:          "http://localhost",
 		}
 
 		// NOTE: vnc 추가 // 윤진수
@@ -443,6 +444,7 @@ func main() {
 			},
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        kubeflowEndpoint,
+			Origin:          "http://localhost",
 		}
 
 		vncEndpoint := validateFlagIsURL("vnc-endpoint", *fvncEndpoint)

@@ -452,6 +452,8 @@
     "ALERTS": "Alerts",
     "RESOURCENAME": "리소스 이름",
     "RESOURCETYPE": "리소스 타입",
+    "SELECTTYPE": "셀렉트 타입",
+    "SELECTLIMITTYPE": "셀렉트 리밋 타입",
     "SUBJECTNAMESPACE": "대상 네임스페이스",
     "SUBJECT": "대상",
     "SERVICEPLAN": "서비스 플랜",
