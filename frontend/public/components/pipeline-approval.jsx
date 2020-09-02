@@ -116,17 +116,17 @@ const DetailsForKind = kind =>
                 </dd>
                 <dt>{t('RESOURCE:USER')}</dt>
                 <dd>{obj.spec.users.join(' ')}</dd>
-                <dt>Pipeline Run</dt>
+                <dt>{t('RESOURCE:PIPELINERUN')}</dt>
                 <dd>
                   <ResourceLink kind="PipelineRun" name={pipelineRun} />
                 </dd>
-                <dt>PIPELINE TASK</dt>
+                <dt>{t('RESOURCE:PIPELINETASK')}</dt>
                 <dd>
                   <ResourceLink kind="TaskRun" name={taskRun} displayName={pipelineTask} />
                 </dd>
                 {(obj.status.result === 'Approved' || obj.status.result === 'Rejected') && (
                   <React.Fragment>
-                    <dt>Decided At</dt>
+                    <dt>{t('CONTENT:DECIDEDAT')}</dt>
                     <dd>
                       <Timestamp timestamp={obj.status.decisionTime} />
                     </dd>
@@ -186,7 +186,7 @@ export const PipelineApprovalsPage = props => {
           ],
         },
       ]}
-      // title={t('RESOURCE:APPROVAL')}
+    // title={t('RESOURCE:APPROVAL')}
     />
   );
 };
