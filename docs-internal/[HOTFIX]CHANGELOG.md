@@ -1,21 +1,30 @@
 # hypercloud-console patch note
 ## [Product Name]_[major].[minor].[patch].[hotfix]
-Version: hypercloud-console_4.1.3.3
-2020-08-31  01:51:27 AM
-- [feat][patch] 파이프라인 폼에디터 validation 문구 위치 조정 및 텍스트 간 마진 수정 (miri_jo) 
-    Message: 
-- [feat][patch] ServiceAccount > Create Form > 설명 String 번역 적용 (yeojin_choi) 
-    Message: IMS: 235949
+Version: hypercloud-console_4.1.3.5
+2020-09-02  오전  9:23:34
 
-- [refactor] [patch] Limit Range, Resource Quota 샘플 yaml 영문 번역 기획 반영 (yeonggyulim) 
-    Message: [IMS]: 223807, 224046
+- [feat][patch] 파이프라인 컨디션 리스트 페이지 칼럼 간 간격 수정 (miri_jo) 
+    Message: [IMS] 235905
 
-- [refactor] [patch] 일부 메시지 영문화 (yeonggyulim) 
-    Message: 
-- [bugfix] [patch] namespaceClaim과 resourceQuotaClaim 생성 폼 에디터에서 label 입력 시 오류 수정 (yeonggyulim) 
-    Message: [IMS]: 236448, 236435
+- [bugfix][patch] Role 메뉴 - cluster role 삭제 후, 제거된 cluster role list 페이지로 이동하는 버그 수정 (yeojin_choi) 
+    Message: IMS: 233435
 
-- [refactor] [patch] ResourceQuotaClaim, NamespaceClaim 생성 폼 에디터에 중복 key 있을 때 생성 안되게 수정 (yeonggyulim) 
+- [refactor] [patch] ResourceQuotaClaim 리스트 페이지에 필터링 기능 추가 (yeonggyu_lim) 
+    Message: [IMS]: 237605
+
+- [refactor] [patch] NamespaceClaim 생성 폼 에디터에 CPU Liomits와 Memory Limits는 필수 값으로 변경 (yeonggyulim) 
     Message: 
-- [refactor] [patch] ResourceQuota, Namespace, NamespaceClaim, ResourceQuotaClaim 생성 폼 에디터 required 인풋에 대한 입력 validation 추가 (yeonggyulim) 
-    Message: [IMS]: 236444
+- [refactor] [patch] ResourceQuotaClaim 생성 폼 에디터에 CPU Liomits와 Memory Limits는 필수 값으로 변경 (yeonggyulim) 
+    Message: 
+- [refactor] [patch] Workload > Pod sample yaml 수정 (yeonggyulim) 
+    Message: [IMS]: 233579
+
+- [refactor] [patch] Workload > Pod sample yaml 수정 (yeonggyulim) 
+    Message: [IMS]: 233579
+
+- [refactor] [patch] NamespaceClaim, ResourceQuotaClaim 생성 폼 에디터에 리소스 할당량 required 표시 추가 (yeonggyulim) 
+    Message: 
+- [refactor] [patch] LimitRange 생성 폼 에디터 새로운 기획에 맞게 수정 (yeonggyulim) 
+    Message: 
+- [feat][patch] hyperflow (kubeflow)에 websocket proxy 연동과 주소 오류 수정 (jinsoo_youn) 
+    Message: 
