@@ -915,7 +915,8 @@
     "MAILSERVER": "Mail Server",
     "MAILFROM": "Mail From",
     "TITLE": "Title",
-    "CONTENT": "Content"
+    "CONTENT": "Content",
+    "DECIDEDAT": "Decided at"
   },
   "RESOURCE": {
     "HOME": "Home",
