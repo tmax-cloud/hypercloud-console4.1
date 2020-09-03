@@ -346,6 +346,7 @@ const withServiceInstanceForm = SubForm =>
           {/* <form className="co-m-pane__body-group co-create-service-instance-form" onSubmit={() => this.save}> */}
           <div className="co-m-pane__body-group co-create-service-instance-form form-group">
             <h1 className="co-m-pane__heading">{title}</h1>
+            <p className="co-m-pane__explanation">{t('STRING:SERVICEINSTANCE-CREATE_6')}</p>
             {/* <p className="co-m-pane__explanation">{this.props.explanation}</p> */}
             <Stepper steps={steps} activeStep={currentStep} />
             <div className="separator"></div>
