@@ -18,7 +18,7 @@ class ServiceClassCard extends Component {
     const { uid, externalName, imageUrl, description, providerDisplayName, recommend, isNew } = this.props.serviceClass;
     const isActive = selectedClass && selectedClass.uid === uid;
     return (
-      <div className="col-xs-12 col-sm-6 col-md-4 col-lg-2" onClick={() => this.onClickCard(this.props.serviceClass)} style={{ paddingLeft: '10px', paddingRight: '10px' }}>
+      <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3" onClick={() => this.onClickCard(this.props.serviceClass)} style={{ paddingLeft: '10px', paddingRight: '10px' }}>
         <div
           className="card-pf card-pf-view card-pf-view-select card-pf-view-single-select"
           style={{
