@@ -174,6 +174,10 @@ export const enum ResourceLimitEditorPair {
   Cpu,
   Memory,
   Storage,
+  Ratio,
+  CpuUnit,
+  MemoryUnit,
+  StorageUnit,
   Index
 }
 

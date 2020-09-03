@@ -346,13 +346,14 @@ const withServiceInstanceForm = SubForm =>
           {/* <form className="co-m-pane__body-group co-create-service-instance-form" onSubmit={() => this.save}> */}
           <div className="co-m-pane__body-group co-create-service-instance-form form-group">
             <h1 className="co-m-pane__heading">{title}</h1>
+            <p className="co-m-pane__explanation">{t('STRING:SERVICEINSTANCE-CREATE_6')}</p>
             {/* <p className="co-m-pane__explanation">{this.props.explanation}</p> */}
             <Stepper steps={steps} activeStep={currentStep} />
             <div className="separator"></div>
             {/* stepper */}
             {currentStep === 0 && (
               <div className="rbac-edit-binding">
-                <Section label={'서비스 클래스 분류'}>
+                <Section label={t('CONTENT:SERVICECLASSCLASSIFICATION')}>
                   <form>
                     <label className="radio-inline" style={{ marginRight: '50px' }}>
                       <input type="radio" name = "ServiceClass" value="Cluster" checked={this.state.serviceClass === 'Cluster'} 
@@ -360,14 +361,14 @@ const withServiceInstanceForm = SubForm =>
                     </label>
                     <label className="radio-inline" style={{ marginRight: '50px' }}>
                       <input type="radio" name = "ServiceClass" value="Namespace" checked={this.state.serviceClass === 'Namespace'}
-                      onChange={this.setKind}/> {'네임스페이스 서비스 클래스'}
+                      onChange={this.setKind}/> {t('RESOURCE:NAMESPACESERVICECLASS')}
                     </label>
                   </form>
                 </Section>
                 {this.state.serviceClass === "Namespace" && (
                   <Section label={t('CONTENT:NAMESPACE')}>
                     <NsDropdown id="namespace" t={t} defaultValue={this.state.namespace} onChange={this.onNamespaceChanged} />
-                    <p style={{color: '#777'}}>{"접근 권한이 있는 네임스페이스에서 서비스 클래스를 선택합니다."}</p>
+                    <p style={{color: '#777'}}>{t('STRING:SERVICEINSTANCE-CREATE_5')}</p>
                   </Section>
                 )}
                 <div className="separator"></div>
@@ -375,7 +376,7 @@ const withServiceInstanceForm = SubForm =>
                 <div>
                   <div className = "row form-group">
                     <div className = "col-xs-2 control-label">
-                      <b style={{fontSize : "16px"}}>{"서비스 클래스 목록"}</b>
+                      <b style={{fontSize : "16px"}}>{t('CONTENT:SERVICECLASSLIST')}</b>
                     </div>
                     {/* <div className = "co-m-pane__filter-bar-group co-m-pane__filter-bar-group--filter">
                       <TextFilter id="serviceClass" autoFocus={true} onChange={e => this.applyFilter(textFilter, e.target.value)}></TextFilter>

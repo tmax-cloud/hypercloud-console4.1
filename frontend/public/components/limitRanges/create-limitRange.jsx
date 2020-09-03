@@ -43,8 +43,12 @@ class LimitRangeFormComponent extends React.Component {
       limitRange: limitRange,
       inProgress: false,
       type: 'form',
-      limits: [['', '', '', '', '']],
+      limits: [['Pod', '', '', '', '', '', 'Gi', 'Gi', 'Gi']],
       isDuplicated: false,
+      inputError: {
+        name: null,
+        namespace: null,
+      },
     };
     this.onNameChanged = this.onNameChanged.bind(this);
     this.onNamespaceChanged = this.onNamespaceChanged.bind(this);
@@ -81,17 +85,60 @@ class LimitRangeFormComponent extends React.Component {
   }
 
   _updateLimits(limits) {
+    console.log('_updateLimits, limits: ', limits);
     this.setState({
       limits: limits.resourceLimitsPairs,
       isDuplicated: limits.isDuplicated,
     });
   }
 
+  isRequiredFilled = (k8sResource, item, element) => {
+    const { t } = this.props;
+    if (k8sResource.metadata[item] === '') {
+      switch (item) {
+        case 'name':
+          this.setState({ inputError: { name: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:NAME`) }) } });
+          return false;
+        case 'namespace':
+          this.setState({ inputError: { namespace: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:NAMESPACE`) }) } });
+          return false;
+      }
+    } else {
+      this.setState({
+        inputError: {
+          [item]: null,
+        },
+      });
+      return true;
+    }
+  };
+
+  onFocusName = () => {
+    this.setState({
+      inputError: {
+        name: null,
+      },
+    });
+  };
+
+  onFocusNamespace = () => {
+    this.setState({
+      inputError: {
+        namespace: null,
+      },
+    });
+  };
+
   save(e) {
     e.preventDefault();
     const { kind, metadata } = this.state.limitRange;
     this.setState({ inProgress: true });
     const newLimitRange = _.assign({}, this.state.limitRange);
+
+    if (!this.isRequiredFilled(newLimitRange, 'name', 'INPUT') || !this.isRequiredFilled(newLimitRange, 'namespace', 'SELECT')) {
+      this.setState({ inProgress: false });
+      return;
+    }
 
     if (this.state.isDuplicated) {
       this.setState({ inProgress: false });
@@ -101,14 +148,19 @@ class LimitRangeFormComponent extends React.Component {
     let limits = [];
     this.state.limits.forEach(limit => {
       let newLimit = {};
-      const limitType = limit[ResourceLimitEditorPair.Type];
-      newLimit['type'] = limitType;
+      const type = limit[ResourceLimitEditorPair.Type];
+      newLimit['type'] = type;
       newLimit[limit[ResourceLimitEditorPair.LimitType]] = {};
-      if (limitType === 'PersistentVolumeClaim') {
-        newLimit[limit[ResourceLimitEditorPair.LimitType]]['storage'] = limit[ResourceLimitEditorPair.Storage];
+      if (type === 'PersistentVolumeClaim') {
+        newLimit[limit[ResourceLimitEditorPair.LimitType]]['storage'] = limit[ResourceLimitEditorPair.Storage] + limit[ResourceLimitEditorPair.StorageUnit];
       } else {
-        newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu];
-        newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory];
+        const limitType = limit[ResourceLimitEditorPair.LimitType];
+        if (limitType === 'maxLimitRequestRatio') {
+          newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Ratio];
+        } else {
+          newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu] + limit[ResourceLimitEditorPair.CpuUnit];
+          newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory] + limit[ResourceLimitEditorPair.MemoryUnit];
+        }
       }
       limits.push(newLimit);
     });
@@ -178,10 +230,12 @@ class LimitRangeFormComponent extends React.Component {
           <p className="co-m-pane__explanation">{t('STRING:LIMITRANGE-CREATE-0')}</p>
           <fieldset disabled={!this.props.isCreate}>
             <Section label={t('CONTENT:NAME')} isRequired={true}>
-              <input className="form-control" type="text" onChange={this.onNameChanged} value={this.state.limitRange.metadata.name} id="limit-range-name" required />
+              <input className="form-control" type="text" onChange={this.onNameChanged} value={this.state.limitRange.metadata.name} id="limit-range-name" />
+              {this.state.inputError.name && <p className="cos-error-title">{this.state.inputError.name}</p>}
             </Section>
             <Section label={t('CONTENT:NAMESPACE')} isRequired={true}>
               <NsDropdown id="limit-range-namespace" t={t} onChange={this.onNamespaceChanged} />
+              {this.state.inputError.namespace && <p className="cos-error-title">{this.state.inputError.namespace}</p>}
             </Section>
             <Section label={t('CONTENT:LABELS')} isRequired={false}>
               <SelectorInput desc={t('STRING:RESOURCEQUOTA-CREATE-1')} isFormControl={true} labelClassName="co-text-namespace" tags={[]} onChange={this.onLabelChanged} />

@@ -669,7 +669,7 @@ class TaskRunFormComponent extends React.Component {
         </Helmet>
         <form className="co-m-pane__body-group form-group" onSubmit={this.save}>
           <h1 className="co-m-pane__heading">{t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural(this.state.TaskRun.kind, t) })}</h1>
-          {/* <p className="co-m-pane__explanation">Represents an identity for processes that run in a pod.</p> */}
+          <p className="co-m-pane__explanation">{t('STRING:TASKRUN-CREATE_8')}</p>
 
           <fieldset disabled={!this.props.isCreate}>
             <Section label={t('CONTENT:NAME')} isRequired={true}>
@@ -706,7 +706,7 @@ class TaskRunFormComponent extends React.Component {
             </Section>
             <Section label={t('STRING:TASKRUN-CREATE_5')} isRequired={false}>
               <ServiceAccountDropdown id="service-account" t={t} onChange={this.onServiceAccountChanged} namespace={this.state.selectedNamespace} selectedKey={this.state.selectedServiceAccount} />
-              <span>You can execute the Task in your TaskRun with a specific set of credentials by specifying a ServiceAccount. If you do not explicitly specify this, the TaskRun executes with the credentials specified in the configmap-defaults ConfigMap. If this default is not specified, TaskRuns will execute with the default service account set for the target namespace.</span>
+              <span>{t('STRING:TASKRUN-CREATE_7')}</span>
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
               <button type="submit" className="btn btn-primary" id="save-changes">

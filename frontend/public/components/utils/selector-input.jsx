@@ -2,7 +2,6 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 import * as classNames from 'classnames';
 import * as TagsInput from 'react-tagsinput';
-
 import * as k8sSelector from '../../module/k8s/selector';
 import * as k8sSelectorRequirement from '../../module/k8s/selector-requirement';
 
@@ -22,11 +21,11 @@ export class SelectorInput extends React.Component {
     };
   }
 
-  static arrayify (obj) {
+  static arrayify(obj) {
     return _.map(obj, (v, k) => v ? `${k}=${v}` : k);
   }
 
-  static objectify (arr) {
+  static objectify(arr) {
     const result = {};
     _.each(arr, item => {
       const [key, value = null] = item.split('=');
@@ -35,28 +34,28 @@ export class SelectorInput extends React.Component {
     return result;
   }
 
-  focus () {
+  focus() {
     this.ref_ && this.ref_.focus();
   }
 
-  isTagValid (tag) {
+  isTagValid(tag) {
     const requirement = k8sSelectorRequirement.requirementFromString(tag);
     return !!(requirement && (!this.isBasic || requirement.operator === 'Equals'));
   }
 
-  handleInputChange (e) {
+  handleInputChange(e) {
     // We track the input field value in state so we can retain the input value when an invalid tag is entered.
     // Otherwise, the default behaviour of TagsInput is to clear the input field.
     const inputValue = e.target.value;
-    this.setState({inputValue, isInputValid: this.isTagValid(inputValue)});
+    this.setState({ inputValue, isInputValid: this.isTagValid(inputValue) });
   }
 
-  handleChange (tags, changed) {
+  handleChange(tags, changed) {
     // The way we use TagsInput, there should only ever be one new tag in changed
     const newTag = changed[0];
 
     if (!this.isTagValid(newTag)) {
-      this.setState({isInputValid: false});
+      this.setState({ isInputValid: false });
       return;
     }
 
@@ -67,17 +66,17 @@ export class SelectorInput extends React.Component {
     // Note that TagsInput accepts an onlyUnique property, but we handle this logic ourselves so that we can set a
     // custom error class
     if (_.filter(tags, tag => tag === cleanNewTag).length > 1) {
-      this.setState({isInputValid: false});
+      this.setState({ isInputValid: false });
       return;
     }
 
     const newTags = cleanTags(tags);
-    this.setState({inputValue: '', isInputValid: true, tags: newTags});
+    this.setState({ inputValue: '', isInputValid: true, tags: newTags });
     this.props.onChange(newTags);
   }
 
-  render () {
-    const {inputValue, isInputValid, tags} = this.state;
+  render() {
+    const { inputValue, isInputValid, tags } = this.state;
 
     // Keys that add tags: Enter
     const addKeys = [13];
@@ -87,15 +86,15 @@ export class SelectorInput extends React.Component {
 
     const inputProps = {
       autoFocus: this.props.autoFocus,
-      className: classNames('input', {'invalid-tag': !isInputValid}),
+      className: classNames('input', { 'invalid-tag': !isInputValid }),
       onChange: this.handleInputChange.bind(this),
-      placeholder: 'App=frontend',
+      placeholder: this.props.placeholder ?? 'App=frontend',
       spellCheck: 'false',
       value: inputValue,
       id: 'tags-input',
     };
 
-    const renderTag = ({tag, key, onRemove, getTagDisplayValue}) => {
+    const renderTag = ({ tag, key, onRemove, getTagDisplayValue }) => {
       return <span className={classNames('tag-item', this.props.labelClassName)} key={key}>
         {getTagDisplayValue(tag)}&nbsp;
         <a className="remove-button" onClick={() => onRemove(key)}>×</a>

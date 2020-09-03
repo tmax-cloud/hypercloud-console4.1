@@ -10,26 +10,26 @@ export const PersistentVolumeClaimSidebar = ({ loadSampleYaml, downloadSampleYam
   const { t } = useTranslation();
   const samples = [
     {
-      header: t('STRING:PERSISTENCEVOLUMECLAIM-SIDEBAR_0'),
-      details: t('STRING:PERSISTENCEVOLUMECLAIM-SIDEBAR_1'),
+      header: t('STRING:PERSISTENTVOLUMECLAIM-SIDEBAR_0'),
+      details: t('STRING:PERSISTENTVOLUMECLAIM-SIDEBAR_1'),
       templateName: 'persistentvolumeclaim-sample',
       kind: referenceForModel(PersistentVolumeClaimModel),
     },
     {
-      header: t('STRING:PERSISTENCEVOLUMECLAIM-SIDEBAR_2'),
-      details: t('STRING:PERSISTENCEVOLUMECLAIM-SIDEBAR_3'),
+      header: t('STRING:PERSISTENTVOLUMECLAIM-SIDEBAR_2'),
+      details: t('STRING:PERSISTENTVOLUMECLAIM-SIDEBAR_3'),
       templateName: 'persistentvolumeclaim-sample2',
       kind: referenceForModel(PersistentVolumeClaimModel),
     },
     {
-      header: t('STRING:PERSISTENCEVOLUMECLAIM-SIDEBAR_4'),
-      details: t('STRING:PERSISTENCEVOLUMECLAIM-SIDEBAR_5'),
+      header: t('STRING:PERSISTENTVOLUMECLAIM-SIDEBAR_4'),
+      details: t('STRING:PERSISTENTVOLUMECLAIM-SIDEBAR_5'),
       templateName: 'persistentvolumeclaim-sample3',
       kind: referenceForModel(PersistentVolumeClaimModel),
     },
     {
-      header: t('STRING:PERSISTENCEVOLUMECLAIM-SIDEBAR_6'),
-      details: t('STRING:PERSISTENCEVOLUMECLAIM-SIDEBAR_7'),
+      header: t('STRING:PERSISTENTVOLUMECLAIM-SIDEBAR_6'),
+      details: t('STRING:PERSISTENTVOLUMECLAIM-SIDEBAR_7'),
       templateName: 'persistentvolumeclaim-sample4',
       kind: referenceForModel(PersistentVolumeClaimModel),
     },
