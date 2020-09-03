@@ -5323,10 +5323,10 @@ spec:
   .setIn(
     [referenceForModel(k8sModels.PodSecurityPolicyModel), 'podsecuritypolicy-sample2'],
     `
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: example-nonrootpsp
+  name: example-nonroot-psp
 spec:
   seLinux:
     rule: RunAsAny
@@ -5343,23 +5343,29 @@ spec:
   .setIn(
     [referenceForModel(k8sModels.PodSecurityPolicyModel), 'podsecuritypolicy-sample3'],
     `
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: example-usergrouppsp
+  name: example-usergroup-psp
 spec:
   seLinux:
     rule: RunAsAny
   supplementalGroups:
     rule: MustRunAs
+    ranges:
+      - min: 1
+        max: 65535
   runAsUser:
     rule: RunAsAny
   runAsGroup:
     rule: MustRunAs
+    ranges:
+      - min: 1
+        max: 65535
   fsGroup:
     rule: RunAsAny
   volumes:
-  - '*'
+   - '*'
 `,
   )
   .setIn(
