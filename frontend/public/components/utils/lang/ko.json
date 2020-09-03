@@ -172,6 +172,7 @@
     "SERVICEINSTANCE-CREATE_3": "서비스 클래스 없음 ",
     "SERVICEINSTANCE-CREATE_4": "서비스 플랜 없음 ",
     "SERVICEINSTANCE-CREATE_5": "접근 권한이 있는 네임스페이스에서 서비스 클래스를 선택합니다.",
+    "SERVICEINSTANCE-CREATE_6": "서비스 카탈로그에 추가된 서비스 목록에서 새 인스턴스를 작성하십시오.",
     "ROLEBINDING-CREATE_0": "사용자/그룹을 선택된 역할에 연결하여, 허용할 접근 유형 및 리소스를 정의하십시오.",
     "ROLEBINDING-CREATE_1": "롤을 선택하십시오.",
     "ROLEBINDING-CREATE_2": "네임스페이스 선택",

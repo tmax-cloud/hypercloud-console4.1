@@ -16,7 +16,7 @@ i18n
   .use(LanguageDetector)
   .init({
     //lng: 'en',
-    lng: window.localStorage.getItem('i18nextLng') || 'en',
+    lng: window.localStorage.getItem('i18nextLng') || navigator.language || navigator.userLanguage || 'ko',
     debug: true,
     detection: options,
     resources: {
