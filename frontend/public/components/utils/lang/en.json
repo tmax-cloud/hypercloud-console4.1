@@ -218,6 +218,7 @@
     "RESTRICTED_1": "You don't have access to this section due to cluster policy.",
     "RESTRICTED_2": "View Details",
     "PIPELINERUN-CREATE_0": "Service Account is not automatically created",
+    "PIPELINERUN-CREATE_1": "Instantiate a Pipeline for execution with specific inputs, outputs, and execution parameters.",
     "STATUS_0": "It may be different from the actual data.",
     "CONTAINER-DETAIL_0": "No ports have been exposed",
     "CONTAINER-DETAIL_1": "Ports allow for traffic to enter this container",
@@ -406,6 +407,7 @@
     "TASKRUN-CREATE_5": "Service Account Settings",
     "TASKRUN-CREATE_6": "Select a service account.",
     "TASKRUN-CREATE_7": "You can execute the Task in your TaskRun with a specific set of credentials by specifying a ServiceAccount. If you do not explicitly specify this, the TaskRun executes with the credentials specified in the configmap-defaults ConfigMap. If this default is not specified, TaskRuns will execute with the default service account set for the target namespace.",
+    "TASKRUN-CREATE_8": "Instantiate a Task for execution with specific inputs, outputs, and execution parameters. Can be invoked on its own or as part of a Pipeline.",
     "VM-SIDEBAR_0": "Windows Virtual Machine Sample",
     "VM-SIDEBAR_1": "Creates VM objects for Windows virtual machine.\n.spec.template.spec.Affinity.nodeAffinity- Node affinity setting\n.spec.template.domain.devices.disk – Instance-attached disk setting\n.spec.template.domain.devices.interfaces- Network interface setting\n.spec.template.domain.gpus – CPU device setting .spec.template.domain.cpu – CPU setting\n.spec.template.domain.memory – Memory setting",
     "VM-SIDEBAR_2": "Ubuntu Virtual Machine Sample",
@@ -431,7 +433,8 @@
     "AUDIT-LIST_2": "All Status",
     "AUDIT-LIST_3": "All Codes",
     "AUDIT-LIST_4": "to",
-    "AUDIT-LIST_5": "Inquiry Period"
+    "AUDIT-LIST_5": "Inquiry Period",
+    "PIPELINERESOURCE-CREATE_0": "Defines locations for inputs ingested and outputs produced by the steps in Tasks."
   },
   "CONTENT": {
     "TASKPARAMETERCONFIG": "Task Paramter Config",

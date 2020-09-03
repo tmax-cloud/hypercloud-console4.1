@@ -242,20 +242,20 @@ class PipelineRunFormComponent extends React.Component<PipelineRunProps_, Pipeli
           //params, resource가 없는경우
           let paramList = details.spec.params
             ? details.spec.params.map(cur => {
-                return {
-                  name: cur.name,
-                  type: cur.type,
-                  value: '',
-                };
-              })
+              return {
+                name: cur.name,
+                type: cur.type,
+                value: '',
+              };
+            })
             : [];
           let resourceList = details.spec.resources
             ? details.spec.resources.map(cur => {
-                return {
-                  name: cur.name,
-                  type: cur.type,
-                };
-              })
+              return {
+                name: cur.name,
+                type: cur.type,
+              };
+            })
             : [];
 
           let pipelineRun = { ...this.state.pipelineRun };
@@ -354,28 +354,28 @@ class PipelineRunFormComponent extends React.Component<PipelineRunProps_, Pipeli
 
     let paramDivs = paramList.length
       ? paramList.map(cur => {
-          return (
-            <ul>
-              <SecondSection label={cur.name} id={cur.name}>
-                <input className="form-control" type="text" placeholder={t('CONTENT:VALUE')} id={cur.name} onChange={this.onParamChanged} required />
-              </SecondSection>
-            </ul>
-          );
-        })
+        return (
+          <ul>
+            <SecondSection label={cur.name} id={cur.name}>
+              <input className="form-control" type="text" placeholder={t('CONTENT:VALUE')} id={cur.name} onChange={this.onParamChanged} required />
+            </SecondSection>
+          </ul>
+        );
+      })
       : false;
 
     let resourceDivs = resourceList.length
       ? resourceList.map(cur => {
-          return (
-            <ul>
-              <SecondSection label={cur.name} id={cur.name}>
-                <select className="form-control" id={cur.name} onChange={this.onResourceChanged}>
-                  <RefList list={resourceRefList} type={cur.type} />
-                </select>
-              </SecondSection>
-            </ul>
-          );
-        })
+        return (
+          <ul>
+            <SecondSection label={cur.name} id={cur.name}>
+              <select className="form-control" id={cur.name} onChange={this.onResourceChanged}>
+                <RefList list={resourceRefList} type={cur.type} />
+              </select>
+            </SecondSection>
+          </ul>
+        );
+      })
       : false;
 
     return (
@@ -385,7 +385,7 @@ class PipelineRunFormComponent extends React.Component<PipelineRunProps_, Pipeli
         </Helmet>
         <form className="co-m-pane__body-group co-create-secret-form" onSubmit={this.save}>
           <h1 className="co-m-pane__heading">{t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural(this.state.pipelineRun.kind, t) })}</h1>
-          {/* <p className="co-m-pane__explanation">{this.props.explanation}</p> */}
+          <p className="co-m-pane__explanation">{t('STRING:PIPELINERUN-CREATE_1')}</p>
 
           <fieldset disabled={!this.props.isCreate}>
             <FirstSection
