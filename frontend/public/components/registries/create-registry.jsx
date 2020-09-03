@@ -233,7 +233,7 @@ class RegistryFormComponent extends React.Component {
             <Section label={t('CONTENT:SERVICE')} isRequired={true}>
               <label>{t('CONTENT:SERVICETYPE')}</label>
               <RadioGroup currentValue={this.state.serviceType} items={serviceTypes} onChange={this.onServiceTypeChanged} formRow={true} />
-              {this.state.serviceType === 'ingress' ? <LabelInput label={t('CONTENT:DOMAINNAME')} onChange={this.onServiceDomainNameChanged} value={this.state.domainName} id="registry-domain-name" placeholder="192.168.6.110.nip.io" /> : ''}
+              {this.state.serviceType === 'ingress' ? <LabelInput label={t('CONTENT:DOMAINNAME')} onChange={this.onServiceDomainNameChanged} value={this.state.domainName} id="registry-domain-name" placeholder={t('STRING:REGISTRY-CREATE_8')} /> : ''}
               {this.state.serviceType === 'loadBalancer' ? <LabelInput label={t('CONTENT:PORT')} onChange={this.onServicePortChanged} value={this.state.port} id="registry-port" placeholder="1~65535" half /> : ''}
               <span>{t('STRING:REGISTRY-CREATE_3')}</span>
             </Section>
@@ -242,20 +242,20 @@ class RegistryFormComponent extends React.Component {
               {this.state.pvcType === 'exist' ? (
                 <PvcDropdown id="registy-pvc" t={t} onChange={this.onPvcChanged} namespace={this.state.registry.metadata.namespace} />
               ) : (
-                <>
-                  <label>{t('CONTENT:ACCESSMODES')}</label>
-                  <RadioGroup currentValue={this.state.accessModes} items={aceessModes} onChange={this.onPVCAccessModeChanged} formRow={true} />
-                  <LabelInput label={t('RESOURCE:STORAGESIZE')} onChange={this.onPVCStorageSizeChanged} value={this.state.storageSize} id="registry-storage-size" placeholder="10" half>
-                    <SingleSelect options={RegistryFormComponent.storageSizeUnitOptions} value={this.state.storageSizeUnit} onChange={this.onPVCStorageSizeUnitChanged} />
-                  </LabelInput>
-                  <label>{t('CONTENT:STORAGECLASSNAME')}</label>
-                  <ScDropdown id="registy-sc" t={t} onChange={this.onPVCStorageClassNameChanged} />
-                </>
-              )}
+                  <>
+                    <label>{t('CONTENT:ACCESSMODES')}</label>
+                    <RadioGroup currentValue={this.state.accessModes} items={aceessModes} onChange={this.onPVCAccessModeChanged} formRow={true} />
+                    <LabelInput label={t('RESOURCE:STORAGESIZE')} onChange={this.onPVCStorageSizeChanged} value={this.state.storageSize} id="registry-storage-size" placeholder="10" half>
+                      <SingleSelect options={RegistryFormComponent.storageSizeUnitOptions} value={this.state.storageSizeUnit} onChange={this.onPVCStorageSizeUnitChanged} />
+                    </LabelInput>
+                    <label>{t('CONTENT:STORAGECLASSNAME')}</label>
+                    <ScDropdown id="registy-sc" t={t} onChange={this.onPVCStorageClassNameChanged} />
+                  </>
+                )}
               <span style={{ marginTop: '5px' }}>{t('STRING:REGISTRY-CREATE_4')}</span>
             </Section>
             <Section label={t('CONTENT:LABELS')} isRequired={false}>
-              <SelectorInput desc={t('STRING:RESOURCEQUOTA-CREATE-1')} isFormControl={true} labelClassName="co-text-namespace" tags={[]} onChange={this.onLabelChanged} />
+              <SelectorInput desc={t('STRING:RESOURCEQUOTA-CREATE-1')} isFormControl={true} placeholder={t('STRING:REGISTRY-CREATE_9')} labelClassName="co-text-namespace" tags={[]} onChange={this.onLabelChanged} />
               <div id="labelErrMsg" style={{ display: 'none', color: 'red' }}>
                 <p>{t('VALIDATION:LABEL_FORM')}</p>
               </div>

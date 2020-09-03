@@ -200,6 +200,7 @@
     "REGISTRY-CREATE_6": "Select storage class",
     "REGISTRY-CREATE_7": "Invalid input value.",
     "REGISTRY-CREATE_8": "Example: 192.168.6.110.nip.io",
+    "REGISTRY-CREATE_9": "Example: App=frontend",
     "PULLSECRET-MODAL_0": "Specify default credentials to be used to authenticate and download containers within this namespace. These credentials will be the default unless a pod references a specific pull secret.",
     "PULLSECRET-MODAL_1": "A default pull secret exists, but can&rsquo;t be parsed. Saving this will overwrite it.",
     "PULLSECRET-MODAL_2": "Friendly name to help you manage this in the future",
@@ -918,7 +919,7 @@
     "TITLE": "Title",
     "CONTENT": "Content",
     "DECIDEDAT": "Decided at",
-    "SERVICECLASSLIST" : "Service Class List",
+    "SERVICECLASSLIST": "Service Class List",
     "SERVICECLASSCLASSIFICATION": "Service Class Classification"
   },
   "RESOURCE": {
