@@ -161,6 +161,7 @@ class RoleFormComponent extends React.Component {
         </Helmet>
         <form className="co-m-pane__body-group form-group" onSubmit={this.save}>
           <h1 className="co-m-pane__heading">{t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural(this.state.role.kind, t) })}</h1>
+          <p className="co-m-pane__explanation">{t('STRING:ROLE-CREATE_3')}</p>
           <fieldset disabled={!this.props.isCreate}>
             <Section label={t('CONTENT:ROLETYPE')}>
               <RadioGroup currentValue={kind} items={roleKinds} onChange={this.setKind} />
