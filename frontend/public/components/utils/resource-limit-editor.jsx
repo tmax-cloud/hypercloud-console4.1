@@ -29,9 +29,7 @@ export class ResourceLimitEditor extends React.Component {
   _change(e, i, type, isSelect = false) {
     const { updateParentData, nameValueId } = this.props;
     const resourceLimitsPairs = _.cloneDeep(this.props.resourceLimitsPairs);
-
     resourceLimitsPairs[i][type] = isSelect ? e.value : e.target.value;
-    console.log('_change, resourceLimitsPair[i][type]: ', resourceLimitsPairs[i][type]);
     updateParentData({ resourceLimitsPairs, isDuplicated: this.hasDuplication(resourceLimitsPairs) }, nameValueId);
   }
 
