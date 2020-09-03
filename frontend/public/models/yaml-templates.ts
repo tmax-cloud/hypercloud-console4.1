@@ -3519,15 +3519,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: example
-  namespace: sample1-name
+  name: example-service
+  namespace: default
 spec:
   selector:
-    app: MyApp
+    app: example-serviceapp
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 9376
+      targetPort: 9000
 `,
   )
   .setIn(
@@ -3536,19 +3536,21 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-service
+  name: example-service
+  namespace: default
 spec:
   selector:
-    app: MyApp
+    app: example-serviceapp
+  type: LoadBalancer
   ports:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 9376
-    - name: https
+      targetPort: 9000
+    - name: ssl
       protocol: TCP
       port: 443
-      targetPort: 9377
+      targetPort: 9443
 `,
   )
   .setIn(
@@ -3557,17 +3559,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-service
+  name: example-service
+  namespace: default
 spec:
   selector:
-    app: MyApp
+    app: example-serviceapp
+  type: NodePort
   ports:
-    - name: http
-      protocol: TCP
+    - protocol: TCP
       port: 80
-      targetPort: 9376
-  externalIPs:
-        - 80.11.12.10
+      targetPort: 9000
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.ServiceModel), 'service-sample4'],
+    `
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: example-service.com
 `,
   )
   .setIn(
