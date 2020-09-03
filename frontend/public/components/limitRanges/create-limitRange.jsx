@@ -9,6 +9,7 @@ import { formatNamespacedRouteForResource } from '../../ui/ui-actions';
 import { NsDropdown } from '../RBAC';
 import { ResourceLimitEditor } from '../utils/resource-limit-editor';
 import { ResourceLimitEditorPair } from '../utils/index';
+import { isConstructorDeclaration } from 'typescript';
 
 const Section = ({ label, children, isRequired, paddingTop }) => {
   return (
@@ -43,7 +44,7 @@ class LimitRangeFormComponent extends React.Component {
       limitRange: limitRange,
       inProgress: false,
       type: 'form',
-      limits: [['', '', '', '', '']],
+      limits: [['', '', '', '', '', '', 'Gi', 'Gi', 'Gi']],
       isDuplicated: false,
     };
     this.onNameChanged = this.onNameChanged.bind(this);
@@ -81,6 +82,7 @@ class LimitRangeFormComponent extends React.Component {
   }
 
   _updateLimits(limits) {
+    console.log('_updateLimits: ', limits);
     this.setState({
       limits: limits.resourceLimitsPairs,
       isDuplicated: limits.isDuplicated,
@@ -101,14 +103,19 @@ class LimitRangeFormComponent extends React.Component {
     let limits = [];
     this.state.limits.forEach(limit => {
       let newLimit = {};
-      const limitType = limit[ResourceLimitEditorPair.Type];
-      newLimit['type'] = limitType;
+      const type = limit[ResourceLimitEditorPair.Type];
+      newLimit['type'] = type;
       newLimit[limit[ResourceLimitEditorPair.LimitType]] = {};
-      if (limitType === 'PersistentVolumeClaim') {
-        newLimit[limit[ResourceLimitEditorPair.LimitType]]['storage'] = limit[ResourceLimitEditorPair.Storage];
+      if (type === 'PersistentVolumeClaim') {
+        newLimit[limit[ResourceLimitEditorPair.LimitType]]['storage'] = limit[ResourceLimitEditorPair.Storage] + limit[ResourceLimitEditorPair.StorageUnit];
       } else {
-        newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu];
-        newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory];
+        const limitType = limit[ResourceLimitEditorPair.LimitType];
+        if (limitType === 'maxLimitRequestRatio') {
+          newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Ratio];
+        } else {
+          newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu] + limit[ResourceLimitEditorPair.CpuUnit];
+          newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory] + limit[ResourceLimitEditorPair.MemoryUnit];
+        }
       }
       limits.push(newLimit);
     });
