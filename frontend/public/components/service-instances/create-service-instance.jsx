@@ -367,7 +367,7 @@ const withServiceInstanceForm = SubForm =>
                 {this.state.serviceClass === "Namespace" && (
                   <Section label={t('CONTENT:NAMESPACE')}>
                     <NsDropdown id="namespace" t={t} defaultValue={this.state.namespace} onChange={this.onNamespaceChanged} />
-                    <p style={{color: '#777'}}>{"접근 권한이 있는 네임스페이스에서 서비스 클래스를 선택합니다."}</p>
+                    <p style={{color: '#777'}}>{t('STRING:SERVICEINSTANCE-CREATE_5')}</p>
                   </Section>
                 )}
                 <div className="separator"></div>

@@ -173,6 +173,7 @@
     "SERVICEINSTANCE-CREATE_2": "Select Instance Settings",
     "SERVICEINSTANCE-CREATE_3": "No Service Class Found",
     "SERVICEINSTANCE-CREATE_4": "No Service Plan Found",
+    "SERVICEINSTANCE-CREATE_5": "Select a service class from the namespace to which you have access.",
     "ROLEBINDING-CREATE_0": "Associate a user/group to the selected role to define the type of access and resources that are allowed.",
     "ROLEBINDING-CREATE_1": "Select role name",
     "ROLEBINDING-CREATE_2": "Select namespace",
