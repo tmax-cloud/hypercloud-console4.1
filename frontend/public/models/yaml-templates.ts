@@ -3234,16 +3234,16 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: example
-  namespace: sample1-name
+  name: example-ingress
+  namespace: default
 spec:
   rules:
-    - host: example.com
+    - host: example-ingress.com
       http:
         paths:
-          - path: /testpath
+          - path: /ingresspath
             backend:
-              serviceName: test
+              serviceName: ingress-service
               servicePort: 80
 `,
   )
@@ -3253,11 +3253,11 @@ spec:
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: test-ingress
-  namespace: sample1-name
+  name: example-ingress
+  namespace: default
 spec:
   backend:
-    serviceName: testsvc
+    serviceName: ingress-service
     servicePort: 80
 `,
   )
