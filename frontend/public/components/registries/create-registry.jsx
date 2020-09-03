@@ -22,12 +22,12 @@ const Section = ({ label, children, isRequired, paddingTop }) => {
   );
 };
 
-const LabelInput = ({ label, placeholder, onChange, value, id, half, isPassword, children }) => {
+const LabelInput = ({ label, placeholder, onChange, onFocus, value, id, half, isPassword, children }) => {
   return (
     <>
       <label htmlFor={id}>{label}</label>
       <div style={{ display: 'flex' }}>
-        <input className={half ? 'form-control half' : 'form-control'} type={isPassword ? 'password' : 'text'} onChange={onChange} value={value} id={id} style={{ marginBottom: '10px' }} placeholder={placeholder} required />
+        <input className={half ? 'form-control half' : 'form-control'} type={isPassword ? 'password' : 'text'} onChange={onChange} onFocus={onFocus} value={value} id={id} style={{ marginBottom: '10px' }} placeholder={placeholder} />
         {children ? <span style={{ width: '40px' }}>{children}</span> : ''}
       </div>
     </>
@@ -69,8 +69,127 @@ class RegistryFormComponent extends React.Component {
       storageSize: '',
       storageSizeUnit: 'Gi',
       storageClassName: '',
+      inputError: {
+        name: null,
+        namespace: null,
+        image: null,
+        loginInformation: null,
+        service: null,
+        pvc: null,
+      },
     };
   }
+
+  isRequiredFilled = (k8sResource, item, element) => {
+    console.log('is RequiredFilled!!, k8sResource: ', k8sResource, ',item: ', item, ', element: ', element);
+
+    const { t } = this.props;
+    if (k8sResource.metadata[item] === '') {
+      switch (item) {
+        case 'name':
+          this.setState({ inputError: { name: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:NAME`) }) } });
+          return false;
+        case 'namespace':
+          this.setState({ inputError: { namespace: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:NAMESPACE`) }) } });
+          return false;
+      }
+    } else if (k8sResource.spec[item] === '') {
+      this.setState({ inputError: { [item]: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:${item.toUpperCase()}`) }) } });
+      return false;
+    } else if (item === 'loginInformation') {
+      if (k8sResource.spec.loginId === '' || k8sResource.spec.loginPassword === '' || this.state.loginPwdConfirm === '') {
+        this.setState({ inputError: { [item]: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:${item.toUpperCase()}`) }) } });
+        return false;
+      } else {
+        this.setState({
+          inputError: {
+            [item]: null,
+          },
+        });
+        return true;
+      }
+    } else if (item === 'service') {
+      if ((this.state.serviceType === 'ingress' && this.state.domainName === '') || (this.state.serviceType === 'loadBalancer' && this.state.port === '')) {
+        this.setState({ inputError: { [item]: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:${item.toUpperCase()}`) }) } });
+        return false;
+      } else {
+        this.setState({
+          inputError: {
+            [item]: null,
+          },
+        });
+        return true;
+      }
+    } else if (item === 'pvc') {
+      if ((this.state.pvcType === 'exist' && this.state.pvc === '') || (this.state.serviceType === 'create' && (this.state.storageSize === '' || this.state.storageClassName === ''))) {
+        this.setState({ inputError: { [item]: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:${item.toUpperCase()}`) }) } });
+        return false;
+      } else {
+        this.setState({
+          inputError: {
+            [item]: null,
+          },
+        });
+        return true;
+      }
+    }
+    else {
+      this.setState({
+        inputError: {
+          [item]: null,
+        },
+      });
+      return true;
+    }
+  };
+
+  onFocusName = () => {
+    this.setState({
+      inputError: {
+        name: null,
+      },
+    });
+  };
+
+  onFocusNamespace = () => {
+    this.setState({
+      inputError: {
+        namespace: null,
+      },
+    });
+  };
+
+  onFocusImage = () => {
+    this.setState({
+      inputError: {
+        image: null,
+      },
+    });
+  };
+
+  onFocusLoginInformation = () => {
+    this.setState({
+      inputError: {
+        loginInformation: null,
+      },
+    });
+  };
+
+  onFocusService = () => {
+    this.setState({
+      inputError: {
+        service: null,
+      },
+    });
+  };
+
+  onFocusPvc = () => {
+    this.setState({
+      inputError: {
+        pvc: null,
+      },
+    });
+  };
 
   onNameChanged = e => {
     const registry = { ...this.state.registry };
@@ -151,6 +270,11 @@ class RegistryFormComponent extends React.Component {
     this.setState({ error: undefined, inProgress: true });
     const newRegistry = _.assign({}, this.state.registry);
 
+    if (!this.isRequiredFilled(newRegistry, 'name', 'INPUT') || !this.isRequiredFilled(newRegistry, 'namespace', 'SELECT') || !this.isRequiredFilled(newRegistry, 'image', 'INPUT') || !this.isRequiredFilled(newRegistry, 'loginInformation', 'INPUT') || !this.isRequiredFilled(newRegistry, 'service', 'INPUT') || !this.isRequiredFilled(newRegistry, 'pvc', 'INPUT')) {
+      this.setState({ inProgress: false });
+      return;
+    }
+
     if (this.state.registry.spec.loginPassword !== this.state.loginPwdConfirm) {
       this.setState({ error: t('STRING:REGISTRY-CREATE_7'), inProgress: false });
     } else {
@@ -215,44 +339,50 @@ class RegistryFormComponent extends React.Component {
           <h1 className="co-m-pane__heading">{t('ADDITIONAL:CREATEBUTTON', { something: t(`RESOURCE:${this.state.registry.kind.toUpperCase()}`) })}</h1>
           <fieldset disabled={!this.props.isCreate}>
             <Section label={t('CONTENT:NAME')} isRequired={true}>
-              <input className="form-control" type="text" onChange={this.onNameChanged} value={this.state.registry.metadata.name} id="registry-name" required />
+              <input className="form-control" type="text" onChange={this.onNameChanged} onFocus={this.onFocusName} value={this.state.registry.metadata.name} id="registry-name" />
+              {this.state.inputError.name && <p className="cos-error-title">{this.state.inputError.name}</p>}
             </Section>
             <Section label={t('CONTENT:NAMESPACE')} isRequired={true}>
-              <NsDropdown id="registy-namespace" t={t} onChange={this.onNamespaceChanged} />
+              <NsDropdown id="registy-namespace" t={t} onChange={this.onNamespaceChanged} onFocus={this.onFocusNamespace} />
+              {this.state.inputError.namespace && <p className="cos-error-title">{this.state.inputError.namespace}</p>}
             </Section>
             <Section label={t('CONTENT:REGISTRYCREATIONIMAGE')} isRequired={true}>
-              <input className="form-control" placeholder={t('STRING:REGISTRY-CREATE_0')} type="text" onChange={this.onImageChanged} value={this.state.registry.spec.image} id="registry-image" required />
+              <input className="form-control" placeholder={t('STRING:REGISTRY-CREATE_0')} type="text" onChange={this.onImageChanged} onFocus={this.onFocusImage} value={this.state.registry.spec.image} id="registry-image" />
               <span>{t('STRING:REGISTRY-CREATE_1')}</span>
+              {this.state.inputError.image && <p className="cos-error-title">{this.state.inputError.image}</p>}
             </Section>
             <Section label={t('CONTENT:LOGININFORMATION')} isRequired={true}>
-              <LabelInput label={t('CONTENT:ID')} onChange={this.onIdChanged} value={this.state.registry.spec.loginId} id="registry-id" />
-              <LabelInput label={t('CONTENT:PASSWORD')} onChange={this.onPwdChanged} value={this.state.registry.spec.loginPassword} id="registry-password" isPassword={true} />
-              <LabelInput label={t('CONTENT:PASSWORDCONFIRM')} onChange={this.onPwdConfirmChanged} value={this.state.loginPwdConfirm} id="registry-password-confirm" isPassword={true} />
+              <LabelInput label={t('CONTENT:ID')} onChange={this.onIdChanged} onFocus={this.onFocusLoginInformation} value={this.state.registry.spec.loginId} id="registry-id" />
+              <LabelInput label={t('CONTENT:PASSWORD')} onChange={this.onPwdChanged} onFocus={this.onFocusLoginInformation} value={this.state.registry.spec.loginPassword} id="registry-password" isPassword={true} />
+              <LabelInput label={t('CONTENT:PASSWORDCONFIRM')} onChange={this.onPwdConfirmChanged} onFocus={this.onFocusLoginInformation} value={this.state.loginPwdConfirm} id="registry-password-confirm" isPassword={true} />
               <span>{t('STRING:REGISTRY-CREATE_2')}</span>
+              {this.state.inputError.loginInformation && <p className="cos-error-title">{this.state.inputError.loginInformation}</p>}
             </Section>
             <Section label={t('CONTENT:SERVICE')} isRequired={true}>
               <label>{t('CONTENT:SERVICETYPE')}</label>
               <RadioGroup currentValue={this.state.serviceType} items={serviceTypes} onChange={this.onServiceTypeChanged} formRow={true} />
-              {this.state.serviceType === 'ingress' ? <LabelInput label={t('CONTENT:DOMAINNAME')} onChange={this.onServiceDomainNameChanged} value={this.state.domainName} id="registry-domain-name" placeholder={t('STRING:REGISTRY-CREATE_8')} /> : ''}
-              {this.state.serviceType === 'loadBalancer' ? <LabelInput label={t('CONTENT:PORT')} onChange={this.onServicePortChanged} value={this.state.port} id="registry-port" placeholder="1~65535" half /> : ''}
+              {this.state.serviceType === 'ingress' ? <LabelInput label={t('CONTENT:DOMAINNAME')} onChange={this.onServiceDomainNameChanged} onFocus={this.onFocusService} value={this.state.domainName} id="registry-domain-name" placeholder={t('STRING:REGISTRY-CREATE_8')} /> : ''}
+              {this.state.serviceType === 'loadBalancer' ? <LabelInput label={t('CONTENT:PORT')} onChange={this.onServicePortChanged} onFocus={this.onFocusService} value={this.state.port} id="registry-port" placeholder="1~65535" half /> : ''}
               <span>{t('STRING:REGISTRY-CREATE_3')}</span>
+              {this.state.inputError.service && <p className="cos-error-title">{this.state.inputError.service}</p>}
             </Section>
             <Section label={t('CONTENT:PVC')} isRequired={true}>
               <RadioGroup currentValue={this.state.pvcType} items={PVCTypes} onChange={this.onPvcTypeChanged} formRow={true} />
               {this.state.pvcType === 'exist' ? (
-                <PvcDropdown id="registy-pvc" t={t} onChange={this.onPvcChanged} namespace={this.state.registry.metadata.namespace} />
+                <PvcDropdown id="registy-pvc" t={t} onChange={this.onPvcChanged} onFocus={this.onFocusPvc} namespace={this.state.registry.metadata.namespace} />
               ) : (
                   <>
                     <label>{t('CONTENT:ACCESSMODES')}</label>
                     <RadioGroup currentValue={this.state.accessModes} items={aceessModes} onChange={this.onPVCAccessModeChanged} formRow={true} />
-                    <LabelInput label={t('RESOURCE:STORAGESIZE')} onChange={this.onPVCStorageSizeChanged} value={this.state.storageSize} id="registry-storage-size" placeholder="10" half>
+                    <LabelInput label={t('RESOURCE:STORAGESIZE')} onChange={this.onPVCStorageSizeChanged} onFocus={this.onFocusPvc} value={this.state.storageSize} id="registry-storage-size" placeholder="10" half>
                       <SingleSelect options={RegistryFormComponent.storageSizeUnitOptions} value={this.state.storageSizeUnit} onChange={this.onPVCStorageSizeUnitChanged} />
                     </LabelInput>
                     <label>{t('CONTENT:STORAGECLASSNAME')}</label>
-                    <ScDropdown id="registy-sc" t={t} onChange={this.onPVCStorageClassNameChanged} />
+                    <ScDropdown id="registy-sc" t={t} onChange={this.onPVCStorageClassNameChanged} onFocus={this.onFocusPvc} />
                   </>
                 )}
               <span style={{ marginTop: '5px' }}>{t('STRING:REGISTRY-CREATE_4')}</span>
+              {this.state.inputError.pvc && <p className="cos-error-title">{this.state.inputError.pvc}</p>}
             </Section>
             <Section label={t('CONTENT:LABELS')} isRequired={false}>
               <SelectorInput desc={t('STRING:RESOURCEQUOTA-CREATE-1')} isFormControl={true} placeholder={t('STRING:REGISTRY-CREATE_9')} labelClassName="co-text-namespace" tags={[]} onChange={this.onLabelChanged} />
