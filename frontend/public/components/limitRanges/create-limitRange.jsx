@@ -43,7 +43,7 @@ class LimitRangeFormComponent extends React.Component {
       limitRange: limitRange,
       inProgress: false,
       type: 'form',
-      limits: [['', '', '', '', '', '', 'Gi', 'Gi', 'Gi']],
+      limits: [['Pod', '', '', '', '', '', 'Gi', 'Gi', 'Gi']],
       isDuplicated: false,
       inputError: {
         name: null,
