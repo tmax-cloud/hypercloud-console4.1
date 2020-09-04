@@ -347,7 +347,7 @@
     "HPA-SIDEBAR_1": "파드의 CPU 사용율이 50%가 넘어갈 경우 AutoScaling이 발생합니다.\n최소 파드의 개수는 1개이며, 최대 파드 개수는 3개입니다.\nAutoScale 조건 (targetAverageUtilization / targetAverageValue)",
     "HPA-SIDEBAR_2": "Memory 기준으로 HPA(Horizontal파드Autoscaler) 생성",
     "HPA-SIDEBAR_3": "파드의 Memory 사용이 100Mi가 넘어갈 경우 AutoScaling이 발생합니다.\n최소 파드의 개수는 1개이며, 최대 파드 개수는 5개입니다.\nAutoScale 조건 (targetAverageUtilization / targetAverageValue)",
-    "DEPLOYMENT-CREATE_0": "Create a Deployment by specifying the container image(s) as well as parameters shown below.",
+    "DEPLOYMENT-CREATE_0": "아래 표시된 매개변수와 컨테이너 이미지를 지정하여 디플로이먼트를 생성합니다.",
     "DEPLOYMENT-SIDEBAR_0": "기본 디플로이먼트 생성",
     "DEPLOYMENT-SIDEBAR_1": "image(nginx)를 이용하여 파드 1개로 구성된 디플로이먼트를 생성할 수 있습니다.",
     "DEPLOYMENT-SIDEBAR_2": "파드 3개의 디플로이먼트 생성",
