@@ -27,6 +27,12 @@ export const ServiceSidebar = ({ loadSampleYaml, downloadSampleYaml }) => {
       templateName: 'service-sample3',
       kind: referenceForModel(ServiceModel),
     },
+    {
+      header: t('STRING:SERVICE-SIDEBAR_6'),
+      details: t('STRING:SERVICE-SIDEBAR_7'),
+      templateName: 'service-sample4',
+      kind: referenceForModel(ServiceModel),
+    },
   ];
 
   return (

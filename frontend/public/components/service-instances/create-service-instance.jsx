@@ -346,6 +346,7 @@ const withServiceInstanceForm = SubForm =>
           {/* <form className="co-m-pane__body-group co-create-service-instance-form" onSubmit={() => this.save}> */}
           <div className="co-m-pane__body-group co-create-service-instance-form form-group">
             <h1 className="co-m-pane__heading">{title}</h1>
+            <p className="co-m-pane__explanation">{t('STRING:SERVICEINSTANCE-CREATE_6')}</p>
             {/* <p className="co-m-pane__explanation">{this.props.explanation}</p> */}
             <Stepper steps={steps} activeStep={currentStep} />
             <div className="separator"></div>
@@ -367,7 +368,7 @@ const withServiceInstanceForm = SubForm =>
                 {this.state.serviceClass === "Namespace" && (
                   <Section label={t('CONTENT:NAMESPACE')}>
                     <NsDropdown id="namespace" t={t} defaultValue={this.state.namespace} onChange={this.onNamespaceChanged} />
-                    <p style={{color: '#777'}}>{"접근 권한이 있는 네임스페이스에서 서비스 클래스를 선택합니다."}</p>
+                    <p style={{color: '#777'}}>{t('STRING:SERVICEINSTANCE-CREATE_5')}</p>
                   </Section>
                 )}
                 <div className="separator"></div>

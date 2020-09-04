@@ -3234,16 +3234,16 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: example
-  namespace: sample1-name
+  name: example-ingress
+  namespace: default
 spec:
   rules:
-    - host: example.com
+    - host: example-ingress.com
       http:
         paths:
-          - path: /testpath
+          - path: /ingresspath
             backend:
-              serviceName: test
+              serviceName: ingress-service
               servicePort: 80
 `,
   )
@@ -3253,11 +3253,11 @@ spec:
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: test-ingress
-  namespace: sample1-name
+  name: example-ingress
+  namespace: default
 spec:
   backend:
-    serviceName: testsvc
+    serviceName: ingress-service
     servicePort: 80
 `,
   )
@@ -3519,15 +3519,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: example
-  namespace: sample1-name
+  name: example-service
+  namespace: default
 spec:
   selector:
-    app: MyApp
+    app: example-serviceapp
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 9376
+      targetPort: 9000
 `,
   )
   .setIn(
@@ -3536,19 +3536,21 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-service
+  name: example-service
+  namespace: default
 spec:
   selector:
-    app: MyApp
+    app: example-serviceapp
+  type: LoadBalancer
   ports:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 9376
-    - name: https
+      targetPort: 9000
+    - name: ssl
       protocol: TCP
       port: 443
-      targetPort: 9377
+      targetPort: 9443
 `,
   )
   .setIn(
@@ -3557,17 +3559,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-service
+  name: example-service
+  namespace: default
 spec:
   selector:
-    app: MyApp
+    app: example-serviceapp
+  type: NodePort
   ports:
-    - name: http
-      protocol: TCP
+    - protocol: TCP
       port: 80
-      targetPort: 9376
-  externalIPs:
-        - 80.11.12.10
+      targetPort: 9000
+`,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.ServiceModel), 'service-sample4'],
+    `
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: example-service.com
 `,
   )
   .setIn(
@@ -5323,10 +5337,10 @@ spec:
   .setIn(
     [referenceForModel(k8sModels.PodSecurityPolicyModel), 'podsecuritypolicy-sample2'],
     `
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: example-nonrootpsp
+  name: example-nonroot-psp
 spec:
   seLinux:
     rule: RunAsAny
@@ -5343,23 +5357,29 @@ spec:
   .setIn(
     [referenceForModel(k8sModels.PodSecurityPolicyModel), 'podsecuritypolicy-sample3'],
     `
-apiVersion: extensions/v1beta1
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: example-usergrouppsp
+  name: example-usergroup-psp
 spec:
   seLinux:
     rule: RunAsAny
   supplementalGroups:
     rule: MustRunAs
+    ranges:
+      - min: 1
+        max: 65535
   runAsUser:
     rule: RunAsAny
   runAsGroup:
     rule: MustRunAs
+    ranges:
+      - min: 1
+        max: 65535
   fsGroup:
     rule: RunAsAny
   volumes:
-  - '*'
+   - '*'
 `,
   )
   .setIn(
