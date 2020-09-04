@@ -23,7 +23,7 @@ export class ResourceLimitEditor extends React.Component {
     const { updateParentData, nameValueId } = this.props;
     const resourceLimitsPairs = _.cloneDeep(this.props.resourceLimitsPairs);
     resourceLimitsPairs.splice(i, 1);
-    updateParentData({ resourceLimitsPairs: resourceLimitsPairs.length ? resourceLimitsPairs : [['', '', '', '', '']], isDuplicated: this.hasDuplication(resourceLimitsPairs) }, nameValueId);
+    updateParentData({ resourceLimitsPairs: resourceLimitsPairs.length ? resourceLimitsPairs : [['', '', '', '', '', '', 'Gi', 'Gi', 'Gi']], isDuplicated: this.hasDuplication(resourceLimitsPairs) }, nameValueId);
   }
 
   _change(e, i, type, isSelect = false) {
