@@ -81,8 +81,6 @@ class RegistryFormComponent extends React.Component {
   }
 
   isRequiredFilled = (k8sResource, item, element) => {
-    console.log('is RequiredFilled!!, k8sResource: ', k8sResource, ',item: ', item, ', element: ', element);
-
     const { t } = this.props;
     if (k8sResource.metadata[item] === '') {
       switch (item) {

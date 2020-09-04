@@ -85,7 +85,6 @@ class LimitRangeFormComponent extends React.Component {
   }
 
   _updateLimits(limits) {
-    console.log('_updateLimits, limits: ', limits);
     this.setState({
       limits: limits.resourceLimitsPairs,
       isDuplicated: limits.isDuplicated,

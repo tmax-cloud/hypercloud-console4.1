@@ -175,7 +175,6 @@ class NamespaceClaimFormComponent extends React.Component {
     (this.props.isCreate ? k8sCreate(ko, newNamespaceclaim) : k8sUpdate(ko, newNamespaceclaim, metadata.namespace, newNamespaceclaim.metadata.name)).then(
       () => {
         this.setState({ inProgress: false });
-        console.log(this.state);
         history.push('/k8s/cluster/namespaceclaims');
       },
       err => this.setState({ error: err.message, inProgress: false }),
