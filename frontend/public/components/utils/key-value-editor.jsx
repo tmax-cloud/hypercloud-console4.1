@@ -79,13 +79,6 @@ export class KeyValueEditor extends React.Component {
         </div>
         {portItems}
         <div className="row">
-          {isDuplicated ? (
-            <div className="col-md-12 col-xs-12 cos-error-title" style={{ marginTop: '-15px' }}>
-              {t(`VALIDATION:DUPLICATE-KEY`)}
-            </div>
-          ) : null}
-        </div>
-        <div className="row">
           <div className="col-md-12 col-xs-12">
             {readOnly ? null : (
               <React.Fragment>
@@ -96,6 +89,11 @@ export class KeyValueEditor extends React.Component {
               </React.Fragment>
             )}
           </div>
+          {isDuplicated ? (
+            <div className="col-md-12 col-xs-12 cos-error-title">
+              {t(`VALIDATION:DUPLICATE-KEY`)}
+            </div>
+          ) : null}
         </div>
       </React.Fragment>
     );
