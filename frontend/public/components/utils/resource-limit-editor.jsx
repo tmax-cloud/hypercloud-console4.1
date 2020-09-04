@@ -54,13 +54,6 @@ export class ResourceLimitEditor extends React.Component {
       <React.Fragment>
         {keyValueItems}
         <div className="row">
-          {isDuplicated ? (
-            <div className="col-md-12 col-xs-12 cos-error-title" style={{ marginTop: '-15px' }}>
-              {t(`VALIDATION:DUPLICATE-KEY`)}
-            </div>
-          ) : null}
-        </div>
-        <div className="row">
           <div className="col-md-12 col-xs-12">
             {readOnly ? null : (
               <React.Fragment>
@@ -73,6 +66,11 @@ export class ResourceLimitEditor extends React.Component {
           </div>
           <div className="col-md-12 col-xs-12">{desc ? <span>{desc}</span> : ''}</div>
           <div className="col-md-12 col-xs-12">{anotherDesc ? <span>{anotherDesc}</span> : ''}</div>
+          {isDuplicated ? (
+            <div className="col-md-12 col-xs-12 cos-error-title">
+              {t(`VALIDATION:DUPLICATE-KEY`)}
+            </div>
+          ) : null}
         </div>
       </React.Fragment>
     );
