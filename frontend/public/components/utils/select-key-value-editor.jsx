@@ -41,7 +41,7 @@ export class SelectKeyValueEditor extends React.Component {
 
   hasDuplication = keyValuePairs => {
     let keys = keyValuePairs.map(pair => (pair[0] === 'etc' ? pair[1] : pair[0]));
-    return new Set(keys).size !== keys.length;
+    return keys.some(key => key !== '' && keys.indexOf(key) !== keys.lastIndexOf(key));
   };
 
   render() {
@@ -140,8 +140,8 @@ class SelectKeyValuePairElement extends React.Component {
             <input type="text" className="form-control" placeholder={t(`CONTENT:${keyString.toUpperCase()}`)} value={pair[SelectKeyValueEditorPair.Key] || ''} onChange={this._onChangeKey} onBlur={this._onBlurKey} />
           </div>
         ) : (
-          ''
-        )}
+            ''
+          )}
         <div className="col-md-2 col-xs-2 pairs-list__protocol-field">
           <input type="text" className="form-control" placeholder={t(`CONTENT:${valueString.toUpperCase()}`)} value={pair[SelectKeyValueEditorPair.Value] || ''} onChange={this._onChangeValue} />
         </div>

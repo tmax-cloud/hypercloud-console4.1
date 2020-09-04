@@ -31,7 +31,7 @@ export class KeyValueEditor extends React.Component {
     keyValuePairs.splice(i, 1);
     if (this.state.isDuplicated) {
       let array = keyValuePairs.map(pair => pair[0]);
-      if (new Set(array).size !== array.length) {
+      if (array.some(item => item !== '' && array.indexOf(item) !== array.lastIndexOf(item))) {
         this.setState({ isDuplicated: true });
         updateParentData({ keyValuePairs: keyValuePairs.length ? keyValuePairs : [['', '']], isDuplicated: true }, nameValueId);
       } else {
@@ -55,7 +55,7 @@ export class KeyValueEditor extends React.Component {
     const keyValuePairs = _.cloneDeep(this.props.keyValuePairs);
     //키값이 중복되는 경우
     let array = keyValuePairs.map(pair => pair[0]);
-    if (new Set(array).size !== array.length) {
+    if (array.some(item => item !== '' && array.indexOf(item) !== array.lastIndexOf(item))) {
       this.setState({ isDuplicated: true });
       updateParentData({ keyValuePairs, isDuplicated: true }, nameValueId);
     } else {

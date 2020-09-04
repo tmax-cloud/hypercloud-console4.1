@@ -41,7 +41,7 @@ export class ResourceLimitEditor extends React.Component {
 
   hasDuplication = resourceLimitsPairs => {
     let keys = resourceLimitsPairs.map(pair => pair[ResourceLimitEditorPair.Type] + pair[ResourceLimitEditorPair.LimitType]);
-    return new Set(keys).size !== keys.length;
+    return keys.some(key => key !== '' && keys.indexOf(key) !== keys.lastIndexOf(key));
   };
 
   render() {
