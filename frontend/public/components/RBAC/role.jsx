@@ -197,7 +197,7 @@ export const BindingsForRolePage = props => {
   if (!ns) {
     resources.push({ kind: 'ClusterRoleBinding', namespaced: false, optional: true });
   }
-  return <MultiListPage canCreate={true} createProps={{ to: `/k8s/${ns ? `ns/${ns}` : 'cluster'}/rolebindings/new?rolekind=${kind}&rolename=${name}` }} ListComponent={BindingsListComponent} staticFilters={[{ 'role-binding-roleRef': name }]} resources={resources} textFilter="role-binding" filterLabel="Role Bindings by role or subject" namespace={ns} flatten={bindingsFlatten} />;
+  return <MultiListPage canCreate={true} createProps={{ to: `/k8s/${ns ? `ns/${ns}` : 'cluster'}/rolebindings/new?rolekind=${kind}&rolename=${name}` }} ListComponent={BindingsListComponent} staticFilters={[{ 'role-binding-roleRef': name }]} resources={resources} textFilter="role-binding" filterLabel="Role Bindings by role or subject" namespace={ns} flatten={bindingsFlatten} isSearch={false} />;
 };
 
 export const RolesDetailsPage = props => {
@@ -248,7 +248,7 @@ export const RolesPage = connectToFlags(
   };
   const createProps = {
     items: createItems,
-    createLink: type => type === 'yaml' ? `/k8s/ns/${namespace || 'default'}/roles/new` : `/k8s/cluster/roles/new/form`
+    createLink: type => (type === 'yaml' ? `/k8s/ns/${namespace || 'default'}/roles/new` : `/k8s/cluster/roles/new/form`),
   };
   return (
     <MultiListPage

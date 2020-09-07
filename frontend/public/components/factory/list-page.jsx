@@ -188,7 +188,7 @@ export const FireMan_ = connect(null, { filterList: k8sActions.filterList })(
         }
       }
 
-      const { title, tooltipContents } = this.props;
+      const { title, tooltipContents, isSearch = true } = this.props;
       return (
         <React.Fragment>
           {title && <NavTitle title={title} tooltipContents={tooltipContents} />}
@@ -199,10 +199,12 @@ export const FireMan_ = connect(null, { filterList: k8sActions.filterList })(
                 <CompactExpandButtons expand={this.state.expand} onExpandChange={this.onExpandChange} />
               </div>
             )}
-            <div className={classNames('co-m-pane__filter-bar-group', DropdownFilters ? 'co-m-pane__filter-bar-group--filters' : 'co-m-pane__filter-bar-group--filter')}>
-              {DropdownFilters && <div className="btn-group">{DropdownFilters}</div>}
-              <TextFilter label={filterLabel} onChange={e => this.applyFilter(textFilter, e.target.value)} defaultValue={this.defaultValue} tabIndex={1} autoFocus={autoFocus} id={id} />
-            </div>
+            {isSearch && (
+              <div className={classNames('co-m-pane__filter-bar-group', DropdownFilters ? 'co-m-pane__filter-bar-group--filters' : 'co-m-pane__filter-bar-group--filter')}>
+                {DropdownFilters && <div className="btn-group">{DropdownFilters}</div>}
+                <TextFilter label={filterLabel} onChange={e => this.applyFilter(textFilter, e.target.value)} defaultValue={this.defaultValue} tabIndex={1} autoFocus={autoFocus} id={id} />
+              </div>
+            )}
           </div>
           <div className="co-m-pane__body">
             {inject(this.props.children, {
@@ -233,6 +235,7 @@ FireMan_.propTypes = {
   filterLabel: PropTypes.string,
   textFilter: PropTypes.string,
   title: PropTypes.string,
+  isSearch: PropTypes.bool,
   resources: PropTypes.arrayOf(
     PropTypes.shape({
       kind: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
@@ -316,7 +319,7 @@ export const MultiListPage = props => {
   }));
 
   const elems = (
-    <FireMan_ filterLabel={filterLabel} id={id} selectorFilterLabel="Filter by selector (app=nginx) ..." createProps={createProps} title={showTitle ? title : undefined} canCreate={props.canCreate} canExpand={props.canExpand} createButtonText={createButtonText || 'Create'} textFilter={props.textFilter} resources={resources} autoFocus={fake ? false : props.autoFocus} dropdownFilters={props.dropdownFilters} tooltipContents={props.tooltipContents}>
+    <FireMan_ filterLabel={filterLabel} id={id} selectorFilterLabel="Filter by selector (app=nginx) ..." createProps={createProps} title={showTitle ? title : undefined} canCreate={props.canCreate} canExpand={props.canExpand} isSearch={props.isSearch} createButtonText={createButtonText || 'Create'} textFilter={props.textFilter} resources={resources} autoFocus={fake ? false : props.autoFocus} dropdownFilters={props.dropdownFilters} tooltipContents={props.tooltipContents}>
       <Firehose resources={resources}>
         <ListPageWrapper_ ListComponent={props.ListComponent} kinds={_.map(resources, 'kind')} rowFilters={props.rowFilters} staticFilters={props.staticFilters} flatten={flatten} label={props.label} fake={fake} />
       </Firehose>
