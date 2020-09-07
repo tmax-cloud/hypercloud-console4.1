@@ -197,6 +197,7 @@ const Requestform = (SubForm) => class SecretFormComponent extends React.Compone
     return <div className="co-m-pane__body">
       <form className="co-m-pane__body-group co-create-secret-form" onSubmit={this.save}>
         <h1 className="co-m-pane__heading">{t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural(this.state.templateInstance.kind, t) })}</h1>
+        <p className="co-m-pane__explanation">{t('STRING:TEMPLATEINSTANCE-CREATE_0')}</p>
         <fieldset disabled={!this.props.isCreate}>
           <div className="form-group">
             <label className="control-label" htmlFor="secret-name">{t('CONTENT:NAME')}</label>

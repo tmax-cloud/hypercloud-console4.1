@@ -432,7 +432,8 @@
     "AUDIT-LIST_3": "전체 코드",
     "AUDIT-LIST_4": "~",
     "AUDIT-LIST_5": "조회 기간",
-    "PIPELINERESOURCE-CREATE_0": "태스크 스텝(Step)에서 처리된 입력 및 생성된 출력의 위치를 정의합니다."
+    "PIPELINERESOURCE-CREATE_0": "태스크 스텝(Step)에서 처리된 입력 및 생성된 출력의 위치를 정의합니다.",
+    "TEMPLATEINSTANCE-CREATE_0": "애플리케이션을 배치하기 위해 템플릿에 필요한 파라미터를 입력하십시오."
   },
   "CONTENT": {
     "ADD": "추가",

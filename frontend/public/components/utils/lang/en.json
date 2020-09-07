@@ -434,7 +434,8 @@
     "AUDIT-LIST_3": "All Codes",
     "AUDIT-LIST_4": "to",
     "AUDIT-LIST_5": "Inquiry Period",
-    "PIPELINERESOURCE-CREATE_0": "Defines locations for inputs ingested and outputs produced by the steps in Tasks."
+    "PIPELINERESOURCE-CREATE_0": "Defines locations for inputs ingested and outputs produced by the steps in Tasks.",
+    "TEMPLATEINSTANCE-CREATE_0": "Enter the parameters required by the template to deploy the application."
   },
   "CONTENT": {
     "TASKPARAMETERCONFIG": "Task Paramter Config",
