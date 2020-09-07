@@ -64,7 +64,6 @@ class NamespaceFormComponent extends React.Component {
     this.setState({ namespace: namespace });
   }
   isRequiredFilled = (k8sResource, item, element) => {
-    console.log('isRequiredFilled', k8sResource, item, element);
     const { t } = this.props;
     if (k8sResource.metadata[item] === '') {
       switch (item) {

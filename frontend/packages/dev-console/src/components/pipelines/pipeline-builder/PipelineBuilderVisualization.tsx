@@ -11,6 +11,7 @@ import {
   TaskErrorMap,
   UpdateTasksCallback
 } from './types';
+import { useTranslation } from 'react-i18next';
 
 type PipelineBuilderVisualizationProps = {
   namespace: string;
@@ -34,6 +35,7 @@ const PipelineBuilderVisualization: React.FC<PipelineBuilderVisualizationProps> 
     taskGroup,
     tasksInError
   );
+  const { t } = useTranslation();
 
   if (loadingTasksError) {
     return (
@@ -48,7 +50,7 @@ const PipelineBuilderVisualization: React.FC<PipelineBuilderVisualizationProps> 
   if (tasksCount === 0 && taskGroup.tasks.length === 0) {
     // No tasks, nothing we can do here...
     return (
-      <Alert variant="danger" isInline title="Unable to locate any tasks." />
+      <Alert variant="danger" isInline title={t('STRING:PIPELINE-CREATE_4')} />
     );
   }
 
