@@ -155,16 +155,16 @@ const BindingHeader = props => {
   const { t } = useTranslation();
   return (
     <ListHeader>
-      <ColHead {...props} className="col-xs-4" sortField="metadata.name">
+      <ColHead {...props} className="col-xs-4" sortField={false}>
         {t('CONTENT:NAME')}
       </ColHead>
-      <ColHead {...props} className="col-xs-2" sortField="subject.kind">
+      <ColHead {...props} className="col-xs-2" sortField={false}>
         {t('CONTENT:SUBJECTKIND')}
       </ColHead>
-      <ColHead {...props} className="col-xs-4" sortField="subject.name">
+      <ColHead {...props} className="col-xs-4" sortField={false}>
         {t('CONTENT:SUBJECTNAME')}
       </ColHead>
-      <ColHead {...props} className="col-xs-2" sortField="metadata.namespace">
+      <ColHead {...props} className="col-xs-2" sortField={false}>
         {t('CONTENT:NAMESPACE')}
       </ColHead>
     </ListHeader>
@@ -174,7 +174,7 @@ BindingHeader.displayName = 'BindingHeader';
 
 const BindingRow = ({ obj: binding }) => (
   <ResourceRow obj={binding}>
-    <div className="col-xs-4">
+    <div className="col-xs-4 co-resource-link-wrapper">
       <BindingName binding={binding} />
     </div>
     <div className="col-xs-2">{binding.subject.kind}</div>
