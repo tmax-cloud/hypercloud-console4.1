@@ -26,6 +26,7 @@ import (
 	"github.com/coreos/dex/connector/ldap"
 	"github.com/coreos/pkg/capnslog"
 	"github.com/coreos/pkg/health"
+	"github.com/justinas/alice"
 
 	"github.com/openshift/console/auth"
 	"github.com/openshift/console/pkg/proxy"
@@ -114,6 +115,9 @@ type Server struct {
 	KeycloakRealm        string
 	KeycloakAuthURL      string
 	KeycloakClientId     string
+	// Add loger
+	InfoLog *log.Logger
+	// infoLog  *log.Logger
 	// Helpers for logging into kubectl and rendering kubeconfigs. These fields
 	// may be nil.
 	KubectlAuther  *auth.Authenticator
@@ -340,7 +344,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	handleFunc("/api/", notFoundHandler)
 
 	staticHandler := http.StripPrefix(proxy.SingleJoiningSlash(s.BaseURL.Path, "/static/"), http.FileServer(http.Dir(s.PublicDir)))
-	handle("/static/", securityHeadersMiddleware(staticHandler))
+	handle("/static/", s.securityHeadersMiddleware(staticHandler))
 
 	// Scope of Service Worker needs to be higher than the requests it is intercepting (https://stackoverflow.com/a/35780776/6909941)
 	handleFunc("/load-test.sw.js", func(w http.ResponseWriter, r *http.Request) {
@@ -469,7 +473,8 @@ func (s *Server) HTTPHandler() http.Handler {
 	handle("/api/tectonic/certs", authHandler(s.certsHandler))
 	mux.HandleFunc(s.BaseURL.Path, s.indexHandler)
 
-	return securityHeadersMiddleware(http.Handler(mux))
+	standardMiddleWare := alice.New(s.logRequest, s.securityHeadersMiddleware)
+	return standardMiddleWare.Then(mux)
 }
 
 func sendResponse(rw http.ResponseWriter, code int, resp interface{}) {

@@ -1,3 +1,4 @@
+ #!/usr/bin/env bash
  PRODUCT=hypercloud
  MAJOR_VERSION=4
  MINOR_VERSION=1
@@ -18,3 +19,4 @@ sed -i "s%@@GUIDE_URL@@%${GUIDE_URL}%g" ${file_temp}
 sed -i "s%@@CHANGELOG@@%${CHANGELOG}%g" ${file_temp}
 
 ./noti/email --config=./noti/temp-config.yaml
+# email source code from "github.com/jinsoo-youn/mail.git"
