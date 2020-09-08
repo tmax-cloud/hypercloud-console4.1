@@ -439,10 +439,8 @@ RegistryFormComponent.storageSizeUnitOptions = [
   { value: 'Gi', label: 'Gi' },
   { value: 'Ti', label: 'Ti' },
   { value: 'Pi', label: 'Pi' },
-  { value: 'Ei', label: 'Ei' },
   { value: 'M', label: 'M' },
   { value: 'G', label: 'G' },
   { value: 'T', label: 'T' },
   { value: 'P', label: 'P' },
-  { value: 'E', label: 'E' },
 ];
