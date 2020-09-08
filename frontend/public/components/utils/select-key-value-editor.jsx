@@ -40,8 +40,9 @@ export class SelectKeyValueEditor extends React.Component {
   }
 
   hasDuplication = keyValuePairs => {
+    const { isAllSelect } = this.props;
     let keys = keyValuePairs.map(pair => (pair[0] === 'etc' ? pair[1] : pair[0]));
-    keys.push('limits.cpu', 'limits.memory');
+    if (!isAllSelect) keys.push('limits.cpu', 'limits.memory');
     return keys.some(key => key !== '' && keys.indexOf(key) !== keys.lastIndexOf(key));
   };
 
