@@ -56,6 +56,7 @@ class ResourceQuotaClaimFormComponent extends React.Component {
         name: null,
         namespace: null,
         resourceName: null,
+        namespaceResourceQuota: null,
       },
       cpuLimit: '',
       memoryLimit: '',
@@ -126,6 +127,9 @@ class ResourceQuotaClaimFormComponent extends React.Component {
     } else if (k8sResource[item] === '') {
       this.setState({ inputError: { resourceName: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:RESOURCENAME`) }) } });
       return false;
+    } else if (item === 'namespaceResourceQuota' && (this.state.cpuLimit === '' || this.state.memoryLimit === '')) {
+      this.setState({ inputError: { namespaceResourceQuota: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:NAMESPACERESOURCEQUOTA`) }) } });
+      return false;
     } else {
       this.setState({
         inputError: {
@@ -174,7 +178,7 @@ class ResourceQuotaClaimFormComponent extends React.Component {
     this.setState({ inProgress: true });
     const newResourceQuotaClaim = _.assign({}, this.state.resourceQuotaClaim);
 
-    if (!this.isRequiredFilled(newResourceQuotaClaim, 'name', 'INPUT') || !this.isRequiredFilled(newResourceQuotaClaim, 'namespace', 'SELECT') || !this.isRequiredFilled(newResourceQuotaClaim, 'resourceName', 'INPUT')) {
+    if (!this.isRequiredFilled(newResourceQuotaClaim, 'name', 'INPUT') || !this.isRequiredFilled(newResourceQuotaClaim, 'namespace', 'SELECT') || !this.isRequiredFilled(newResourceQuotaClaim, 'resourceName', 'INPUT') || !this.isRequiredFilled(newResourceQuotaClaim, 'namespaceResourceQuota', 'INPUT')) {
       this.setState({ inProgress: false });
       return;
     }
@@ -210,7 +214,7 @@ class ResourceQuotaClaimFormComponent extends React.Component {
   render() {
     const { t } = this.props;
 
-    const resourceQuotaClaimOptions = [
+    const namespaceResourceQuotaOptions = [
       {
         value: 'requests.cpu',
         label: 'CPU Requests',
@@ -286,7 +290,8 @@ class ResourceQuotaClaimFormComponent extends React.Component {
                   <SingleSelect options={ResourceQuotaClaimFormComponent.limitsUnitOptions} value={this.state.memoryLimitUnit} onChange={this.onMemoryLimitsUnitChanged} />
                 </div>
               </div>
-              <SelectKeyValueEditor desc={t('STRING:RESOURCEQUOTA-CREATE-2')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={resourceQuotaClaimOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
+              <SelectKeyValueEditor desc={t('STRING:RESOURCEQUOTA-CREATE-2')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={namespaceResourceQuotaOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
+              {this.state.inputError.namespaceResourceQuota && <p className="cos-error-title">{this.state.inputError.namespaceResourceQuota}</p>}
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
               <button type="submit" className="btn btn-primary" id="save-changes">

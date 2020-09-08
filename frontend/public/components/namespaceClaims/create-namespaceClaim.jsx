@@ -52,6 +52,7 @@ class NamespaceClaimFormComponent extends React.Component {
       inputError: {
         name: null,
         resourceName: null,
+        namespaceResourceQuota: null,
       },
       cpuLimit: '',
       memoryLimit: '',
@@ -113,6 +114,9 @@ class NamespaceClaimFormComponent extends React.Component {
     } else if (k8sResource[item] === '') {
       this.setState({ inputError: { resourceName: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:RESOURCENAME`) }) } });
       return false;
+    } else if (item === 'namespaceResourceQuota' && (this.state.cpuLimit === '' || this.state.memoryLimit === '')) {
+      this.setState({ inputError: { namespaceResourceQuota: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:NAMESPACERESOURCEQUOTA`) }) } });
+      return false;
     } else {
       this.setState({
         inputError: {
@@ -152,7 +156,7 @@ class NamespaceClaimFormComponent extends React.Component {
     this.setState({ inProgress: true });
     const newNamespaceclaim = _.assign({}, this.state.namespaceClaim);
 
-    if (!this.isRequiredFilled(newNamespaceclaim, 'name', 'INPUT') || !this.isRequiredFilled(newNamespaceclaim, 'resourceName', 'INPUT')) {
+    if (!this.isRequiredFilled(newNamespaceclaim, 'name', 'INPUT') || !this.isRequiredFilled(newNamespaceclaim, 'resourceName', 'INPUT') || !this.isRequiredFilled(newNamespaceclaim, 'namespaceResourceQuota', 'INPUT')) {
       this.setState({ inProgress: false });
       return;
     }
@@ -187,7 +191,7 @@ class NamespaceClaimFormComponent extends React.Component {
   render() {
     const { t } = this.props;
 
-    const resourceQuotaClaimOptions = [
+    const namespaceResourceQuotaOptions = [
       {
         value: 'requests.cpu',
         label: 'CPU Requests',
@@ -259,7 +263,8 @@ class NamespaceClaimFormComponent extends React.Component {
                   <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.memoryLimitUnit} onChange={this.onMemoryLimitsUnitChanged} />
                 </div>
               </div>
-              <SelectKeyValueEditor desc={t('STRING:NAMESPACECLAIM-CREATE-1')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={resourceQuotaClaimOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
+              <SelectKeyValueEditor desc={t('STRING:NAMESPACECLAIM-CREATE-1')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={namespaceResourceQuotaOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
+              {this.state.inputError.namespaceResourceQuota && <p className="cos-error-title">{this.state.inputError.namespaceResourceQuota}</p>}
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
               <button type="submit" className="btn btn-primary" id="save-changes">
