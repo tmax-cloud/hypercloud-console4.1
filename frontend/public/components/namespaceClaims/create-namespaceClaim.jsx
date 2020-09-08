@@ -53,8 +53,10 @@ class NamespaceClaimFormComponent extends React.Component {
         name: null,
         resourceName: null,
       },
-      cpuLimitsUnit: 'Gi',
-      memoryLimitsUnit: 'Gi'
+      cpuLimit: '',
+      memoryLimit: '',
+      cpuLimitUnit: 'Gi',
+      memoryLimitUnit: 'Gi'
     };
     this.onResourceNameChanged = this.onResourceNameChanged.bind(this);
     this.onNameChanged = this.onNameChanged.bind(this);
@@ -88,10 +90,11 @@ class NamespaceClaimFormComponent extends React.Component {
     }
     this.setState({ namespaceClaim: namespaceClaim });
   }
-  onQuotaChanged = (event) => {
-    let namespaceClaim = { ...this.state.namespaceClaim };
-    namespaceClaim.spec.hard[event.target.id] = String(event.target.value);
-    this.setState({ namespaceClaim });
+  onCpuLimitChanged = e => {
+    this.setState({ cpuLimit: e.target.value });
+  }
+  onMemoryLimitChanged = e => {
+    this.setState({ memoryLimit: e.target.value });
   }
   _updateQuota(quota) {
     this.setState({
@@ -136,11 +139,11 @@ class NamespaceClaimFormComponent extends React.Component {
   };
 
   onCPULimitsUnitChanged = e => {
-    this.setState({ cpuLimitsUnit: e.value });
+    this.setState({ cpuLimitUnit: e.value });
   };
 
   onMemoryLimitsUnitChanged = e => {
-    this.setState({ memoryLimitsUnit: e.value });
+    this.setState({ memoryLimitUnit: e.value });
   };
 
   save(e) {
@@ -160,8 +163,8 @@ class NamespaceClaimFormComponent extends React.Component {
     }
 
     let quota = {};
-    quota["limits.cpu"] = this.state.namespaceClaim.spec.hard["limits.cpu"] + this.state.cpuLimitsUnit;
-    quota["limits.memory"] = this.state.namespaceClaim.spec.hard["limits.memory"] + this.state.memoryLimitsUnit;
+    quota["limits.cpu"] = this.state.cpuLimit + this.state.cpuLimitUnit;
+    quota["limits.memory"] = this.state.memoryLimit + this.state.memoryLimitUnit;
     this.state.quota.forEach(arr => {
       const key = arr[0] === 'etc' ? arr[1] : arr[0];
       quota[key] = arr[2];
@@ -235,11 +238,11 @@ class NamespaceClaimFormComponent extends React.Component {
               <div className="row">
                 <div className="col-md-2 col-xs-2 pairs-list__name-field" id='cpu'>
                   <input className="form-control" type="text"
-                    onChange={this.onQuotaChanged} id="limits.cpu"
-                    value={this.state.namespaceClaim.spec.hard['limits.cpu']} required />
+                    onChange={this.onCpuLimitChanged} id="cpuLimit"
+                    value={this.state.cpuLimit} />
                 </div>
                 <div className="col-md-1 col-xs-1 pairs-list__name-field" id='cpu-units'>
-                  <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.cpuLimitsUnit} onChange={this.onCPULimitsUnitChanged} />
+                  <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.cpuLimitUnit} onChange={this.onCPULimitsUnitChanged} />
                 </div>
               </div>
               <div className="row">
@@ -249,11 +252,11 @@ class NamespaceClaimFormComponent extends React.Component {
               </div>
               <div className="row" style={{ marginBottom: '20px' }}>
                 <div className="col-md-2 col-xs-2 pairs-list__name-field" id='memory'>
-                  <input className="form-control" type="text" id="limits.memory"
-                    onChange={this.onQuotaChanged} value={this.state.namespaceClaim.spec.hard['limits.memory']} required />
+                  <input className="form-control" type="text" id="memoryLimit"
+                    onChange={this.onMemoryLimitChanged} value={this.state.memoryLimit} />
                 </div>
                 <div className="col-md-1 col-xs-1 pairs-list__name-field" id='memory-units'>
-                  <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.memoryLimitsUnit} onChange={this.onMemoryLimitsUnitChanged} />
+                  <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.memoryLimitUnit} onChange={this.onMemoryLimitsUnitChanged} />
                 </div>
               </div>
               <SelectKeyValueEditor desc={t('STRING:NAMESPACECLAIM-CREATE-1')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={resourceQuotaClaimOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
