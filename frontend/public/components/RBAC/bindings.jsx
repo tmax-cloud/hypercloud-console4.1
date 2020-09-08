@@ -147,7 +147,7 @@ const EmptyMsg = () => {
   return <MsgBox title={t('STRING:EMPTYBOX')} detail={t('STRING:ROLEBINDING_0')} />;
 };
 
-export const BindingsList = props => <List {...props} EmptyMsg={EmptyMsg} Header={Header} Row={Row} />;
+export const BindingsList = props => <List {...props} EmptyMsg={EmptyMsg} Header={props.Header || Header} Row={props.Row || Row} />;
 
 export const bindingType = binding => {
   if (!binding) {
