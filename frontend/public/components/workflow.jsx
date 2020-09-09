@@ -25,7 +25,7 @@ const WorkflowHeader = props => {
       <ColHead {...props} className="col-sm-2 hidden-xs" sortField="metadata.creationTimestamp">
         {t('CONTENT:STARTTIME')}
       </ColHead>
-      <ColHead {...props} className="col-sm-2 hidden-xs" sortField="metadata.creationTimestamp">
+      <ColHead {...props} className="col-sm-2 hidden-xs" sortField="obj.status.finishedAt">
         {t('CONTENT:ENDTIME')}
       </ColHead>
     </ListHeader>
@@ -43,8 +43,8 @@ const WorkflowRow = () =>
         </div>
         <div className="col-xs-2 col-sm-2 co-break-word">{obj.metadata.namespace}</div>
         <div className="col-xs-2 col-sm-2 co-break-word">{obj.status.phase}</div>
-        <div className="col-xs-2 col-sm-2 hidden-xs">{fromNow(obj.status.finishedAt)}</div>
-        <div className="col-xs-2 col-sm-2 hidden-xs">{fromNow(obj.metadata.creationTimestamp)}</div>
+        <div className="col-xs-2 col-sm-2 hidden-xs">{obj.metadata.creationTimestamp ? fromNow(obj.metadata.creationTimestamp) : ''}</div>
+        <div className="col-xs-2 col-sm-2 hidden-xs">{obj.status.finishedAt ? fromNow(obj.status.finishedAt) : ''}</div>
       </div>
     );
   };
