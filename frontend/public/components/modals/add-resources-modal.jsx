@@ -6,7 +6,6 @@ import { createModalLauncher, ModalTitle, ModalBody, ModalSubmitFooter } from '.
 import { history, PromiseComponent, resourceObjPath, SelectorInput } from '../utils';
 import { useTranslation } from 'react-i18next';
 import VirtualizedCheckbox from 'react-virtualized-checkbox'
-import { UserList } from '../user';
 
 const allow = 'allow';
 const deny = 'deny';
