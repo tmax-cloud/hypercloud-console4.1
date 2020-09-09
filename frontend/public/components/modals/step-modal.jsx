@@ -386,7 +386,7 @@ class BaseStepModal extends React.Component {
                     <SingleSelect
                       options={this.state.imageRegistryList}
                       name={'ImageRegistry'}
-                      value={this.state.imageregistry?.value || ''}
+                      value={this.state.imageregistry?.label || ''}
                       label={this.state.imageregistry?.label || ''}
                       placeholder={t('ADDITIONAL:SELECT', { something: t('CONTENT:IMAGEREGISTRY') })}
                       onChange={e => {
