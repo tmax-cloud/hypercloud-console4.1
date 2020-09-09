@@ -47,7 +47,7 @@ class NamespaceClaimFormComponent extends React.Component {
       namespaceClaim: namespaceClaim,
       inProgress: false,
       type: 'form',
-      quota: [['', '']],
+      quota: [],
       isDuplicated: false,
       inputError: {
         name: null,
@@ -263,7 +263,7 @@ class NamespaceClaimFormComponent extends React.Component {
                   <SingleSelect options={NamespaceClaimFormComponent.limitsUnitOptions} value={this.state.memoryLimitUnit} onChange={this.onMemoryLimitsUnitChanged} />
                 </div>
               </div>
-              <SelectKeyValueEditor desc={t('STRING:NAMESPACECLAIM-CREATE-1')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={namespaceResourceQuotaOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
+              <SelectKeyValueEditor isRequired={false} desc={t('STRING:NAMESPACECLAIM-CREATE-1')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={namespaceResourceQuotaOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
               {this.state.inputError.namespaceResourceQuota && <p className="cos-error-title">{this.state.inputError.namespaceResourceQuota}</p>}
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
