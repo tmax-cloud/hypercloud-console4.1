@@ -531,7 +531,7 @@ class CustomNav extends React.Component {
               menuItem.startsWith = searchStartsWith;
             }
             temp = t(`RESOURCE:${menuItem.name.toUpperCase()}`);
-            return <HrefLink {...menuItem} name={temp} onClick={this.close} />;
+            return <HrefLink key={menuItem.name} {...menuItem} name={temp} onClick={this.close} />;
           case 'resourcenslink': {
             let resource;
             switch (menuItem.name) {
@@ -582,11 +582,12 @@ class CustomNav extends React.Component {
             if (menuItem.name.indexOf('role') !== -1) {
               menuItem.name === 'roles' ? (startsWith = rolesStartsWith) : (startsWith = rolebindingsStartsWith);
             }
-            return <ResourceNSLink resource={resource} name={temp} onClick={this.close} startsWith={startsWith} />;
+            return <ResourceNSLink key={menuItem.name}  resource={resource} name={temp} onClick={this.close} startsWith={startsWith} />;
           }
           case 'resourceclusterlink':
             return (
               <ResourceClusterLink
+                key={menuItem.name} 
                 resource={ResourcePlural(menuItem.name)
                   .replace(/ /g, '')
                   .toLowerCase()}

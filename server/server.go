@@ -57,7 +57,7 @@ const (
 	kialiProxyEndpoint        = "/api/kiali/"
 	hyperflowEndpoint         = "/api/hyperflow/"
 	vncEndpoint               = "/api/vnc/"
-	hyperAuthEndpoint         = "/api/auth/"
+	hyperAuthEndpoint         = "/auth/"
 	// NOTE: hypercloud api 프록시를 위해 hypercloudProxyEndpoint 추가 // 정동민
 )
 
@@ -421,11 +421,12 @@ func (s *Server) HTTPHandler() http.Handler {
 	// NOTE: kiali proxy 등록 // 윤진수
 	if s.KialiProxyConfig != nil {
 		kialiProxyAPIPath := kialiProxyEndpoint
-		kialiProxy := httputil.NewSingleHostReverseProxy(s.KialiProxyConfig.Endpoint)
+		// kialiProxy := httputil.NewSingleHostReverseProxy(s.KialiProxyConfig.Endpoint)
+		kialiProxy := proxy.NewProxyCloud(s.KialiProxyConfig)
 		handle(kialiProxyAPIPath, http.StripPrefix(
 			proxy.SingleJoiningSlash(s.BaseURL.Path, kialiProxyAPIPath),
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				kialiProxy.ServeHTTP(w, r)
+				kialiProxy.ServeHTTPCloud(w, r)
 			})),
 		)
 	}
@@ -459,11 +460,12 @@ func (s *Server) HTTPHandler() http.Handler {
 	// hyperAuth proxy for Authentication // jinsoo-youn
 	if s.HyperAuthProxyConfig != nil {
 		hyperAuthAPIPath := hyperAuthEndpoint
-		hyperAuthProxy := httputil.NewSingleHostReverseProxy(s.HyperAuthProxyConfig.Endpoint)
+		// hyperAuthProxy := httputil.NewSingleHostReverseProxy(s.HyperAuthProxyConfig.Endpoint)
+		hyperAuthProxy := proxy.NewProxyCloud(s.HyperAuthProxyConfig)
 		handle(hyperAuthAPIPath,
-			http.StripPrefix(s.BaseURL.Path,
+			http.StripPrefix(proxy.SingleJoiningSlashCloud(s.BaseURL.Path, hyperAuthAPIPath),
 				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					hyperAuthProxy.ServeHTTP(w, r)
+					hyperAuthProxy.ServeHTTPCloud(w, r)
 				})),
 		)
 	}
