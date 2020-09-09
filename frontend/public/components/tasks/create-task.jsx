@@ -339,7 +339,7 @@ class TaskFormComponent extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="form-create co-m-pane__body">
+      <div className="rbac-edit-binding form-create co-m-pane__body">
         <Helmet>
           <title>{t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural('Task', t) })}</title>
         </Helmet>
