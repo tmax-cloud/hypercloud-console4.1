@@ -41,7 +41,7 @@ class ResourceQuotaFormComponent extends React.Component {
       resourceQuota: resourceQuota,
       inProgress: false,
       type: 'form',
-      quota: [['', '']],
+      quota: [],
       isDuplicated: false,
       inputError: {
         name: null,
@@ -215,7 +215,7 @@ class ResourceQuotaFormComponent extends React.Component {
               </div>
             </Section>
             <Section label={t('CONTENT:NAMESPACERESOURCEQUOTA')} isRequired={false} paddingTop={'5px'}>
-              <SelectKeyValueEditor isAllSelect={true} desc={t('STRING:RESOURCEQUOTA-CREATE-2')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={resourceQuotaOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
+              <SelectKeyValueEditor isRequired={false} isAllSelect={true} desc={t('STRING:RESOURCEQUOTA-CREATE-2')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={resourceQuotaOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
               <button type="submit" className="btn btn-primary" id="save-changes">
