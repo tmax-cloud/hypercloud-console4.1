@@ -202,7 +202,7 @@ export const FireMan_ = connect(null, { filterList: k8sActions.filterList })(
             {isSearch && (
               <div className={classNames('co-m-pane__filter-bar-group', DropdownFilters ? 'co-m-pane__filter-bar-group--filters' : 'co-m-pane__filter-bar-group--filter')}>
                 {DropdownFilters && <div className="btn-group">{DropdownFilters}</div>}
-                {/* <TextFilter label={filterLabel} onChange={e => this.applyFilter(textFilter, e.target.value)} defaultValue={this.defaultValue} tabIndex={1} autoFocus={autoFocus} id={id} /> */}
+                <TextFilter label={filterLabel} onChange={e => this.applyFilter(textFilter, e.target.value)} defaultValue={this.defaultValue} tabIndex={1} autoFocus={autoFocus} id={id} />
               </div>
             )}
           </div>
@@ -302,6 +302,7 @@ export const ListPage = props => {
       namespace={namespace}
       fake={fake}
       tooltipContents={tooltipContents}
+      isSearch={props.isSearch}
     />
   );
 };
