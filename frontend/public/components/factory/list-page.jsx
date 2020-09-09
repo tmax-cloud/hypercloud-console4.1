@@ -302,6 +302,7 @@ export const ListPage = props => {
       namespace={namespace}
       fake={fake}
       tooltipContents={tooltipContents}
+      isSearch={props.isSearch}
     />
   );
 };
