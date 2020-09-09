@@ -21,6 +21,16 @@ const Section = ({ label, children, isRequired, paddingTop }) => {
   );
 };
 
+const CheckboxLimitType = ({ id, label, children, isChecked, onChange }) => {
+  return (
+    <div className="col-xs-10">
+      <input type="checkbox" id={id} checked={isChecked} onChange={onChange} style={{ marginRight: '5px', marginTop: '0px', verticalAlign: 'middle' }} />
+      <label htmlFor={id}>{label}</label>
+      {children}
+    </div>
+  )
+}
+
 class LimitRangeFormComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -43,8 +53,10 @@ class LimitRangeFormComponent extends React.Component {
       limitRange: limitRange,
       inProgress: false,
       type: 'form',
-      limits: [['Pod', '', '', '', '', '', 'Gi', 'Gi', 'Gi']],
-      isDuplicated: false,
+      // pod, container, pvc checkboxes state
+      resourceType: [true, false, false],
+      limits: [[], [], []],
+      isDuplicated: [false, false, false],
       inputError: {
         name: null,
         namespace: null,
@@ -55,6 +67,12 @@ class LimitRangeFormComponent extends React.Component {
     this.onLabelChanged = this.onLabelChanged.bind(this);
     this._updateLimits = this._updateLimits.bind(this);
     this.save = this.save.bind(this);
+  }
+
+  onChangeCheckbox(i) {
+    let resourceType = [...this.state.resourceType];
+    resourceType[i] = !this.state.resourceType[i];
+    this.setState({ resourceType });
   }
 
   onNameChanged(event) {
@@ -84,10 +102,14 @@ class LimitRangeFormComponent extends React.Component {
     this.setState({ limitRange: limitRange });
   }
 
-  _updateLimits(limits) {
+  _updateLimits(paramLimits, nameValueId) {
+    let limits = [...this.state.limits];
+    limits[nameValueId] = paramLimits.resourceLimitsPairs;
+    let isDuplicated = [...this.state.isDuplicated];
+    isDuplicated[nameValueId] = paramLimits.isDuplicated;
     this.setState({
-      limits: limits.resourceLimitsPairs,
-      isDuplicated: limits.isDuplicated,
+      limits,
+      isDuplicated,
     });
   }
 
@@ -139,30 +161,41 @@ class LimitRangeFormComponent extends React.Component {
       return;
     }
 
-    if (this.state.isDuplicated) {
-      this.setState({ inProgress: false });
-      return;
+    for (let i = 0; i < 3; i++) {
+      if (this.state.isDuplicated[i]) {
+        this.setState({ inProgress: false });
+        return;
+      }
     }
 
     let limits = [];
-    this.state.limits.forEach(limit => {
-      let newLimit = {};
-      const type = limit[ResourceLimitEditorPair.Type];
-      newLimit['type'] = type;
-      newLimit[limit[ResourceLimitEditorPair.LimitType]] = {};
-      if (type === 'PersistentVolumeClaim') {
-        newLimit[limit[ResourceLimitEditorPair.LimitType]]['storage'] = limit[ResourceLimitEditorPair.Storage] + limit[ResourceLimitEditorPair.StorageUnit];
-      } else {
-        const limitType = limit[ResourceLimitEditorPair.LimitType];
-        if (limitType === 'maxLimitRequestRatio') {
-          newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Ratio];
-        } else {
-          newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu] + limit[ResourceLimitEditorPair.CpuUnit];
-          newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory] + limit[ResourceLimitEditorPair.MemoryUnit];
-        }
+    for (let i = 0; i < 3; i++) {
+      if (this.state.resourceType[i]) {
+        const type = i === 0 ? 'Pod' : (i === 1 ? 'Container' : 'PersistentVolumeClaim');
+        let newLimit = {};
+        newLimit['type'] = type;
+        this.state.limits[i].forEach(limit => {
+          newLimit[limit[ResourceLimitEditorPair.LimitType]] = {};
+          if (type === 'PersistentVolumeClaim') {
+            newLimit[limit[ResourceLimitEditorPair.LimitType]]['storage'] = limit[ResourceLimitEditorPair.Storage] + limit[ResourceLimitEditorPair.StorageUnit];
+          } else {
+            const limitType = limit[ResourceLimitEditorPair.LimitType];
+            if (limitType === 'maxLimitRequestRatio') {
+              if (limit[ResourceLimitEditorPair.CpuRatio] !== '') {
+                newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.CpuRatio];
+              }
+              if (limit[ResourceLimitEditorPair.MemoryRatio] !== '') {
+                newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.MemoryRatio];
+              }
+            } else {
+              newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu] + limit[ResourceLimitEditorPair.CpuUnit];
+              newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory] + limit[ResourceLimitEditorPair.MemoryUnit];
+            }
+          }
+        });
+        limits.push(newLimit);
       }
-      limits.push(newLimit);
-    });
+    }
 
     if (limits !== []) {
       Object.assign(newLimitRange.spec.limits, limits);
@@ -199,23 +232,23 @@ class LimitRangeFormComponent extends React.Component {
     const limitTypeOptions = [
       {
         value: 'default',
-        label: 'Default',
+        label: t("CONTENT:DEFAULT")
       },
       {
         value: 'defaultRequest',
-        label: 'Default Request',
+        label: t("CONTENT:DEFAULTREQUEST")
       },
       {
         value: 'max',
-        label: 'Max',
+        label: t("CONTENT:MAX")
       },
       {
         value: 'min',
-        label: 'Min',
+        label: t("CONTENT:MIN")
       },
       {
         value: 'maxLimitRequestRatio',
-        label: 'Max Limit Request Ratio',
+        label: t("CONTENT:MAXLIMITREQUESTRQTIO")
       },
     ];
 
@@ -242,8 +275,23 @@ class LimitRangeFormComponent extends React.Component {
                 <p>{t('VALIDATION:LABEL_FORM')}</p>
               </div>
             </Section>
-            <Section label={t('CONTENT:RESOURCELIMITS')} isRequired={false} paddingTop={'5px'}>
-              <ResourceLimitEditor desc={t('STRING:LIMITRANGE-CREATE-2')} t={t} typeOptions={typeOptions} limitTypeOptions={limitTypeOptions} resourceLimitsPairs={this.state.limits} SelectTypeString="selectType" SelectLimitTypeString="selectLimitType" valueString="value" updateParentData={this._updateLimits} isDuplicated={this.state.isDuplicated} />
+            <Section label={t('CONTENT:RESOURCELIMITSRANGE')} isRequired={false} paddingTop={'5px'}>
+              <CheckboxLimitType id='pod' label={t('RESOURCE:POD')} isChecked={this.state.resourceType[0]} onChange={() => this.onChangeCheckbox(0)}>
+                {this.state.resourceType[0] &&
+                  <ResourceLimitEditor id='pod' t={t} typeOptions={typeOptions} limitTypeOptions={limitTypeOptions} resourceLimitsPairs={this.state.limits[0]} SelectTypeString="selectType" SelectLimitTypeString="selectLimitType" valueString="value" nameValueId={0} updateParentData={this._updateLimits} isDuplicated={this.state.isDuplicated[0]} />
+                }
+              </CheckboxLimitType>
+              <CheckboxLimitType id='container' label={t('RESOURCE:CONTAINER')} isChecked={this.state.resourceType[1]} onChange={() => this.onChangeCheckbox(1)}>
+                {this.state.resourceType[1] &&
+                  <ResourceLimitEditor id='container' t={t} typeOptions={typeOptions} limitTypeOptions={limitTypeOptions} resourceLimitsPairs={this.state.limits[1]} SelectTypeString="selectType" SelectLimitTypeString="selectLimitType" valueString="value" nameValueId={1} updateParentData={this._updateLimits} isDuplicated={this.state.isDuplicated[1]} />
+                }
+              </CheckboxLimitType>
+              <CheckboxLimitType id='pvc' label={t('CONTENT:PVC')} isChecked={this.state.resourceType[2]} onChange={() => this.onChangeCheckbox(2)}>
+                {this.state.resourceType[2] &&
+                  <ResourceLimitEditor id='pvc' t={t} typeOptions={typeOptions} limitTypeOptions={limitTypeOptions} resourceLimitsPairs={this.state.limits[2]} SelectTypeString="selectType" SelectLimitTypeString="selectLimitType" valueString="value" nameValueId={2} updateParentData={this._updateLimits} isDuplicated={this.state.isDuplicated[2]} />
+                }
+              </CheckboxLimitType>
+              <div className="col-md-12 col-xs-12"><span>{t('STRING:LIMITRANGE-CREATE-2')}</span></div>
             </Section>
             <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
               <button type="submit" className="btn btn-primary" id="save-changes">

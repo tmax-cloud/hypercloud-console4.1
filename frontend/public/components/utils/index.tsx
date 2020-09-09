@@ -169,12 +169,12 @@ export const enum SelectKeyValueEditorPair {
 }
 
 export const enum ResourceLimitEditorPair {
-  Type,
   LimitType,
   Cpu,
   Memory,
   Storage,
-  Ratio,
+  CpuRatio,
+  MemoryRatio,
   CpuUnit,
   MemoryUnit,
   StorageUnit,
