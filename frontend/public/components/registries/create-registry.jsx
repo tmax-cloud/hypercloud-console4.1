@@ -1,15 +1,18 @@
 import * as _ from 'lodash-es';
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
+import * as fuzzy from 'fuzzysearch';
 import { Link } from 'react-router-dom';
 import { k8sCreate, k8sUpdate } from '../../module/k8s';
-import { ButtonBar, history, kindObj, SelectorInput } from '../utils';
+import { Dropdown, Firehose, ResourceName, LoadingInline, ButtonBar, history, kindObj, SelectorInput } from '../utils';
 import { useTranslation } from 'react-i18next';
 import { formatNamespacedRouteForResource } from '../../ui/ui-actions';
-import { NsDropdown, ListDropdown } from '../RBAC/bindings';
+import { NsDropdown } from '../RBAC/bindings';
 import { RadioGroup } from '../radio';
 import { connectToFlags, FLAGS, flagPending } from '../../features';
 import SingleSelect from '../utils/select';
+import * as PropTypes from 'prop-types';
+import { connectToFlags, FLAGS, flagPending } from '../../features';
 
 const Section = ({ label, children, isRequired, paddingTop }) => {
   return (
@@ -130,8 +133,7 @@ class RegistryFormComponent extends React.Component {
         });
         return true;
       }
-    }
-    else {
+    } else {
       this.setState({
         inputError: {
           [item]: null,
@@ -369,16 +371,16 @@ class RegistryFormComponent extends React.Component {
               {this.state.pvcType === 'exist' ? (
                 <PvcDropdown id="registy-pvc" t={t} onChange={this.onPvcChanged} onFocus={this.onFocusPvc} namespace={this.state.registry.metadata.namespace} />
               ) : (
-                  <>
-                    <label>{t('CONTENT:ACCESSMODES')}</label>
-                    <RadioGroup currentValue={this.state.accessModes} items={aceessModes} onChange={this.onPVCAccessModeChanged} formRow={true} />
-                    <LabelInput label={t('RESOURCE:STORAGESIZE')} onChange={this.onPVCStorageSizeChanged} onFocus={this.onFocusPvc} value={this.state.storageSize} id="registry-storage-size" placeholder="10" half>
-                      <SingleSelect options={RegistryFormComponent.storageSizeUnitOptions} value={this.state.storageSizeUnit} onChange={this.onPVCStorageSizeUnitChanged} />
-                    </LabelInput>
-                    <label>{t('CONTENT:STORAGECLASSNAME')}</label>
-                    <ScDropdown id="registy-sc" t={t} onChange={this.onPVCStorageClassNameChanged} onFocus={this.onFocusPvc} />
-                  </>
-                )}
+                <>
+                  <label>{t('CONTENT:ACCESSMODES')}</label>
+                  <RadioGroup currentValue={this.state.accessModes} items={aceessModes} onChange={this.onPVCAccessModeChanged} formRow={true} />
+                  <LabelInput label={t('RESOURCE:STORAGESIZE')} onChange={this.onPVCStorageSizeChanged} onFocus={this.onFocusPvc} value={this.state.storageSize} id="registry-storage-size" placeholder="10" half>
+                    <SingleSelect options={RegistryFormComponent.storageSizeUnitOptions} value={this.state.storageSizeUnit} onChange={this.onPVCStorageSizeUnitChanged} />
+                  </LabelInput>
+                  <label>{t('CONTENT:STORAGECLASSNAME')}</label>
+                  <ScDropdown id="registy-sc" t={t} onChange={this.onPVCStorageClassNameChanged} onFocus={this.onFocusPvc} />
+                </>
+              )}
               <span style={{ marginTop: '5px' }}>{t('STRING:REGISTRY-CREATE_4')}</span>
               {this.state.inputError.pvc && <p className="cos-error-title">{this.state.inputError.pvc}</p>}
             </Section>
@@ -408,13 +410,178 @@ export const CreateRegistry = ({ match: { params } }) => {
   return <RegistryFormComponent t={t} fixed={{ metadata: { namespace: params.ns } }} registryTypeAbstraction={params.type} titleVerb="Create" isCreate={true} />;
 };
 
+class ListDropdown_ extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: {},
+    };
+
+    if (props.selectedKey) {
+      this.state.selectedKey = props.selectedKeyKind ? `${props.selectedKey}-${props.selectedKeyKind}` : props.selectedKey;
+    }
+
+    this.state.title = props.loaded ? <span className="text-muted">{props.placeholder}</span> : <LoadingInline />;
+
+    this.autocompleteFilter = (text, item) => fuzzy(text, item.props.name);
+    // Pass both the resource name and the resource kind to onChange()
+    this.onChange = key => {
+      const { name, kindLabel } = _.get(this.state, ['items', key], {});
+      this.setState({ selectedKey: key, title: <ResourceName kind={kindLabel} name={name} /> });
+      this.props.onChange(name, kindLabel, this.props.id);
+    };
+  }
+
+  componentWillMount() {
+    // we need to trigger state changes to get past shouldComponentUpdate...
+    //   but the entire working set of data can be loaded in memory at this point in time
+    //   in which case componentWillReceiveProps would not be called for a while...
+    this.componentWillReceiveProps(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { loaded, loadError } = nextProps;
+
+    // Namespace Role Binding 생성인데 Cluster Role 서비스만 에러일 때 롤 조회도 안됨.
+    // if (loadError) {
+    //   this.setState({
+    //     title: <div className="cos-error-title">{this.props.t('ADDITIONAL:ERRORLOADING', { something: this.props.t(`CONTENT:${nextProps.desc.toUpperCase()}`) })}</div>,
+    //   });
+    //   return;
+    // }
+
+    // if (!loaded) {
+    //   return;
+    // }
+
+    const state = {};
+
+    const { resources, dataFilter } = nextProps;
+
+    // Namespace Role Binding 생성일 때 Cluster Role이랑 Role 서비스 둘 다 오류일 때만 에러 표시되도록
+    if (resources.hasOwnProperty('Role') && resources.hasOwnProperty('ClusterRole')) {
+      if (resources.Role.loaded === false && resources.ClusterRole.loaded === false && loadError) {
+        this.setState({
+          title: <div className="cos-error-title">{this.props.t('ADDITIONAL:ERRORLOADING', { something: this.props.t(`CONTENT:${nextProps.desc.toUpperCase()}`) })}</div>,
+        });
+        return;
+      }
+    } else {
+      if (loadError) {
+        this.setState({
+          title: <div className="cos-error-title">{this.props.t('ADDITIONAL:ERRORLOADING', { something: this.props.t(`CONTENT:${nextProps.desc.toUpperCase()}`) })}</div>,
+        });
+        return;
+      }
+      if (!loaded) {
+        return;
+      }
+    }
+
+    state.items = {};
+    _.each(resources, ({ data }, kindLabel) => {
+      _.reduce(
+        data,
+        (acc, resource) => {
+          if (!dataFilter || dataFilter(resource)) {
+            acc[`${resource.metadata.name}-${kindLabel}`] = { kindLabel, name: resource.metadata.name };
+          }
+          return acc;
+        },
+        state.items,
+      );
+    });
+
+    const { selectedKey } = this.state;
+    if (Object.keys(state.items).length === 0 || this.props.selectedKey == null) {
+      selectedKey = undefined;
+      state.selectedKey = undefined;
+    }
+
+    // did we switch from !loaded -> loaded ?
+    if (!this.props.loaded && !selectedKey) {
+      state.title = <span className="text-muted">{nextProps.placeholder}</span>;
+    }
+
+    if (selectedKey) {
+      const item = state.items[selectedKey];
+      // item may not exist if selectedKey is a role and then user switches to creating a ClusterRoleBinding
+      if (item) {
+        state.title = <ResourceName kind={item.kindLabel} name={item.name} />;
+      } else {
+        // state.selectedKey = undefined;
+        state.title = <span className="text-muted">{nextProps.placeholder}</span>;
+      }
+    }
+
+    this.setState(state);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (_.isEqual(this.state, nextState)) {
+      return false;
+    }
+    return true;
+  }
+
+  render() {
+    const { desc, fixed, placeholder, id, loaded } = this.props;
+    const items = {};
+    const sortedItems = _.keys(this.state.items).sort();
+
+    _.each(this.state.items, (v, key) => (items[key] = <ResourceName kind={v.kindLabel} name={v.name} />));
+
+    const { selectedKey } = this.state;
+
+    const Component = fixed ? items[selectedKey] : <Dropdown autocompleteFilter={this.autocompleteFilter} autocompletePlaceholder={placeholder} items={items} sortedItemKeys={sortedItems} selectedKey={selectedKey} title={this.state.title} onChange={this.onChange} id={id} menuClassName="dropdown-menu--text-wrap" />;
+
+    return (
+      <div>
+        {Component}
+        {/* {loaded && _.isEmpty(items) && (
+          <p className="alert alert-info">
+            <span className="pficon pficon-info" aria-hidden="true"></span>
+            {(this.props.t('ADDITIONAL:NOFOUNDORDEFINED'), { something: desc })}
+          </p>
+        )} */}
+      </div>
+    );
+  }
+}
+
+export const ListDropdown = props => {
+  const resources = _.map(props.resources, resource => _.assign({ isList: true, prop: resource.kind }, resource));
+  return (
+    <Firehose resources={resources}>
+      <ListDropdown_ {...props} />
+    </Firehose>
+  );
+};
+
+ListDropdown.propTypes = {
+  dataFilter: PropTypes.func,
+  desc: PropTypes.string,
+  // specify both key/kind
+  selectedKey: PropTypes.string,
+  selectedKeyKind: PropTypes.string,
+  fixed: PropTypes.bool,
+  resources: PropTypes.arrayOf(
+    PropTypes.shape({
+      kind: PropTypes.string.isRequired,
+      namespace: PropTypes.string,
+    }),
+  ).isRequired,
+  placeholder: PropTypes.string,
+};
+
 const PvcDropdown_ = props => {
   const openshiftFlag = props.flags[FLAGS.OPENSHIFT];
   if (flagPending(openshiftFlag)) {
     return null;
   }
   const kind = openshiftFlag ? 'Project' : 'PersistentVolumeClaim';
-  const resources = [{ kind, namespace: props.namespace }];
+  // const resources = [{ kind, namespace: props.namespace }];
+  const resources = props.namespace ? [{ kind, namespace: props.namespace }] : [];
   const { t } = props;
   return <ListDropdown {...props} desc="PersistentVolumeClaim" resources={resources} selectedKeyKind={kind} placeholder={t('STRING:REGISTRY-CREATE_5')} />;
 };
@@ -439,10 +606,8 @@ RegistryFormComponent.storageSizeUnitOptions = [
   { value: 'Gi', label: 'Gi' },
   { value: 'Ti', label: 'Ti' },
   { value: 'Pi', label: 'Pi' },
-  { value: 'Ei', label: 'Ei' },
   { value: 'M', label: 'M' },
   { value: 'G', label: 'G' },
   { value: 'T', label: 'T' },
   { value: 'P', label: 'P' },
-  { value: 'E', label: 'E' },
 ];

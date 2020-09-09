@@ -20,10 +20,10 @@ export class SelectKeyValueEditor extends React.Component {
   }
 
   _remove(i) {
-    const { updateParentData, nameValueId } = this.props;
+    const { updateParentData, nameValueId, isRequired } = this.props;
     const keyValuePairs = _.cloneDeep(this.props.keyValuePairs);
     keyValuePairs.splice(i, 1);
-    updateParentData({ keyValuePairs: keyValuePairs.length ? keyValuePairs : [['', '']], isDuplicated: this.hasDuplication(keyValuePairs) }, nameValueId);
+    updateParentData({ keyValuePairs: keyValuePairs.length ? keyValuePairs : (isRequired ? [['', '']] : []), isDuplicated: this.hasDuplication(keyValuePairs) }, nameValueId);
   }
 
   _change(e, i, type, isSelect = false) {
@@ -40,7 +40,9 @@ export class SelectKeyValueEditor extends React.Component {
   }
 
   hasDuplication = keyValuePairs => {
+    const { isAllSelect } = this.props;
     let keys = keyValuePairs.map(pair => (pair[0] === 'etc' ? pair[1] : pair[0]));
+    if (!isAllSelect) keys.push('limits.cpu', 'limits.memory');
     return keys.some(key => key !== '' && keys.indexOf(key) !== keys.lastIndexOf(key));
   };
 

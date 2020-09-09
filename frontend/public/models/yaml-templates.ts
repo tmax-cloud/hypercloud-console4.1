@@ -1363,7 +1363,10 @@ spec:
     metadata:
       name: example-template
       namespace: default
+      labels:
+        handled: f  
     imageUrl: example.com/example.gif
+    urlDescription: http://url.example.com
     provider: tmax
     recommend: true
     objects:
@@ -1419,7 +1422,10 @@ spec:
     metadata:
       name: example-template
       namespace: default
+      labels:
+        handled: f  
     imageUrl: example.com/example.gif
+    urlDescription: http://url.example.com
     provider: tmax
     recommend: true
     objects:
@@ -4892,15 +4898,17 @@ kind: CatalogServiceClaim
 metadata:
   name: nginx-catalog-service-claim
   namespace: default
-  labels: 
-    handled: f
+  labels:
+    handled: f  
 spec:
   apiVersion: tmax.io/v1
   kind: Template
   metadata:
     name: example-template
     namespace: default
+    labels:
   imageUrl: example.com/example.gif
+  urlDescription: http://url.example.com
   provider: tmax
   recommend: true
   objects:
