@@ -21,12 +21,12 @@ export const VirtualMachineSidebar = ({ kindObj, loadSampleYaml, downloadSampleY
       templateName: 'virtualmachine-sample2',
       kind: referenceForModel(VirtualMachineModel),
     },
-    {
-      header: t('STRING:VM-SIDEBAR_4'),
-      details: t('STRING:VM-SIDEBAR_5'),
-      templateName: 'virtualmachine-sample3',
-      kind: referenceForModel(VirtualMachineModel),
-    },
+    // {
+    //   header: t('STRING:VM-SIDEBAR_4'),
+    //   details: t('STRING:VM-SIDEBAR_5'),
+    //   templateName: 'virtualmachine-sample3',
+    //   kind: referenceForModel(VirtualMachineModel),
+    // },
   ];
   const filteredSamples = isCreateMode ? samples : _.filter(samples, { kind: referenceForModel(kindObj) });
   console.log(filteredSamples);

@@ -26,6 +26,7 @@ import (
 	"github.com/coreos/dex/connector/ldap"
 	"github.com/coreos/pkg/capnslog"
 	"github.com/coreos/pkg/health"
+	"github.com/justinas/alice"
 
 	"github.com/openshift/console/auth"
 	"github.com/openshift/console/pkg/proxy"
@@ -56,7 +57,7 @@ const (
 	kialiProxyEndpoint        = "/api/kiali/"
 	hyperflowEndpoint         = "/api/hyperflow/"
 	vncEndpoint               = "/api/vnc/"
-	hyperAuthEndpoint         = "/api/auth/"
+	hyperAuthEndpoint         = "/auth/"
 	// NOTE: hypercloud api 프록시를 위해 hypercloudProxyEndpoint 추가 // 정동민
 )
 
@@ -114,6 +115,9 @@ type Server struct {
 	KeycloakRealm        string
 	KeycloakAuthURL      string
 	KeycloakClientId     string
+	// Add loger
+	InfoLog *log.Logger
+	// infoLog  *log.Logger
 	// Helpers for logging into kubectl and rendering kubeconfigs. These fields
 	// may be nil.
 	KubectlAuther  *auth.Authenticator
@@ -340,7 +344,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	handleFunc("/api/", notFoundHandler)
 
 	staticHandler := http.StripPrefix(proxy.SingleJoiningSlash(s.BaseURL.Path, "/static/"), http.FileServer(http.Dir(s.PublicDir)))
-	handle("/static/", securityHeadersMiddleware(staticHandler))
+	handle("/static/", s.securityHeadersMiddleware(staticHandler))
 
 	// Scope of Service Worker needs to be higher than the requests it is intercepting (https://stackoverflow.com/a/35780776/6909941)
 	handleFunc("/load-test.sw.js", func(w http.ResponseWriter, r *http.Request) {
@@ -417,11 +421,12 @@ func (s *Server) HTTPHandler() http.Handler {
 	// NOTE: kiali proxy 등록 // 윤진수
 	if s.KialiProxyConfig != nil {
 		kialiProxyAPIPath := kialiProxyEndpoint
-		kialiProxy := httputil.NewSingleHostReverseProxy(s.KialiProxyConfig.Endpoint)
+		// kialiProxy := httputil.NewSingleHostReverseProxy(s.KialiProxyConfig.Endpoint)
+		kialiProxy := proxy.NewProxyCloud(s.KialiProxyConfig)
 		handle(kialiProxyAPIPath, http.StripPrefix(
 			proxy.SingleJoiningSlash(s.BaseURL.Path, kialiProxyAPIPath),
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				kialiProxy.ServeHTTP(w, r)
+				kialiProxy.ServeHTTPCloud(w, r)
 			})),
 		)
 	}
@@ -455,11 +460,12 @@ func (s *Server) HTTPHandler() http.Handler {
 	// hyperAuth proxy for Authentication // jinsoo-youn
 	if s.HyperAuthProxyConfig != nil {
 		hyperAuthAPIPath := hyperAuthEndpoint
-		hyperAuthProxy := httputil.NewSingleHostReverseProxy(s.HyperAuthProxyConfig.Endpoint)
+		// hyperAuthProxy := httputil.NewSingleHostReverseProxy(s.HyperAuthProxyConfig.Endpoint)
+		hyperAuthProxy := proxy.NewProxyCloud(s.HyperAuthProxyConfig)
 		handle(hyperAuthAPIPath,
-			http.StripPrefix(s.BaseURL.Path,
+			http.StripPrefix(proxy.SingleJoiningSlashCloud(s.BaseURL.Path, hyperAuthAPIPath),
 				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					hyperAuthProxy.ServeHTTP(w, r)
+					hyperAuthProxy.ServeHTTPCloud(w, r)
 				})),
 		)
 	}
@@ -469,7 +475,8 @@ func (s *Server) HTTPHandler() http.Handler {
 	handle("/api/tectonic/certs", authHandler(s.certsHandler))
 	mux.HandleFunc(s.BaseURL.Path, s.indexHandler)
 
-	return securityHeadersMiddleware(http.Handler(mux))
+	standardMiddleWare := alice.New(s.logRequest, s.securityHeadersMiddleware)
+	return standardMiddleWare.Then(mux)
 }
 
 func sendResponse(rw http.ResponseWriter, code int, resp interface{}) {

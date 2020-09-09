@@ -20,10 +20,10 @@ export class SelectKeyValueEditor extends React.Component {
   }
 
   _remove(i) {
-    const { updateParentData, nameValueId } = this.props;
+    const { updateParentData, nameValueId, isRequired } = this.props;
     const keyValuePairs = _.cloneDeep(this.props.keyValuePairs);
     keyValuePairs.splice(i, 1);
-    updateParentData({ keyValuePairs: keyValuePairs.length ? keyValuePairs : [['', '']], isDuplicated: this.hasDuplication(keyValuePairs) }, nameValueId);
+    updateParentData({ keyValuePairs: keyValuePairs.length ? keyValuePairs : (isRequired ? [['', '']] : []), isDuplicated: this.hasDuplication(keyValuePairs) }, nameValueId);
   }
 
   _change(e, i, type, isSelect = false) {
@@ -40,8 +40,10 @@ export class SelectKeyValueEditor extends React.Component {
   }
 
   hasDuplication = keyValuePairs => {
+    const { isAllSelect } = this.props;
     let keys = keyValuePairs.map(pair => (pair[0] === 'etc' ? pair[1] : pair[0]));
-    return new Set(keys).size !== keys.length;
+    if (!isAllSelect) keys.push('limits.cpu', 'limits.memory');
+    return keys.some(key => key !== '' && keys.indexOf(key) !== keys.lastIndexOf(key));
   };
 
   render() {
@@ -53,13 +55,6 @@ export class SelectKeyValueEditor extends React.Component {
     return (
       <React.Fragment>
         {keyValueItems}
-        <div className="row">
-          {isDuplicated ? (
-            <div className="col-md-12 col-xs-12 cos-error-title" style={{ marginTop: '-15px' }}>
-              {t(`VALIDATION:DUPLICATE-KEY`)}
-            </div>
-          ) : null}
-        </div>
         <div className="row">
           <div className="col-md-12 col-xs-12">
             {readOnly ? null : (
@@ -73,6 +68,11 @@ export class SelectKeyValueEditor extends React.Component {
           </div>
           <div className="col-md-12 col-xs-12">{desc ? <span>{desc}</span> : ''}</div>
           <div className="col-md-12 col-xs-12">{anotherDesc ? <span>{anotherDesc}</span> : ''}</div>
+          {isDuplicated ? (
+            <div className="col-md-12 col-xs-12 cos-error-title">
+              {t(`VALIDATION:DUPLICATE-KEY`)}
+            </div>
+          ) : null}
         </div>
       </React.Fragment>
     );
@@ -140,8 +140,8 @@ class SelectKeyValuePairElement extends React.Component {
             <input type="text" className="form-control" placeholder={t(`CONTENT:${keyString.toUpperCase()}`)} value={pair[SelectKeyValueEditorPair.Key] || ''} onChange={this._onChangeKey} onBlur={this._onBlurKey} />
           </div>
         ) : (
-          ''
-        )}
+            ''
+          )}
         <div className="col-md-2 col-xs-2 pairs-list__protocol-field">
           <input type="text" className="form-control" placeholder={t(`CONTENT:${valueString.toUpperCase()}`)} value={pair[SelectKeyValueEditorPair.Value] || ''} onChange={this._onChangeValue} />
         </div>

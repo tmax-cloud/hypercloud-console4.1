@@ -15,15 +15,16 @@ export class ResourceLimitEditor extends React.Component {
     this._blur = this._blur.bind(this);
   }
   _append() {
-    const { updateParentData, resourceLimitsPairs: resourceLimitsPairs, nameValueId } = this.props;
+    const { updateParentData, resourceLimitsPairs, nameValueId } = this.props;
     updateParentData({ resourceLimitsPairs: resourceLimitsPairs.concat([['', '', '', '', '', '', 'Gi', 'Gi', 'Gi']]), isDuplicated: this.hasDuplication(resourceLimitsPairs) }, nameValueId);
+
   }
 
   _remove(i) {
     const { updateParentData, nameValueId } = this.props;
     const resourceLimitsPairs = _.cloneDeep(this.props.resourceLimitsPairs);
     resourceLimitsPairs.splice(i, 1);
-    updateParentData({ resourceLimitsPairs: resourceLimitsPairs.length ? resourceLimitsPairs : [['', '', '', '', '']], isDuplicated: this.hasDuplication(resourceLimitsPairs) }, nameValueId);
+    updateParentData({ resourceLimitsPairs: resourceLimitsPairs.length ? resourceLimitsPairs : [], isDuplicated: this.hasDuplication(resourceLimitsPairs) }, nameValueId);
   }
 
   _change(e, i, type, isSelect = false) {
@@ -34,32 +35,25 @@ export class ResourceLimitEditor extends React.Component {
   }
 
   _blur() {
-    const { updateParentData } = this.props;
+    const { updateParentData, nameValueId } = this.props;
     const resourceLimitsPairs = _.cloneDeep(this.props.resourceLimitsPairs);
-    updateParentData({ resourceLimitsPairs, isDuplicated: this.hasDuplication(resourceLimitsPairs) });
+    updateParentData({ resourceLimitsPairs, isDuplicated: this.hasDuplication(resourceLimitsPairs) }, nameValueId);
   }
 
   hasDuplication = resourceLimitsPairs => {
-    let keys = resourceLimitsPairs.map(pair => pair[ResourceLimitEditorPair.Type] + pair[ResourceLimitEditorPair.LimitType]);
-    return new Set(keys).size !== keys.length;
+    let keys = resourceLimitsPairs.map(pair => pair[ResourceLimitEditorPair.LimitType]);
+    return keys.some(key => key !== '' && keys.indexOf(key) !== keys.lastIndexOf(key));
   };
 
   render() {
-    const { SelectTypeString, SelectLimitTypeString, addString, resourceLimitsPairs, allowSorting, readOnly, nameValueId, t, typeOptions, limitTypeOptions, isDuplicated, desc, anotherDesc } = this.props;
+    const { SelectTypeString, SelectLimitTypeString, addString, resourceLimitsPairs, allowSorting, readOnly, nameValueId, t, typeOptions, limitTypeOptions, isDuplicated, desc, anotherDesc, id } = this.props;
     const keyValueItems = resourceLimitsPairs.map((pair, i) => {
       const key = _.get(pair, [ResourceLimitEditorPair.Index], i);
-      return <ResourceLimitPairElement typeOptions={typeOptions} limitTypeOptions={limitTypeOptions} onChange={this._change} onBlur={this._blur} t={t} index={i} SelectTypeString={SelectTypeString} SelectLimitTypeString={SelectLimitTypeString} allowSorting={allowSorting} readOnly={readOnly} pair={pair} key={key} onRemove={this._remove} rowSourceId={nameValueId} />;
+      return <ResourceLimitPairElement typeOptions={typeOptions} limitTypeOptions={limitTypeOptions} onChange={this._change} onBlur={this._blur} id={id} t={t} index={i} SelectTypeString={SelectTypeString} SelectLimitTypeString={SelectLimitTypeString} allowSorting={allowSorting} readOnly={readOnly} pair={pair} key={key} onRemove={this._remove} rowSourceId={nameValueId} />;
     });
     return (
       <React.Fragment>
         {keyValueItems}
-        <div className="row">
-          {isDuplicated ? (
-            <div className="col-md-12 col-xs-12 cos-error-title" style={{ marginTop: '-15px' }}>
-              {t(`VALIDATION:DUPLICATE-KEY`)}
-            </div>
-          ) : null}
-        </div>
         <div className="row">
           <div className="col-md-12 col-xs-12">
             {readOnly ? null : (
@@ -73,6 +67,11 @@ export class ResourceLimitEditor extends React.Component {
           </div>
           <div className="col-md-12 col-xs-12">{desc ? <span>{desc}</span> : ''}</div>
           <div className="col-md-12 col-xs-12">{anotherDesc ? <span>{anotherDesc}</span> : ''}</div>
+          {isDuplicated ? (
+            <div className="col-md-12 col-xs-12 cos-error-title">
+              {t(`VALIDATION:DUPLICATE-KEY`)}
+            </div>
+          ) : null}
         </div>
       </React.Fragment>
     );
@@ -96,10 +95,6 @@ class ResourceLimitPairElement extends React.Component {
     event.preventDefault();
     onRemove(index);
   }
-  _onChangeSelectType = (e) => {
-    const { index, onChange } = this.props;
-    onChange(e, index, ResourceLimitEditorPair.Type, true);
-  }
   _onChangeSelectLimitType = (e) => {
     const { index, onChange } = this.props;
     onChange(e, index, ResourceLimitEditorPair.LimitType, true);
@@ -116,13 +111,17 @@ class ResourceLimitPairElement extends React.Component {
     const { index, onChange } = this.props;
     onChange(e, index, ResourceLimitEditorPair.Storage, false);
   }
-  _onChangeRatio = (e) => {
+  _onChangeCpuRatio = (e) => {
     const { index, onChange } = this.props;
-    onChange(e, index, ResourceLimitEditorPair.Ratio, false);
+    onChange(e, index, ResourceLimitEditorPair.CpuRatio, false);
+  }
+  _onChangeMemoryRatio = (e) => {
+    const { index, onChange } = this.props;
+    onChange(e, index, ResourceLimitEditorPair.MemoryRatio, false);
   }
   _onBlurKey = (e) => {
     const { index, onBlur } = this.props;
-    onBlur(e, index, ResourceLimitEditorPair.Type);
+    onBlur(e, index);
   }
 
   onCpuUnitChanged = e => {
@@ -144,106 +143,121 @@ class ResourceLimitPairElement extends React.Component {
   };
 
   render() {
-    const { SelectTypeString, SelectLimitTypeString, allowSorting, readOnly, pair, t, typeOptions, limitTypeOptions } = this.props;
+    const { SelectLimitTypeString, allowSorting, pair, t, limitTypeOptions, id } = this.props;
     const deleteButton = (
       <React.Fragment>
-        <Button children={<FaMinus />} onClick={this._onRemove}></Button>
+        <Button noMarginTop={true} children={<FaMinus />} onClick={this._onRemove}></Button>
         <span className="sr-only">Delete</span>
       </React.Fragment>
     );
 
     return (
-      <>
-        <div className={classNames('row', 'pairs-list__row')} ref={node => (this.node = node)}>
-          <div className="col-md-2 col-xs-2 pairs-list__name-field">
-            <SingleSelect options={typeOptions} value={pair[ResourceLimitEditorPair.Type]} name={''} placeholder={t(`CONTENT:${SelectTypeString.toUpperCase()}`)} onChange={this._onChangeSelectType} onBlur={this._onBlurKey} />
+      <div className={classNames('row', 'pairs-list__row')} ref={node => (this.node = node)} style={{ paddingBottom: '0px' }}>
+        <div className="col-md-2 col-xs-2 pairs-list__name-field">
+          <div className="row" style={{ marginLeft: '15px' }}>
+            {t(`CONTENT:RESOURCELIMITTYPE`)}
           </div>
-          <div className="col-md-2 col-xs-2 pairs-list__name-field">
-            {
-              pair[ResourceLimitEditorPair.Type] !== "PersistentVolumeClaim" ?
-                (
-                  pair[ResourceLimitEditorPair.Type] === "Pod" ?
-                    <SingleSelect options={limitTypeOptions.slice(2)} value={pair[ResourceLimitEditorPair.LimitType]} name={''} placeholder={t(`CONTENT:${SelectLimitTypeString.toUpperCase()}`)} onChange={this._onChangeSelectLimitType} onBlur={this._onBlurKey} />
-                    :
-                    <SingleSelect options={limitTypeOptions} value={pair[ResourceLimitEditorPair.LimitType]} name={''} placeholder={t(`CONTENT:${SelectLimitTypeString.toUpperCase()}`)} onChange={this._onChangeSelectLimitType} onBlur={this._onBlurKey} />
-                )
-                :
+          {
+            id !== "pvc" ?
+              (
+                id === "pod" ?
+                  <SingleSelect options={limitTypeOptions.slice(2)} value={pair[ResourceLimitEditorPair.LimitType]} name={''} placeholder={t(`CONTENT:${SelectLimitTypeString.toUpperCase()}`)} onChange={this._onChangeSelectLimitType} onBlur={this._onBlurKey} />
+                  :
+                  (<SingleSelect options={limitTypeOptions} value={pair[ResourceLimitEditorPair.LimitType]} name={''} placeholder={t(`CONTENT:${SelectLimitTypeString.toUpperCase()}`)} onChange={this._onChangeSelectLimitType} onBlur={this._onBlurKey} />
+                  )
+              )
+              :
+              <>
                 <SingleSelect options={limitTypeOptions.slice(2, 4)} value={pair[ResourceLimitEditorPair.LimitType]} name={''} placeholder={t(`CONTENT:${SelectLimitTypeString.toUpperCase()}`)} onChange={this._onChangeSelectLimitType} onBlur={this._onBlurKey} />
-            }
-          </div>
-          {readOnly ? null : (
-            <div className="col-md-1 col-xs-2">
-              <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{deleteButton}</React.Fragment> : deleteButton}</span>
-            </div>
-          )}
+              </>
+          }
         </div>
-
         {
-          pair[ResourceLimitEditorPair.Type] !== "PersistentVolumeClaim" ? (
+          id !== "pvc" ? (
             pair[ResourceLimitEditorPair.LimitType] === "maxLimitRequestRatio" ? (
               <>
-                <div className="row" style={{ marginLeft: '15px' }}>
-                  <div className="col-md-2 col-xs-2 pairs-list__name-field">
-                    <div>비율</div>
+                <div className="col-md-2 col-xs-2 pairs-list__name-field" style={{ paddingLeft: '0px' }}>
+                  <div className="row" style={{ marginLeft: '35px' }}>
+                    {t(`CONTENT:CPU`)}
+                  </div>
+                  <div className="row" style={{ margin: '0 0 20px 10px' }}>
+                    <div className="col-md-12 col-xs-12 pairs-list__protocol-field" style={{ paddingTop: '0px' }}>
+                      <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.CpuRatio] || ''} onChange={this._onChangeCpuRatio} onBlur={this._onBlurKey} />
+                    </div>
                   </div>
                 </div>
-                <div className="row" style={{ margin: '0 0 20px 10px' }}>
-                  <div className="col-md-1 col-xs-1 pairs-list__protocol-field">
-                    <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.Ratio] || ''} onChange={this._onChangeRatio} onBlur={this._onBlurKey} />
+                <div className="col-md-3 col-xs-3 pairs-list__name-field" style={{ paddingLeft: '0px' }}>
+                  <div className="row" style={{ marginLeft: '35px' }}>
+                    {t(`CONTENT:MEMORY`)}
+                  </div>
+                  <div className="row" style={{ margin: '0 0 20px 10px' }}>
+                    <div className="col-md-8 col-xs-8 pairs-list__protocol-field" style={{ paddingTop: '0px' }}>
+                      <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.MemoryRatio] || ''} onChange={this._onChangeMemoryRatio} onBlur={this._onBlurKey} />
+                    </div>
+                    <div className="col-md-4 col-xs-4">
+                      <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{deleteButton}</React.Fragment> : deleteButton}</span>
+                    </div>
                   </div>
                 </div>
               </>
             ) : (pair[ResourceLimitEditorPair.LimitType] !== "" ?
               (
                 <>
-                  <div className="row" style={{ marginLeft: '15px' }}>
-                    <div className="col-md-2 col-xs-2 pairs-list__name-field">
-                      <div>CPU Limits</div>
+                  <div className="col-md-3 col-xs-3 pairs-list__name-field" style={{ paddingLeft: '0px' }}>
+                    <div className="row" style={{ marginLeft: '35px' }}>
+                      {t("CONTENT:CPULIMITS")}
+                    </div>
+                    <div className="row" style={{ margin: '0 0 20px 10px' }}>
+                      <div className="col-md-6 col-xs-6 pairs-list__protocol-field"
+                        style={{ paddingTop: '0px' }}>
+                        <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.Cpu] || ''} onChange={this._onChangeCpu} onBlur={this._onBlurKey} />
+                      </div>
+                      <div className="col-md-6 col-xs-6 pairs-list__name-field" id='cpu-units' style={{ paddingTop: '0px' }}>
+                        <SingleSelect options={ResourceLimitPairElement.limitsUnitOptions} value={pair[ResourceLimitEditorPair.CpuUnit]} onChange={this.onCpuUnitChanged} />
+                      </div>
                     </div>
                   </div>
-                  <div className="row" style={{ margin: '0 0 20px 10px' }}>
-                    <div className="col-md-1 col-xs-1 pairs-list__protocol-field">
-                      <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.Cpu] || ''} onChange={this._onChangeCpu} onBlur={this._onBlurKey} />
+                  <div className="col-md-4 col-xs-4 pairs-list__name-field" style={{ paddingLeft: '0px' }}>
+                    <div className="row" style={{ marginLeft: '35px' }}>
+                      {t("CONTENT:MEMORYLIMITS")}
                     </div>
-                    <div className="col-md-1 col-xs-1 pairs-list__name-field" id='memory-units'>
-                      <SingleSelect options={ResourceLimitPairElement.limitsUnitOptions} value={pair[ResourceLimitEditorPair.CpuUnit]} onChange={this.onStorageUnitChanged} />
-                    </div>
-                  </div>
-                  <div className="row" style={{ marginLeft: '15px' }}>
-                    <div className="col-md-2 col-xs-2 pairs-list__name-field">
-                      <div>Memory Limits</div>
-                    </div>
-                  </div>
-                  <div className="row" style={{ margin: '0 0 20px 10px' }}>
-                    <div className="col-md-1 col-xs-1 pairs-list__protocol-field">
-                      <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.Memory] || ''} onChange={this._onChangeMemory} onBlur={this._onBlurKey} />
-                    </div>
-                    <div className="col-md-1 col-xs-1 pairs-list__name-field" id='memory-units'>
-                      <SingleSelect options={ResourceLimitPairElement.limitsUnitOptions} value={pair[ResourceLimitEditorPair.MemoryUnit]} onChange={this.onStorageUnitChanged} />
+                    <div className="row" style={{ margin: '0 0 20px 10px' }}>
+                      <div className="col-md-4 col-xs-4 pairs-list__protocol-field"
+                        style={{ paddingTop: '0px' }}>
+                        <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.Memory] || ''} onChange={this._onChangeMemory} onBlur={this._onBlurKey} />
+                      </div>
+                      <div className="col-md-4 col-xs-4 pairs-list__name-field" id='memory-units'
+                        style={{ paddingTop: '0px' }}>
+                        <SingleSelect options={ResourceLimitPairElement.limitsUnitOptions} value={pair[ResourceLimitEditorPair.MemoryUnit]} onChange={this.onMemoryUnitChanged} />
+                      </div>
+                      <div className="col-md-2 col-xs-2">
+                        <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{deleteButton}</React.Fragment> : deleteButton}</span>
+                      </div>
                     </div>
                   </div>
                 </>
               ) : ''
               )
           ) : (
-              <>
-                <div className="row" style={{ marginLeft: '15px' }}>
-                  <div className="col-md-2 col-xs-2 pairs-list__name-field">
-                    <div>스토리지 크기</div>
-                  </div>
+              <div className="col-md-6 col-xs-6 pairs-list__name-field" style={{ paddingLeft: '0px' }}>
+                <div className="row" style={{ marginLeft: '35px' }}>
+                  {t("CONTENT:STORAGESIZE")}
                 </div>
                 <div className="row" style={{ margin: '0 0 20px 10px' }}>
-                  <div className="col-md-1 col-xs-1 pairs-list__protocol-field">
+                  <div className="col-md-3 col-xs-3 pairs-list__protocol-field" style={{ paddingTop: '0px' }}>
                     <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.Storage] || ''} onChange={this._onChangeStorage} onBlur={this._onBlurKey} />
                   </div>
-                  <div className="col-md-1 col-xs-1 pairs-list__name-field" id='memory-units'>
+                  <div className="col-md-3 col-xs-3 pairs-list__name-field" id='storage-units' style={{ paddingTop: '0px' }}>
                     <SingleSelect options={ResourceLimitPairElement.limitsUnitOptions} value={pair[ResourceLimitEditorPair.StorageUnit]} onChange={this.onStorageUnitChanged} />
                   </div>
+                  <div className="col-md-2 col-xs-2">
+                    <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{deleteButton}</React.Fragment> : deleteButton}</span>
+                  </div>
                 </div>
-              </>
+              </div>
             )
         }
-      </>
+      </div>
     );
   }
 }
@@ -253,10 +267,8 @@ ResourceLimitPairElement.limitsUnitOptions = [
   { value: 'Gi', label: 'Gi' },
   { value: 'Ti', label: 'Ti' },
   { value: 'Pi', label: 'Pi' },
-  { value: 'Ei', label: 'Ei' },
   { value: 'M', label: 'M' },
   { value: 'G', label: 'G' },
   { value: 'T', label: 'T' },
   { value: 'P', label: 'P' },
-  { value: 'E', label: 'E' },
 ];

@@ -40,11 +40,11 @@ const isEstablished = conditions => {
 const namespaced = crd => crd.spec.scope === 'Namespaced';
 
 const CRDRow = ({ obj: crd }) => {
-  const { t } = useTranslation();
-  let ko = kindObj(crd.spec.names.kind);
+  const ko: { [key: string]: string } = kindObj(crd.spec.names.kind);
   let path;
+
   // default-resource 쓸건지, 따로 만든 페이지 쓸건지
-  if (!_.isEmpty(ko)) {
+  if (!_.isEmpty(ko) && (ko.apiGroup === crd.spec.group)) {
     path = crd.spec && crd.spec.scope === 'Cluster' ? `/k8s/cluster/${crd.spec.names.plural}` : `/k8s/all-namespaces/${crd.spec.names.plural}`;
   } else {
     path = crd.spec && crd.spec.scope === 'Cluster' ? `/k8s/cluster/${referenceForCRD(crd)}` : `/k8s/all-namespaces/${referenceForCRD(crd)}`;
@@ -66,10 +66,10 @@ const CRDRow = ({ obj: crd }) => {
             <i className="fa fa-check-circle"></i>
           </span>
         ) : (
-          <span className="node-not-ready">
-            <i className="fa fa-minus-circle"></i>
-          </span>
-        )}
+            <span className="node-not-ready">
+              <i className="fa fa-minus-circle"></i>
+            </span>
+          )}
       </div>
     </div>
   );

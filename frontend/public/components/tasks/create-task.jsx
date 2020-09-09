@@ -325,12 +325,11 @@ class TaskFormComponent extends React.Component {
       });
     console.log(task);
     this.setState({ inProgress: true });
-
     const ko = kindObj('Task');
-    (this.props.isCreate ? k8sCreate(ko, task) : k8sUpdate(ko, task, task.namespace, task.metadata.name)).then(
+    (this.props.isCreate ? k8sCreate(ko, task) : k8sUpdate(ko, task, task.metadata.namespace, task.metadata.name)).then(
       () => {
         this.setState({ inProgress: false });
-        history.push(`/k8s/ns/${task.namespace}/tasks`);
+        history.push(`/k8s/ns/${task.metadata.namespace}/tasks`);
       },
       err => this.setState({ error: err.message, inProgress: false }),
     );

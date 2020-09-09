@@ -63,7 +63,7 @@ class BaseStepModal extends React.Component {
     if (!this.props.isNew) {
       return;
     }
-    this.state.imageType && this.getImageRegistryList();
+    this.state.imagetype && this.getImageRegistryList();
   }
 
   getImageRegistryList = () => {

@@ -67,7 +67,9 @@ const PipelineBuilderPage_: React.FC<PipelineBuilderPageProps> = props => {
     return resourceCall
       .then(() => {
         actions.setSubmitting(false);
-        history.push(`${getPipelineURL(ns)}/${values.name}`);
+        let path = getPipelineURL(ns);
+        path = path.slice(0, path.indexOf('tekton'));
+        history.push(`${path}pipelines`);
       })
       .catch(e => {
         actions.setStatus({ submitError: e.message });

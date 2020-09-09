@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	LOG "log"
 	"net/http"
 	"net/url"
 	"os"
@@ -120,6 +121,10 @@ func main() {
 	// NOTE: hyperauth 연동 추가 // 윤진수
 	fhyperAuthEndpoint := fs.String("hyperauth-endpoint", "", "URL of the HyperAuth")
 
+	// Add loger
+	infoLog := LOG.New(os.Stdout, "INFO\t", LOG.Ldate|LOG.Ltime)
+	// errorLog := LOG.New(os.Stderr, "ERROR\t", LOG.Ldate|LOG.Ltime|LOG.Lshortfile)
+
 	if err := fs.Parse(os.Args[1:]); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
@@ -205,6 +210,8 @@ func main() {
 		KeycloakRealm:        *fKeycloakRealm,
 		KeycloakAuthURL:      *fKeycloakAuthURL,
 		KeycloakClientId:     *fKeycloakClientId,
+		// Add loger
+		InfoLog: infoLog,
 	}
 
 	if (*fKubectlClientID == "") != (*fKubectlClientSecret == "" && *fKubectlClientSecretFile == "") {
@@ -284,11 +291,13 @@ func main() {
 		srv.JaegerProxyConfig = &proxy.Config{
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        jaegerEndpoint,
+			Origin:          "http://localhost",
 		}
 		approvalEndpoint = validateFlagIsURL("approval-endpoint", *fApprovalEndpoint)
 		srv.ApprovalProxyConfig = &proxy.Config{
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        approvalEndpoint,
+			Origin:          "http://localhost",
 		}
 		// NOTE: 여기까지
 
@@ -297,6 +306,7 @@ func main() {
 		srv.GrafanaProxyConfig = &proxy.Config{
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        grafanaEndpoint,
+			Origin:          "http://localhost",
 		}
 
 		// NOTE: kiali 추가 // 윤진수
@@ -304,6 +314,7 @@ func main() {
 		srv.KialiProxyConfig = &proxy.Config{
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        kialiEndpoint,
+			Origin:          "http://localhost",
 		}
 		// NOTE: kubeflow 추가 // 윤진수
 		kubeflowEndpoint := validateFlagIsURL("kubeflow-endpoint", *fkubeflowEndpoint)
@@ -318,14 +329,14 @@ func main() {
 		vncEndpoint := validateFlagIsURL("vnc-endpoint", *fvncEndpoint)
 		srv.VncProxyConfig = &proxy.Config{
 			// TLSClientConfig: tlsConfig,
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        vncEndpoint,
 			Origin:          "http://localhost",
 		}
 
 		hyperAuthEndpoint := validateFlagIsURL("hyperAuth-endpoint", *fhyperAuthEndpoint)
 		srv.HyperAuthProxyConfig = &proxy.Config{
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        hyperAuthEndpoint,
 		}
 
@@ -407,6 +418,7 @@ func main() {
 			},
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        jaegerEndpoint,
+			Origin:          "http://localhost",
 		}
 		approvalEndpoint = validateFlagIsURL("approval-endpoint", *fApprovalEndpoint)
 		srv.ApprovalProxyConfig = &proxy.Config{
@@ -415,6 +427,7 @@ func main() {
 			},
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        approvalEndpoint,
+			Origin:          "http://localhost",
 		}
 		// NOTE: 여기까지 // 정동민
 
@@ -423,6 +436,7 @@ func main() {
 		srv.GrafanaProxyConfig = &proxy.Config{
 			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			Endpoint:        grafanaEndpoint,
+			Origin:          "http://localhost",
 		}
 		// NOTE: 여기까지 // 윤진수
 
@@ -432,8 +446,10 @@ func main() {
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: *fK8sModeOffClusterSkipVerifyTLS,
 			},
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			// HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        kialiEndpoint,
+			Origin:          "http://localhost",
 		}
 		// NOTE: kubeflow 추가 // 윤진수
 		kubeflowEndpoint := validateFlagIsURL("kubeflow-endpoint", *fkubeflowEndpoint)
@@ -462,7 +478,7 @@ func main() {
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: *fK8sModeOffClusterSkipVerifyTLS,
 			},
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        hyperAuthEndpoint,
 		}
 

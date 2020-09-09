@@ -5,7 +5,6 @@ import { NamespaceModel, ProjectRequestModel, NetworkPolicyModel } from '../../m
 import { createModalLauncher, ModalTitle, ModalBody, ModalSubmitFooter } from '../factory/modal';
 import { history, PromiseComponent, resourceObjPath, SelectorInput } from '../utils';
 import { useTranslation } from 'react-i18next';
-import { UserList } from '../user';
 
 const allow = 'allow';
 const deny = 'deny';

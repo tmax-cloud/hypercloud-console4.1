@@ -1,10 +1,11 @@
 import React from 'react';
 import './_button.scss';
 
-export function Button({ children, ...props }) {
+export function Button({ children, noMarginTop, ...props }) {
   return (
-    <button className="button-icon" {...props}>
+    <label type="
+    button" className="button-icon" {...props} style={noMarginTop && { marginTop: '0px' }} >
       {children}
-    </button>
+    </label>
   );
 }
