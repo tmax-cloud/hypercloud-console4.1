@@ -122,7 +122,7 @@ class RegistryFormComponent extends React.Component {
         return true;
       }
     } else if (item === 'pvc') {
-      if ((this.state.pvcType === 'exist' && this.state.pvc === '') || (this.state.serviceType === 'create' && (this.state.storageSize === '' || this.state.storageClassName === ''))) {
+      if ((this.state.pvcType === 'exist' && this.state.pvc === '') || (this.state.pvcType === 'create' && (this.state.storageSize === '' || this.state.storageClassName === ''))) {
         this.setState({ inputError: { [item]: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:${item.toUpperCase()}`) }) } });
         return false;
       } else {
@@ -229,7 +229,8 @@ class RegistryFormComponent extends React.Component {
     this.setState({ port: e.target.value });
   };
   onPvcTypeChanged = e => {
-    this.setState({ pvcType: e.target.value });
+    this.setState({ pvcType: e.target.value, pvc: '', storageClassName: '' });
+
   };
   onPvcChanged = pvc => {
     this.setState({ pvc: String(pvc) });
@@ -371,16 +372,16 @@ class RegistryFormComponent extends React.Component {
               {this.state.pvcType === 'exist' ? (
                 <PvcDropdown id="registy-pvc" t={t} onChange={this.onPvcChanged} onFocus={this.onFocusPvc} namespace={this.state.registry.metadata.namespace} />
               ) : (
-                <>
-                  <label>{t('CONTENT:ACCESSMODES')}</label>
-                  <RadioGroup currentValue={this.state.accessModes} items={aceessModes} onChange={this.onPVCAccessModeChanged} formRow={true} />
-                  <LabelInput label={t('RESOURCE:STORAGESIZE')} onChange={this.onPVCStorageSizeChanged} onFocus={this.onFocusPvc} value={this.state.storageSize} id="registry-storage-size" placeholder="10" half>
-                    <SingleSelect options={RegistryFormComponent.storageSizeUnitOptions} value={this.state.storageSizeUnit} onChange={this.onPVCStorageSizeUnitChanged} />
-                  </LabelInput>
-                  <label>{t('CONTENT:STORAGECLASSNAME')}</label>
-                  <ScDropdown id="registy-sc" t={t} onChange={this.onPVCStorageClassNameChanged} onFocus={this.onFocusPvc} />
-                </>
-              )}
+                  <>
+                    <label>{t('CONTENT:ACCESSMODES')}</label>
+                    <RadioGroup currentValue={this.state.accessModes} items={aceessModes} onChange={this.onPVCAccessModeChanged} formRow={true} />
+                    <LabelInput label={t('RESOURCE:STORAGESIZE')} onChange={this.onPVCStorageSizeChanged} onFocus={this.onFocusPvc} value={this.state.storageSize} id="registry-storage-size" placeholder="10" half>
+                      <SingleSelect options={RegistryFormComponent.storageSizeUnitOptions} value={this.state.storageSizeUnit} onChange={this.onPVCStorageSizeUnitChanged} />
+                    </LabelInput>
+                    <label>{t('CONTENT:STORAGECLASSNAME')}</label>
+                    <ScDropdown id="registy-sc" t={t} onChange={this.onPVCStorageClassNameChanged} onFocus={this.onFocusPvc} />
+                  </>
+                )}
               <span style={{ marginTop: '5px' }}>{t('STRING:REGISTRY-CREATE_4')}</span>
               {this.state.inputError.pvc && <p className="cos-error-title">{this.state.inputError.pvc}</p>}
             </Section>
@@ -533,7 +534,7 @@ class ListDropdown_ extends React.Component {
 
     const { selectedKey } = this.state;
 
-    const Component = fixed ? items[selectedKey] : <Dropdown autocompleteFilter={this.autocompleteFilter} autocompletePlaceholder={placeholder} items={items} sortedItemKeys={sortedItems} selectedKey={selectedKey} title={this.state.title} onChange={this.onChange} id={id} menuClassName="dropdown-menu--text-wrap" />;
+    const Component = fixed ? items[selectedKey] : <Dropdown autocompleteFilter={this.autocompleteFilter} autocompletePlaceholder={placeholder} items={items} sortedItemKeys={sortedItems} selectedKey={selectedKey} title={this.state.title} onFocus={this.props.onFocus} onChange={this.onChange} id={id} menuClassName="dropdown-menu--text-wrap" />;
 
     return (
       <div>

@@ -122,7 +122,7 @@ class NamespaceFormComponent extends React.Component {
           <p className="co-m-pane__explanation">{t('STRING:NAMESPACE-CREATE-0')}</p>
           <fieldset disabled={!this.props.isCreate}>
             <Section label={t('CONTENT:NAME')} isRequired={true}>
-              <input className="form-control" type="text" onChange={this.onNameChanged} value={this.state.namespace.metadata.name} id="namespace-name" />
+              <input className="form-control" type="text" onFocus={this.onFocusName} onChange={this.onNameChanged} value={this.state.namespace.metadata.name} id="namespace-name" />
               {this.state.inputError.name && <p className="cos-error-title">{this.state.inputError.name}</p>}
             </Section>
             <Section label={t('CONTENT:LABELS')} isRequired={false}>
