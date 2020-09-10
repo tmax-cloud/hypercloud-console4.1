@@ -74,9 +74,10 @@ class BaseStepModal extends React.Component {
         data => {
           let imageRegistryList = data.map(cur => {
             return {
-              value: cur.spec.image.split('/')[0],
+              value: cur.metadata.name,
               id: 'imageRegistry',
               label: cur.metadata.name,
+              realValue: cur.spec.image.split('/')[0], // spec.image 값 중복되는 경우 중복 선택되는 버그 때문..
             };
           });
           this.setState({ imageRegistryList });
@@ -228,7 +229,7 @@ class BaseStepModal extends React.Component {
           label: version,
         };
       });
-    this.setState({ imagetag: imageTagList[0] });
+    // this.setState({ imagetag: imageTagList[0] });
     this.setState({ imageTagList });
   };
 
