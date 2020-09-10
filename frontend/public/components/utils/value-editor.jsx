@@ -93,12 +93,12 @@ class ValuePairElement extends React.Component {
 
     return (
       <div className={classNames('row')} ref={node => (this.node = node)}>
-        <div className={classNames(isModal ? 'col-md-11 col-xs-10 pairs-list__protocol-field' : 'col-md-4 col-xs-4 pairs-list__protocol-field')}>
+        <div className={classNames(isModal ? 'col-md-10 col-xs-10 pairs-list__protocol-field' : 'col-md-4 col-xs-4 pairs-list__protocol-field')}>
           {/* <div className="col-md-4 col-xs-4 pairs-list__protocol-field"> */}
           <input type="text" className="form-control" placeholder={t(`CONTENT:${valueString.toUpperCase()}`)} value={pair[ValueEditorPair.Value] || ''} onChange={this._onChangeValue} />
         </div>
         {readOnly ? null : (
-          <div className="col-md-1 col-xs-2">
+          <div className="col-md-2 col-xs-2">
             <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{deleteButton}</React.Fragment> : deleteButton}</span>
           </div>
         )}
