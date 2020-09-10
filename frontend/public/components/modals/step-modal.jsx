@@ -69,25 +69,26 @@ class BaseStepModal extends React.Component {
   getImageRegistryList = () => {
     const ko = kindObj('Registry');
     const params = { ns: this.props.namespace || '' };
-    k8sList(ko, params).then(
-      data => {
-        let imageRegistryList = data.map(cur => {
-          return {
-            value: cur.spec.image.split('/')[0],
-            id: 'imageRegistry',
-            label: cur.metadata.name,
-          };
-        });
-        this.setState({ imageRegistryList });
-        this.setState({ imageregistry: imageRegistryList[0] });
+    params.ns &&
+      k8sList(ko, params).then(
+        data => {
+          let imageRegistryList = data.map(cur => {
+            return {
+              value: cur.spec.image.split('/')[0],
+              id: 'imageRegistry',
+              label: cur.metadata.name,
+            };
+          });
+          this.setState({ imageRegistryList });
+          // this.setState({ imageregistry: imageRegistryList[0] });
 
-        this.getImageList(data[0]);
-      },
-      err => {
-        this.setState({ error: err.message, inProgress: false });
-        this.setState({ statefulSet: [] });
-      },
-    );
+          this.state.imageregistry && this.getImageList(data[0]);
+        },
+        err => {
+          this.setState({ error: err.message, inProgress: false });
+          this.setState({ statefulSet: [] });
+        },
+      );
   };
 
   getImageList = obj => {
@@ -129,8 +130,8 @@ class BaseStepModal extends React.Component {
                   })
               : [];
 
-          this.setState({ image: imageList[0] });
-          this.setState({ imagetag: imageTagList[0] });
+          // this.setState({ image: imageList[0] });
+          // this.setState({ imagetag: imageTagList[0] });
           this.setState({ imageList });
           this.setState({ imageTagList });
           this.setState({ imageAllTagList }, () => {
@@ -386,8 +387,7 @@ class BaseStepModal extends React.Component {
                     <SingleSelect
                       options={this.state.imageRegistryList}
                       name={'ImageRegistry'}
-                      value={this.state.imageregistry?.value || ''}
-                      label={this.state.imageregistry?.label || ''}
+                      value={this.state.imageregistry?.label || ''}
                       placeholder={t('ADDITIONAL:SELECT', { something: t('CONTENT:IMAGEREGISTRY') })}
                       onChange={e => {
                         this.onImageRegistryChange(e);
