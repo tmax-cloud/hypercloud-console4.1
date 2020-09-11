@@ -181,12 +181,12 @@ const PipelineBuilderForm: React.FC<PipelineBuilderFormProps> = props => {
                 }
                 taskGroup={taskGroup}
               />
-              <p
+              {taskGroup.tasks.length && <p
                 className="co-m-pane__explanation"
                 style={{ marginTop: '10px' }}
               >
                 {t('STRING:PIPELINE-CREATE_1')}
-              </p>
+              </p>}
             </div>
 
             <FormFooter
