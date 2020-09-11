@@ -319,7 +319,7 @@ func main() {
 		// NOTE: kubeflow 추가 // 윤진수
 		kubeflowEndpoint := validateFlagIsURL("kubeflow-endpoint", *fkubeflowEndpoint)
 		srv.HyperflowProxyConfig = &proxy.Config{
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        kubeflowEndpoint,
 			Origin:          "http://localhost",
 		}
