@@ -29,7 +29,7 @@ spec:
         - --hypercloud-endpoint=http://hypercloud4-operator-service.hypercloud4-system.svc:28677
         - --prometheus-endpoint=http://prometheus-k8s.monitoring.svc:9090/api
         - --grafana-endpoint=http://grafana.monitoring.svc:3000/
-        - --kiali-endpoint=http://kiali.istio-system.svc:20001/api/kiali
+        - --kiali-endpoint=https://kiali.istio-system.svc:20001/api/kiali
         - --jaeger-endpoint=http://tracing.istio-system.svc:80/api/jaeger
         - --approval-endpoint=http://approval-proxy-server.approval-system.svc:80/approve
         - --kubeflow-endpoint=http://istio-ingressgateway.istio-system.svc:80/

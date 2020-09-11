@@ -312,7 +312,7 @@ func main() {
 		// NOTE: kiali 추가 // 윤진수
 		kialiEndpoint := validateFlagIsURL("kiali-endpoint", *fKialiEndpoint)
 		srv.KialiProxyConfig = &proxy.Config{
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        kialiEndpoint,
 			Origin:          "http://localhost",
 		}
