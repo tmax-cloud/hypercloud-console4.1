@@ -313,8 +313,11 @@ func main() {
 		kialiEndpoint := validateFlagIsURL("kiali-endpoint", *fKialiEndpoint)
 		srv.KialiProxyConfig = &proxy.Config{
 			HeaderBlacklist: []string{"X-CSRFToken"},
-			Endpoint:        kialiEndpoint,
-			Origin:          "http://localhost",
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+			Endpoint: kialiEndpoint,
+			Origin:   "http://localhost",
 		}
 		// NOTE: kubeflow 추가 // 윤진수
 		kubeflowEndpoint := validateFlagIsURL("kubeflow-endpoint", *fkubeflowEndpoint)
