@@ -458,7 +458,7 @@ func main() {
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: *fK8sModeOffClusterSkipVerifyTLS,
 			},
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        kubeflowEndpoint,
 			Origin:          "http://localhost",
 		}
@@ -468,7 +468,7 @@ func main() {
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: *fK8sModeOffClusterSkipVerifyTLS,
 			},
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        vncEndpoint,
 			Origin:          "http://localhost",
 		}
