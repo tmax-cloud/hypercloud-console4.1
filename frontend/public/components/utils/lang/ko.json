@@ -937,7 +937,12 @@
     "VOLUMEMOUNTPATH": "볼륨 마운트 경로",
     "DECIDEDAT": "결정 시간",
     "SERVICECLASSLIST": "서비스 클래스 목록",
-    "SERVICECLASSCLASSIFICATION": "서비스 클래스 분류"
+    "SERVICECLASSCLASSIFICATION": "서비스 클래스 분류",
+    "MAILSERVER": "메일 서버",
+    "MAILCONFIG": "메일 설정",
+    "MAILFROM": "발신자",
+    "MAILSUBJECT": "제목",
+    "MAILCONTENT": "내용"
   },
   "RESOURCE": {
     "HOME": "홈",

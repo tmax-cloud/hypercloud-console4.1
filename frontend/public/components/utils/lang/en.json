@@ -942,7 +942,9 @@
     "CONTENT": "Content",
     "DECIDEDAT": "Decided at",
     "SERVICECLASSLIST": "Service Class List",
-    "SERVICECLASSCLASSIFICATION": "Service Class Classification"
+    "SERVICECLASSCLASSIFICATION": "Service Class Classification",
+    "MAILSUBJECT": "Title",
+    "MAILCONTENT": "Contents"
   },
   "RESOURCE": {
     "HOME": "Home",

@@ -168,25 +168,25 @@ class BaseStepModal extends React.Component {
     } else {
       this.setState({ inputError: { name: null } });
     }
-    if (this.state.imagetype && !this.state.imageregistry) {
+    if (this.state.isType && this.state.imagetype && !this.state.imageregistry) {
       this.setState({ inputError: { imageRegistry: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:IMAGEREGISTRY`) }) } });
       return;
     } else {
       this.setState({ inputError: { imageRegsitry: null } });
     }
-    if (this.state.imagetype && !this.state.image) {
+    if (this.state.isType && this.state.imagetype && !this.state.image) {
       this.setState({ inputError: { image: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:IMAGE`) }) } });
       return;
     } else {
       this.setState({ inputError: { image: null } });
     }
-    if (this.state.imagetype && !this.state.imagetag) {
+    if (this.state.isType && this.state.imagetype && !this.state.imagetag) {
       this.setState({ inputError: { imageTag: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:IMAGETAG`) }) } });
       return;
     } else {
       this.setState({ inputError: { imageTag: null } });
     }
-    if (!this.state.imagetype && !this.state.selfimage) {
+    if (this.state.isType && !this.state.imagetype && !this.state.selfimage) {
       this.setState({ inputError: { selfImage: t('VALIDATION:EMPTY-INPUT', { something: t(`CONTENT:IMAGE`) }) } });
       return;
     } else {
@@ -252,6 +252,8 @@ class BaseStepModal extends React.Component {
       this.setState({
         name: this.setState.preset,
       });
+    } else {
+      this.setState({ inputError: { volume: null } });
     }
   };
 
@@ -345,6 +347,7 @@ class BaseStepModal extends React.Component {
     ];
     const volumeOptions = volumeNames ? volumeNames.map(cur => ({ value: cur[0], label: cur[0] })) : [];
     let maxHeight = window.innerHeight - 180;
+
     return (
       <form style={{ width: '500px' }} onSubmit={this._submit} name="form">
         <ModalTitle>{title}</ModalTitle>
@@ -444,7 +447,7 @@ class BaseStepModal extends React.Component {
               </SecondSection>
               {this.state.imagetype ? (
                 <div>
-                  <SecondSection isModal={true} label={t('CONTENT:IMAGEREGISTRY')} id={'imageregistry'}>
+                  <SecondSection isModal={true} label={t('CONTENT:IMAGEREGISTRY')} id={'imageregistry'} isRequired={this.state.isType ? true : false}>
                     <SingleSelect
                       options={this.state.imageRegistryList}
                       name={'ImageRegistry'}
@@ -460,7 +463,7 @@ class BaseStepModal extends React.Component {
                       </p>
                     )}
                   </SecondSection>
-                  <SecondSection isModal={true} label={t('CONTENT:IMAGE')} id={'image'}>
+                  <SecondSection isModal={true} label={t('CONTENT:IMAGE')} id={'image'} isRequired={this.state.isType ? true : false}>
                     <SingleSelect
                       options={this.state.imageList}
                       name={'Image'}
@@ -476,7 +479,7 @@ class BaseStepModal extends React.Component {
                       </p>
                     )}
                   </SecondSection>
-                  <SecondSection isModal={true} label={t('CONTENT:IMAGETAG')} id={'image-tag'}>
+                  <SecondSection isModal={true} label={t('CONTENT:IMAGETAG')} id={'image-tag'} isRequired={this.state.isType ? true : false}>
                     <SingleSelect
                       options={this.state.imageTagList}
                       name={'ImageTag'}
@@ -501,7 +504,11 @@ class BaseStepModal extends React.Component {
               )}
               {this.state.isType && this.state.preset === 'Notify' && (
                 <div>
-                  <label>{t('CONTENT:MAILCONFIG')}</label>
+                  <div className={'row form-group required'} style={{ marginBottom: '0px' }}>
+                    <label className="control-label" style={{ marginLeft: '15px' }}>
+                      {t('CONTENT:MAILCONFIG')}
+                    </label>
+                  </div>
                   <SecondSection isModal={true} label={'- ' + t('CONTENT:MAILSERVER')} id={'mail-server'}>
                     <input className="form-control" type="text" id="mail-server" value={this.state.mailserver} onChange={this.onMailServerChange} />
                   </SecondSection>
@@ -529,7 +536,7 @@ class BaseStepModal extends React.Component {
                   </SecondSection>
                 </div>
               )}
-              <SecondSection isModal={true} label={t('CONTENT:VOLUMEMOUNT')} id={'volumemount'}>
+              <SecondSection isModal={true} label={t('CONTENT:VOLUMEMOUNT')} id={'volumemount'} isRequired={this.state.isType ? true : false}>
                 {volumeOptions.length > 0 ? (
                   <div>
                     <SingleSelect
