@@ -338,6 +338,7 @@ class RegistryFormComponent extends React.Component {
         </Helmet>
         <form className="co-m-pane__body-group form-group" onSubmit={this.save}>
           <h1 className="co-m-pane__heading">{t('ADDITIONAL:CREATEBUTTON', { something: t(`RESOURCE:${this.state.registry.kind.toUpperCase()}`) })}</h1>
+          <p className="co-m-pane__explanation">{t('STRING:REGISTRY-CREATE_10')}</p>
           <fieldset disabled={!this.props.isCreate}>
             <Section label={t('CONTENT:NAME')} isRequired={true}>
               <input className="form-control" type="text" onChange={this.onNameChanged} onFocus={this.onFocusName} value={this.state.registry.metadata.name} id="registry-name" />
