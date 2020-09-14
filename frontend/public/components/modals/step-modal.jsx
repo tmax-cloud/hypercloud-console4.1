@@ -14,6 +14,17 @@ import { useTranslation, Trans } from 'react-i18next';
 class BaseStepModal extends React.Component {
   constructor(props) {
     super(props);
+
+    const inputError = {
+      name: null,
+      imageRegistry: null,
+      image: null,
+      imageTag: null,
+      selfImage: null,
+      volume: null,
+      mountPath: null,
+    };
+
     this.state = {
       name: props.step?.[0] || '',
       imageregistry: props.step?.[1] || '',
@@ -36,6 +47,7 @@ class BaseStepModal extends React.Component {
       imageList: [],
       imageTagList: [],
       imageAllTagList: [],
+      inputError: inputError,
       inProgress: false,
       errorMessage: '',
     };
@@ -60,9 +72,9 @@ class BaseStepModal extends React.Component {
     this._cancel = props.cancel.bind(this);
   }
   componentDidMount() {
-    if (!this.props.isNew) {
-      return;
-    }
+    // if (!this.props.isNew) {
+    //   return;
+    // }
     this.state.imagetype && this.getImageRegistryList();
   }
 
@@ -147,8 +159,52 @@ class BaseStepModal extends React.Component {
 
   _submit(e) {
     e.preventDefault();
-    const { kind, path, steps, updateParentData, isNew, index } = this.props;
+    const { kind, path, steps, updateParentData, isNew, index, t } = this.props;
     let name = '';
+
+    if (!this.state.isType && !this.state.name) {
+      this.setState({ inputError: { name: t('VALIDATION:EMPTY-INPUT', { something: t(`CONTENT:NAME`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { name: null } });
+    }
+    if (this.state.imagetype && !this.state.imageregistry) {
+      this.setState({ inputError: { imageRegistry: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:IMAGEREGISTRY`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { imageRegsitry: null } });
+    }
+    if (this.state.imagetype && !this.state.image) {
+      this.setState({ inputError: { image: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:IMAGE`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { image: null } });
+    }
+    if (this.state.imagetype && !this.state.imagetag) {
+      this.setState({ inputError: { imageTag: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:IMAGETAG`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { imageTag: null } });
+    }
+    if (!this.state.imagetype && !this.state.selfimage) {
+      this.setState({ inputError: { selfImage: t('VALIDATION:EMPTY-INPUT', { something: t(`CONTENT:IMAGE`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { selfImage: null } });
+    }
+    if (this.state.isType && !this.state.volumemountname) {
+      this.setState({ inputError: { volume: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:VOLUME`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { volume: null } });
+    }
+    if (this.state.isType && !this.state.volumemountpath) {
+      this.setState({ inputError: { mountPath: t('VALIDATION:EMPTY-INPUT', { something: t(`CONTENT:MOUNTPATH`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { mountPath: null } });
+    }
+
     if (this.state.isType) {
       const name_idx = typeof steps !== 'string' && steps?.filter(cur => cur[13] === this.state.preset);
       if (name_idx.length > 0) {
@@ -161,9 +217,9 @@ class BaseStepModal extends React.Component {
 
     updateParentData({
       name: this.state.name || name,
-      imageregistry: this.state.imageregistry?.label,
-      image: this.state.image?.value,
-      imageversion: this.state.imagetag?.value,
+      imageregistry: this.state.imageregistry,
+      image: this.state.image,
+      imageversion: this.state.imagetag,
       mailserver: this.state.mailserver,
       mailfrom: this.state.mailfrom,
       mailsubject: this.state.mailsubject,
@@ -349,8 +405,12 @@ class BaseStepModal extends React.Component {
                       onChange={e => {
                         this.onNameChange(e.target);
                       }}
-                      required
                     />
+                    {this.state.inputError.name && (
+                      <p className="error_text" style={{ marginTop: 0 }}>
+                        {this.state.inputError.name}
+                      </p>
+                    )}
                   </SecondSection>
                 </div>
               )}
@@ -394,6 +454,11 @@ class BaseStepModal extends React.Component {
                         this.onImageRegistryChange(e);
                       }}
                     />
+                    {this.state.inputError.imageRegistry && (
+                      <p className="error_text" style={{ marginTop: 0 }}>
+                        {this.state.inputError.imageRegistry}
+                      </p>
+                    )}
                   </SecondSection>
                   <SecondSection isModal={true} label={t('CONTENT:IMAGE')} id={'image'}>
                     <SingleSelect
@@ -405,6 +470,11 @@ class BaseStepModal extends React.Component {
                         this.onImageChange(e);
                       }}
                     />
+                    {this.state.inputError.image && (
+                      <p className="error_text" style={{ marginTop: 0 }}>
+                        {this.state.inputError.image}
+                      </p>
+                    )}
                   </SecondSection>
                   <SecondSection isModal={true} label={t('CONTENT:IMAGETAG')} id={'image-tag'}>
                     <SingleSelect
@@ -416,11 +486,17 @@ class BaseStepModal extends React.Component {
                         this.onImageTagChange(e);
                       }}
                     />
+                    {this.state.inputError.imageTag && (
+                      <p className="error_text" style={{ marginTop: 0 }}>
+                        {this.state.inputError.imageTag}
+                      </p>
+                    )}
                   </SecondSection>
                 </div>
               ) : (
                 <div>
-                  <input className="form-control form-group" type="text" id="self-image" value={this.state.selfimage} onChange={this.onSelfImageChange} />
+                  <input className="form-control" type="text" id="self-image" value={this.state.selfimage} onChange={this.onSelfImageChange} />
+                  {this.state.inputError.selfImage && <p className="error_text">{this.state.inputError.selfImage}</p>}
                 </div>
               )}
               {this.state.isType && this.state.preset === 'Notify' && (
@@ -459,7 +535,7 @@ class BaseStepModal extends React.Component {
                     <SingleSelect
                       options={volumeOptions}
                       name={'Volume'}
-                      value={this.state.volumemountname?.value || ''}
+                      value={this.state.volumemountname || ''}
                       placeholder={t('ADDITIONAL:SELECT', { something: t('CONTENT:VOLUME') })}
                       onChange={e => {
                         this.onVolumeMountNameChange(e);
@@ -469,10 +545,20 @@ class BaseStepModal extends React.Component {
                 ) : (
                   '마운트할 볼륨을 먼저 추가해 주세요.'
                 )}
+                {this.state.inputError.volume && (
+                  <p className="error_text" style={{ marginTop: 0 }}>
+                    {this.state.inputError.volume}
+                  </p>
+                )}
               </SecondSection>
               {volumeOptions.length > 0 && (
                 <SecondSection isModal={true} label={t('CONTENT:VOLUMEMOUNTPATH')} id={'volumepath'}>
                   <input className="form-control" type="text" id="volumepath" value={this.state.volumemountpath} onChange={this.onVolumeMountPathChange} />
+                  {this.state.inputError.mountPath && (
+                    <p className="error_text" style={{ marginTop: 0 }}>
+                      {this.state.inputError.mountPath}
+                    </p>
+                  )}
                 </SecondSection>
               )}
             </div>
