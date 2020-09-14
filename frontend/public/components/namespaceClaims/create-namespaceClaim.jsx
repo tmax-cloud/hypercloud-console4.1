@@ -56,7 +56,7 @@ class NamespaceClaimFormComponent extends React.Component {
       },
       cpuLimit: '',
       memoryLimit: '',
-      cpuLimitUnit: '000m',
+      cpuLimitUnit: '',
       memoryLimitUnit: 'Gi'
     };
     this.onResourceNameChanged = this.onResourceNameChanged.bind(this);
@@ -289,8 +289,8 @@ export const CreateNamespaceClaim = ({ match: { params } }) => {
 };
 
 NamespaceClaimFormComponent.CpulimitUnitOptions = [
-  { value: '000m', label: 'vCPU/Core' },
-  { value: 'm', label: 'ms' },
+  { value: '', label: 'CPU' },
+  { value: 'm', label: 'm' },
 ];
 
 NamespaceClaimFormComponent.MemorylimitUnitOptions = [

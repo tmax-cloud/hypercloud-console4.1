@@ -60,7 +60,7 @@ class ResourceQuotaClaimFormComponent extends React.Component {
       },
       cpuLimit: '',
       memoryLimit: '',
-      cpuLimitUnit: '000m',
+      cpuLimitUnit: '',
       memoryLimitUnit: 'Gi'
     };
     this.onResourceNameChanged = this.onResourceNameChanged.bind(this);
@@ -317,8 +317,8 @@ export const CreateResouceQuotaClaim = ({ match: { params } }) => {
 
 
 ResourceQuotaClaimFormComponent.CpulimitUnitOptions = [
-  { value: '000m', label: 'vCPU/Core' },
-  { value: 'm', label: 'ms' },
+  { value: '', label: 'CPU' },
+  { value: 'm', label: 'm' },
 ];
 
 ResourceQuotaClaimFormComponent.MemorylimitUnitOptions = [
