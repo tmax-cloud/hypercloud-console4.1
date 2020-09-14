@@ -86,6 +86,7 @@ func decodeSubprotocolCloud(encodedProtocol string) (string, error) {
 }
 
 // var headerBlacklistCloud = []string{"Cookie", "X-CSRFToken"}
+
 var headerBlacklistCloud = []string{"X-CSRFToken"}
 
 // hypercloud websocket connection 전용 proxy 코드

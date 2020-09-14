@@ -248,7 +248,9 @@ class TaskFormComponent extends React.Component {
       this.state.steps.forEach(cur => {
         let step = {};
         let volumeMounts = [];
-        volumeMounts.push({ name: cur[11], mountPath: cur[12] });
+        let isImage = cur[1] && cur[2] && cur[3];
+        cur[11] && cur[12] && volumeMounts.push({ name: cur[11], mountPath: cur[12] });
+
         if (cur[13]) {
           // type: preset
           if (cur[14] === 'Approve') {
@@ -257,14 +259,14 @@ class TaskFormComponent extends React.Component {
               // imageType: imageRegistry
               step = {
                 name: cur[0].toLowerCase(),
-                image: `${cur[1]}/${cur[2]}:${cur[3]}`,
+                image: isImage ? `${cur[1].label}/${cur[2].value}:${cur[3].value}` : '',
                 volumeMounts: volumeMounts, // 여러개 올수 있음
               };
             } else {
               // imageType: free
               step = {
                 name: cur[0].toLowerCase(),
-                image: cur[16],
+                image: cur[16] ? cur[16] : '',
                 volumeMounts: volumeMounts,
               };
             }
@@ -278,7 +280,7 @@ class TaskFormComponent extends React.Component {
               // imageType: imageRegistry
               step = {
                 name: cur[0].toLowerCase(),
-                image: `${cur[1]}/${cur[2]}:${cur[3]}`,
+                image: isImage ? `${cur[1].label}/${cur[2].value}:${cur[3].value}` : '',
                 env: env,
                 volumeMounts: volumeMounts,
               };
@@ -286,7 +288,7 @@ class TaskFormComponent extends React.Component {
               // imageType: free
               step = {
                 name: cur[0].toLowerCase(),
-                image: cur[16],
+                image: cur[16] ? cur[16] : '',
                 env: env,
                 volumeMounts: volumeMounts,
               };
@@ -300,11 +302,21 @@ class TaskFormComponent extends React.Component {
           }));
           let command = cur[9].map(val => val[0]);
           let args = cur[8].map(val => val[0]);
+          if (env[0].name === '' && env[0].value === '') {
+            env = [];
+          }
+          if (command[0] === '') {
+            command = [];
+          }
+          if (args[0] === '') {
+            args = [];
+          }
+
           if (cur[15]) {
             // imageType: imageRegistry
             step = {
               name: cur[0].toLowerCase(),
-              image: `${cur[1]}/${cur[2]}:${cur[3]}`,
+              image: isImage ? `${cur[1].label}/${cur[2].value}:${cur[3].value}` : '',
               env: env,
               command: command,
               args: args,
@@ -313,13 +325,16 @@ class TaskFormComponent extends React.Component {
           } else {
             step = {
               name: cur[0].toLowerCase(),
-              image: cur[16],
+              image: cur[16] ? cur[16] : '',
               env: env,
               command: command,
               args: args,
               volumeMounts: volumeMounts,
             };
           }
+        }
+        if (volumeMounts.length < 1) {
+          delete step.volumeMounts;
         }
         task.spec.steps.push(step);
       });

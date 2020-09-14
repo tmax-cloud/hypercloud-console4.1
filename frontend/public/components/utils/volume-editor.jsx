@@ -316,7 +316,7 @@ class VolumeModalElement extends React.Component {
         </div>
         {/* {readOnly ? null : ( */}
         {
-          <div className="col-md-1 col-xs-2 wrap-content">
+          <div className="col-md-2 col-xs-2 wrap-content">
             <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{editButton}</React.Fragment> : editButton}</span>
             <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{deleteButton}</React.Fragment> : deleteButton}</span>
           </div>
