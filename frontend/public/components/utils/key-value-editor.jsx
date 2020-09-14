@@ -89,11 +89,7 @@ export class KeyValueEditor extends React.Component {
               </React.Fragment>
             )}
           </div>
-          {isDuplicated ? (
-            <div className="col-md-12 col-xs-12 cos-error-title">
-              {t(`VALIDATION:DUPLICATE-KEY`)}
-            </div>
-          ) : null}
+          {isDuplicated ? <div className="col-md-12 col-xs-12 cos-error-title">{t(`VALIDATION:DUPLICATE-KEY`)}</div> : null}
         </div>
       </React.Fragment>
     );
@@ -151,7 +147,7 @@ class KeyValuePairElement extends React.Component {
           <input type="text" className="form-control" placeholder={t(`CONTENT:${valueString.toUpperCase()}`)} value={pair[KeyValueEditorPair.Value] || ''} onChange={this._onChangeValue} />
         </div>
         {readOnly ? null : (
-          <div className="col-md-1 col-xs-2">
+          <div className="col-md-2 col-xs-2">
             <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{deleteButton}</React.Fragment> : deleteButton}</span>
           </div>
         )}

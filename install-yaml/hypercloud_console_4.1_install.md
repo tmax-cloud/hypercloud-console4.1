@@ -69,7 +69,8 @@ console과 portal 둘 다 443 포트의 LB 서비스로 생성하거나, 또는 
   - @@GRAFANA@@ 부분에 적절한 경로 기입 
     - `kubectl get svc -n monitoring grafana` 명령으로 확인 가능
   - @@KIALI@@ 부분에 적절한 경로 기입 
-    - `kubectl get svc -n istio-system kiali` 명령으로 확인 가능
+    - 'kubectl get ing -n istio-system kiali-ingress' 명령으로 확인 가능 
+    - (deplicated) `kubectl get svc -n istio-system kiali` 명령으로 확인 가능
   - @@JAEGER@@ 부분에 적절한 경로 기입 
     - `kubectl get svc -n istio-system tracing` 명령으로 확인 가능
   - @@APPROVAL@@ 부분에 적절한 경로 기입 

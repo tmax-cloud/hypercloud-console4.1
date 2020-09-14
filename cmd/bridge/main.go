@@ -312,9 +312,12 @@ func main() {
 		// NOTE: kiali 추가 // 윤진수
 		kialiEndpoint := validateFlagIsURL("kiali-endpoint", *fKialiEndpoint)
 		srv.KialiProxyConfig = &proxy.Config{
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
-			Endpoint:        kialiEndpoint,
-			Origin:          "http://localhost",
+			HeaderBlacklist: []string{"X-CSRFToken"},
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+			Endpoint: kialiEndpoint,
+			Origin:   "http://localhost",
 		}
 		// NOTE: kubeflow 추가 // 윤진수
 		kubeflowEndpoint := validateFlagIsURL("kubeflow-endpoint", *fkubeflowEndpoint)
@@ -468,7 +471,7 @@ func main() {
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: *fK8sModeOffClusterSkipVerifyTLS,
 			},
-			HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
+			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        vncEndpoint,
 			Origin:          "http://localhost",
 		}
