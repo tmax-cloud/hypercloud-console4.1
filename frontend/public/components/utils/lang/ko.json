@@ -202,6 +202,7 @@
     "REGISTRY-CREATE_7": "잘못된 입력 값 입니다.",
     "REGISTRY-CREATE_8": "예: 192.168.6.110.nip.io",
     "REGISTRY-CREATE_9": "예: App=frontend",
+    "REGISTRY-CREATE_10": "아래 파라미터를 지정하여 프라이빗 컨테이너 레지스트리를 만드십시오.",
     "PULLSECRET-MODAL_0": "해당 네임스페이스에서 컨테이너를 인증하고 다운로드하는 데 사용할 기본 인증 정보를 지정하십시오. 파드가 특정 풀 시크릿을 참조하지 않는 한, 해당 인증 정보가 기본값이 됩니다. ",
     "PULLSECRET-MODAL_1": "기본 풀 시크릿이 존재하지만, 구문 분석 할 수 없습니다. 저장하면 덮어쓰여집니다. ",
     "PULLSECRET-MODAL_2": "추후 관리에 도움이 되는 친숙한 이름",
