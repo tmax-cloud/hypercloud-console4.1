@@ -58,7 +58,7 @@ class KialiPage_ extends React.PureComponent {
                     <NavTitle title='Kiali'>
                     </NavTitle>
                     {/* <script>parent.location={url}</script> */}
-                    <iframe sandbox="allow-top-navigation allow-scripts allow-forms allow-same-origin" style={{ width: '100%', height: '100vh', border: 0 }} src={url} target="_blank" />
+                    <iframe style={{ width: '100%', height: '100vh', border: 0 }} src={url} target="_blank" />
                 </div>
             </React.Fragment>
         );
