@@ -259,7 +259,7 @@ class TaskFormComponent extends React.Component {
               // imageType: imageRegistry
               step = {
                 name: cur[0].toLowerCase(),
-                image: isImage ? `${cur[1]}/${cur[2]}:${cur[3]}` : '',
+                image: isImage ? `${cur[1].label}/${cur[2].value}:${cur[3].value}` : '',
                 volumeMounts: volumeMounts, // 여러개 올수 있음
               };
             } else {
@@ -280,7 +280,7 @@ class TaskFormComponent extends React.Component {
               // imageType: imageRegistry
               step = {
                 name: cur[0].toLowerCase(),
-                image: isImage ? `${cur[1]}/${cur[2]}:${cur[3]}` : '',
+                image: isImage ? `${cur[1].label}/${cur[2].value}:${cur[3].value}` : '',
                 env: env,
                 volumeMounts: volumeMounts,
               };
@@ -302,11 +302,21 @@ class TaskFormComponent extends React.Component {
           }));
           let command = cur[9].map(val => val[0]);
           let args = cur[8].map(val => val[0]);
+          if (env[0].name === '' && env[0].value === '') {
+            env = [];
+          }
+          if (command[0] === '') {
+            command = [];
+          }
+          if (args[0] === '') {
+            args = [];
+          }
+
           if (cur[15]) {
             // imageType: imageRegistry
             step = {
               name: cur[0].toLowerCase(),
-              image: isImage ? `${cur[1]}/${cur[2]}:${cur[3]}` : '',
+              image: isImage ? `${cur[1].label}/${cur[2].value}:${cur[3].value}` : '',
               env: env,
               command: command,
               args: args,
