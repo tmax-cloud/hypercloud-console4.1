@@ -4832,6 +4832,10 @@ spec:
           type: resourcenslink
         - name: ServiceAccount
           type: resourcenslink
+        - name: User
+          type: authadminlink
+        - name: Usergroup
+          type: authadminlink
 `,
   )
   .setIn(
