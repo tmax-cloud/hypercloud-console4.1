@@ -58,6 +58,7 @@ const (
 	hyperflowEndpoint         = "/api/hyperflow/"
 	vncEndpoint               = "/api/vnc/"
 	hyperAuthEndpoint         = "/auth/"
+	webhookEndpoint           = "/api/webhook/"
 	// NOTE: hypercloud api 프록시를 위해 hypercloudProxyEndpoint 추가 // 정동민
 )
 
@@ -134,7 +135,7 @@ type Server struct {
 	HyperflowProxyConfig  *proxy.Config
 	VncProxyConfig        *proxy.Config
 	HyperAuthProxyConfig  *proxy.Config
-
+	WebhookProxyConfig    *proxy.Config
 	// NOTE: hypercloud api 프록시를 위해 HypercloudProxyConfig 추가 // 정동민
 }
 
@@ -467,6 +468,19 @@ func (s *Server) HTTPHandler() http.Handler {
 				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					hyperAuthProxy.ServeHTTPCloud(w, r)
 				})),
+		)
+	}
+
+	// NOTE: webhook proxy 등록 // 윤진수
+	if s.WebhookProxyConfig != nil {
+		WebhookProxyAPIPath := webhookEndpoint
+		// kialiProxy := httputil.NewSingleHostReverseProxy(s.KialiProxyConfig.Endpoint)
+		webhookProxy := proxy.NewProxyCloud(s.WebhookProxyConfig)
+		handle(WebhookProxyAPIPath, http.StripPrefix(
+			proxy.SingleJoiningSlash(s.BaseURL.Path, WebhookProxyAPIPath),
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				webhookProxy.ServeHTTPCloud(w, r)
+			})),
 		)
 	}
 

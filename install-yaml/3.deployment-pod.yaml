@@ -35,6 +35,7 @@ spec:
         - --kubeflow-endpoint=http://@@KUBEFLOW@@/
         - --vnc-endpoint=http://@@VNC@@/
         - --hyperauth-endpoint=https://@@HYPERAUTH@@/auth
+        - --webhook-endpoint=https://@@WEBHOOK@@/api/webhook/
         - --keycloak-realm=@@REALM@@
         - --keycloak-auth-url=https://@@KEYCLOAK@@/auth
         - --keycloak-client-id=@@CLIENTID@@        
