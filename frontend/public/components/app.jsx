@@ -373,7 +373,7 @@ if ('serviceWorker' in navigator) {
 //keycloak init options
 const keycloak = new Keycloak({
   realm: window.SERVER_FLAGS.KeycloakRealm,
-  url: `${document.location.origin}/auth`,
+  url: window.SERVER_FLAGS.KeycloakAuthURL,
   clientId: window.SERVER_FLAGS.KeycloakClientId,
 });
 

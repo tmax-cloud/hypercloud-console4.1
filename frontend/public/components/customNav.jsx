@@ -310,7 +310,7 @@ class AuthAdminLink extends NavLink {
   render() {
     const { isActive, name, resource } = this.props;
     const onClick = () => {
-      window.open(`${document.location.origin}/auth/admin/${SERVER_FLAGS.KeycloakRealm}/console/#/realms/${SERVER_FLAGS.KeycloakRealm}/${resource}`);
+      window.open(`${window.SERVER_FLAGS.KeycloakAuthURL}/admin/${SERVER_FLAGS.KeycloakRealm}/console/#/realms/${SERVER_FLAGS.KeycloakRealm}/${resource}`);
     }
 
     return (
