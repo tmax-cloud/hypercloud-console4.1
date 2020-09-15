@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-k8sIP='172.22.6.2'
+# k8sIP='172.22.6.2'
+k8sIP='192.168.6.196'
 
 myIP=$(ipconfig | grep "IPv4" -a | head -1 | awk '{print $NF}')
 
@@ -47,6 +48,7 @@ KUBEFLOW_PORT=80
     --kubeflow-endpoint=http://$KUBEFLOW_IP:$KUBEFLOW_PORT \
     --vnc-endpoint=http://$k8sIP:$VNC_PORT \
     --hyperauth-endpoint=https://172.22.6.11/auth/ \
+    --webhook-endpoint=https://$k8sIP:31317/api/webhook/ \
     --keycloak-realm=tmax \
     --keycloak-auth-url=https://172.22.6.11/auth \
     --keycloak-client-id=hypercloud4 \
