@@ -16,7 +16,7 @@ export class ResourceLimitEditor extends React.Component {
   }
   _append() {
     const { updateParentData, resourceLimitsPairs, nameValueId } = this.props;
-    updateParentData({ resourceLimitsPairs: resourceLimitsPairs.concat([['', '', '', '', '', '', 'Gi', 'Gi', 'Gi']]), isDuplicated: this.hasDuplication(resourceLimitsPairs) }, nameValueId);
+    updateParentData({ resourceLimitsPairs: resourceLimitsPairs.concat([['', '', '', '', '', '', '', 'Gi', 'Gi']]), isDuplicated: this.hasDuplication(resourceLimitsPairs) }, nameValueId);
 
   }
 
@@ -213,7 +213,7 @@ class ResourceLimitPairElement extends React.Component {
                         <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.Cpu] || ''} onChange={this._onChangeCpu} onBlur={this._onBlurKey} />
                       </div>
                       <div className="col-md-6 col-xs-6 pairs-list__name-field" id='cpu-units' style={{ paddingTop: '0px' }}>
-                        <SingleSelect options={ResourceLimitPairElement.limitsUnitOptions} value={pair[ResourceLimitEditorPair.CpuUnit]} onChange={this.onCpuUnitChanged} />
+                        <SingleSelect options={ResourceLimitPairElement.CpulimitUnitOptions} value={pair[ResourceLimitEditorPair.CpuUnit]} onChange={this.onCpuUnitChanged} />
                       </div>
                     </div>
                   </div>
@@ -228,7 +228,7 @@ class ResourceLimitPairElement extends React.Component {
                       </div>
                       <div className="col-md-4 col-xs-4 pairs-list__name-field" id='memory-units'
                         style={{ paddingTop: '0px' }}>
-                        <SingleSelect options={ResourceLimitPairElement.limitsUnitOptions} value={pair[ResourceLimitEditorPair.MemoryUnit]} onChange={this.onMemoryUnitChanged} />
+                        <SingleSelect options={ResourceLimitPairElement.MemorylimitUnitOptions} value={pair[ResourceLimitEditorPair.MemoryUnit]} onChange={this.onMemoryUnitChanged} />
                       </div>
                       <div className="col-md-2 col-xs-2">
                         <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{deleteButton}</React.Fragment> : deleteButton}</span>
@@ -248,7 +248,7 @@ class ResourceLimitPairElement extends React.Component {
                     <input type="text" className="form-control" value={pair[ResourceLimitEditorPair.Storage] || ''} onChange={this._onChangeStorage} onBlur={this._onBlurKey} />
                   </div>
                   <div className="col-md-3 col-xs-3 pairs-list__name-field" id='storage-units' style={{ paddingTop: '0px' }}>
-                    <SingleSelect options={ResourceLimitPairElement.limitsUnitOptions} value={pair[ResourceLimitEditorPair.StorageUnit]} onChange={this.onStorageUnitChanged} />
+                    <SingleSelect options={ResourceLimitPairElement.MemorylimitUnitOptions} value={pair[ResourceLimitEditorPair.StorageUnit]} onChange={this.onStorageUnitChanged} />
                   </div>
                   <div className="col-md-2 col-xs-2">
                     <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>{allowSorting ? <React.Fragment>{deleteButton}</React.Fragment> : deleteButton}</span>
@@ -262,7 +262,12 @@ class ResourceLimitPairElement extends React.Component {
   }
 }
 
-ResourceLimitPairElement.limitsUnitOptions = [
+ResourceLimitPairElement.CpulimitUnitOptions = [
+  { value: '', label: 'CPU' },
+  { value: 'm', label: 'm' },
+];
+
+ResourceLimitPairElement.MemorylimitUnitOptions = [
   { value: 'Mi', label: 'Mi' },
   { value: 'Gi', label: 'Gi' },
   { value: 'Ti', label: 'Ti' },
