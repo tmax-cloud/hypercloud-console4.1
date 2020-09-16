@@ -34,11 +34,12 @@ spec:
         - --approval-endpoint=http://approval-proxy-server.approval-system.svc:80/approve
         - --kubeflow-endpoint=http://istio-ingressgateway.istio-system.svc:80/
         - --vnc-endpoint=http://virtvnc.kubevirt.svc:8001/
-        - --hyperauth-endpoint=http://hyperauth.hyperauth.svc:8080/
+        - --hyperauth-endpoint=https://hyperauth.hyperauth.svc:8080/
+        - --webhook-endpoint=https://hypercloud4-webhook-svc.hypercloud4-system.svc/api/webhook/
         - --keycloak-realm=tmax
         - --keycloak-auth-url=https://172.22.6.11/auth
         - --keycloak-client-id=hypercloud4        
-        image: tmaxcloudck/hypercloud-console:4.1.4.2
+        image: tmaxcloudck/hypercloud-console:4.1.4.3
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - mountPath: /var/https-cert
