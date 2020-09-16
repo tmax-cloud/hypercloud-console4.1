@@ -1479,8 +1479,9 @@ spec:
     kind: Template
     metadata:
       name: apache-cicd-template
+      namespace: default
       annotations:
-        template-version: 1.1.1
+        template-version: 1.1.2
         tested-operator-version: 4.1.0.23
       labels:
         cicd-template-was: apache
@@ -1688,8 +1689,9 @@ spec:
     kind: Template
     metadata:
       name: mysql-template
+      namespace: default
       annotations:
-        template-version: 1.1.1
+        template-version: 1.1.2
         tested-operator-version: 4.1.0.23
     shortDescription: MySQL Deployment
     longDescription: MySQL Deployment
@@ -1867,8 +1869,9 @@ apiVersion: tmax.io/v1
 kind: Template
 metadata:
   name: nodejs-mysql-template
+  namespace: default
   annotations:
-    template-version: 1.1.1
+    template-version: 1.1.2
     tested-operator-version: 4.1.0.23
 imageUrl: https://i.imgur.com/ImDhuQF.png
 provider: tmax
@@ -4829,6 +4832,10 @@ spec:
           type: resourcenslink
         - name: ServiceAccount
           type: resourcenslink
+        - name: User
+          type: authadminlink
+        - name: Usergroup
+          type: authadminlink
 `,
   )
   .setIn(

@@ -39,7 +39,7 @@ class BaseStepModal extends React.Component {
       env: props.step?.[10] || [['', '']],
       volumemountname: props.step?.[11] || '',
       volumemountpath: props.step?.[12] || '',
-      isType: props.step?.[13],
+      isType: (props.step?.[13] = false),
       preset: props.step?.[14] || 'Approve',
       imagetype: props.step?.[15],
       selfimage: props.step?.[16] || '',
@@ -353,34 +353,36 @@ class BaseStepModal extends React.Component {
         <ModalTitle>{title}</ModalTitle>
         <ModalBody needScroll={true}>
           <div>
-            <SecondSection isModal={true} label={t('CONTENT:TYPE')} isRequired={false}>
-              <div className="row">
-                <div className="col-xs-6" style={{ float: 'left' }}>
-                  <input
-                    type="radio"
-                    value={true}
-                    name="type"
-                    onChange={e => {
-                      this.onTypeChange(true);
-                    }}
-                    checked={this.state.isType}
-                  />
-                  {t('CONTENT:PRESET')}
+            {false && (
+              <SecondSection isModal={true} label={t('CONTENT:TYPE')} isRequired={false}>
+                <div className="row">
+                  <div className="col-xs-6" style={{ float: 'left' }}>
+                    <input
+                      type="radio"
+                      value={true}
+                      name="type"
+                      onChange={e => {
+                        this.onTypeChange(true);
+                      }}
+                      checked={this.state.isType}
+                    />
+                    {t('CONTENT:PRESET')}
+                  </div>
+                  <div className="col-xs-6" style={{ float: 'left' }}>
+                    <input
+                      type="radio"
+                      value={false}
+                      name="type"
+                      onChange={e => {
+                        this.onTypeChange(false);
+                      }}
+                      checked={!this.state.isType}
+                    />
+                    {t('CONTENT:BYSELF')}
+                  </div>
                 </div>
-                <div className="col-xs-6" style={{ float: 'left' }}>
-                  <input
-                    type="radio"
-                    value={false}
-                    name="type"
-                    onChange={e => {
-                      this.onTypeChange(false);
-                    }}
-                    checked={!this.state.isType}
-                  />
-                  {t('CONTENT:BYSELF')}
-                </div>
-              </div>
-            </SecondSection>
+              </SecondSection>
+            )}
             <div>
               {this.state.isType && (
                 <div style={{ marginBottom: '15px' }}>

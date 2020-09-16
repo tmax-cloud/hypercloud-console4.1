@@ -34,7 +34,8 @@ spec:
         - --approval-endpoint=http://approval-proxy-server.approval-system.svc:80/approve
         - --kubeflow-endpoint=http://istio-ingressgateway.istio-system.svc:80/
         - --vnc-endpoint=http://virtvnc.kubevirt.svc:8001/
-        - --hyperauth-endpoint=http://hyperauth.hyperauth.svc:8080/
+        - --hyperauth-endpoint=https://hyperauth.hyperauth.svc:8080/
+        - --webhook-endpoint=https://hypercloud4-webhook-svc.hypercloud4-system.svc/api/webhook/
         - --keycloak-realm=@@REALM@@
         - --keycloak-auth-url=https://@@KEYCLOAK@@/auth
         - --keycloak-client-id=@@CLIENTID@@        
