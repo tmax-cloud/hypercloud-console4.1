@@ -80,7 +80,7 @@ export const NamespaceClaimModel: K8sKind = {
   label: 'Namespace Claim',
   plural: 'namespaceclaims',
   apiVersion: 'v1',
-  abbr: 'NC',
+  abbr: 'NSC',
   apiGroup: 'tmax.io',
   labelPlural: 'Namespace Claims',
   path: 'namespaceclaims',

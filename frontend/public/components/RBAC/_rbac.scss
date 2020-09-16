@@ -7,6 +7,7 @@
     align-items: baseline;
     display: flex;
   }
+
   &__cog {
     margin-right: 5px;
   }
@@ -17,10 +18,12 @@
   display: inline-flex;
   margin-right: 20px;
   min-width: 0; // so co-break-word works on .rbac-rule-resource__label
+
   &__label {
     @include co-break-word;
     min-width: 0; // so co-break-word works
   }
+
   .co-m-resource-icon {
     flex-shrink: 0;
   }
@@ -44,6 +47,7 @@
   .rule-row {
     margin-top: 30px;
   }
+
   .help-text {
     color: $color-text-secondary;
     font-weight: 400;
@@ -51,6 +55,7 @@
     top: -3px;
     left: 20px;
   }
+
   .checkbox-label {
     margin-bottom: 5px;
     font-weight: 400;
@@ -61,14 +66,17 @@
     margin-bottom: 20px;
     color: #ccc;
   }
+
   .rbac-major {
     color: #ccc;
     margin: 30px 0;
   }
+
   .newspaper-columns {
     columns: 3 auto;
     margin-top: 20px;
   }
+
   .text-input {
     max-width: 500px;
     margin-top: 20px;
@@ -92,10 +100,15 @@
   .form-control {
     max-width: 400px;
 
+    &.tags {
+      height: unset;
+    }
+
     &::placeholder {
       font-style: normal;
     }
   }
+
   .dropdown {
     max-width: 400px;
   }
@@ -128,9 +141,10 @@
   .half {
     max-width: 200px;
   }
-  
+
   .radio-item {
     margin: 10px 0;
+
     .co-m-radio-desc {
       margin-left: 19px;
     }

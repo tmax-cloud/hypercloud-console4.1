@@ -12,26 +12,30 @@ $active-border: 3px;
   padding: 2px 0 2px 30px;
   white-space: nowrap;
 
-  a {
+  a,
+  div {
     background-color: inherit;
     color: #787878;
     display: inline-block;
     text-decoration: none;
     width: 100%;
+    cursor: pointer;
   }
 
   &.active {
     padding-left: 30px;
     background-color: #90a1b3;
     // border-left: $active-border solid $color-os-nav-border-left-active;
-    a {
+    a,
+    div {
       color: #fff;
     }
   }
 
   &:hover {
     background-color: #90a1b3;
-    a {
+    a,
+    div {
       color: #fff;
     }
   }
@@ -41,7 +45,8 @@ $active-border: 3px;
   }
 }
 
-.co-m-nav-link__external a:after {
+.co-m-nav-link__external a:after,
+.co-m-nav-link__external div:after {
   color: $color-os-nav-icon;
 }
 

@@ -60,7 +60,7 @@ class ResourceQuotaClaimFormComponent extends React.Component {
       },
       cpuLimit: '',
       memoryLimit: '',
-      cpuLimitUnit: 'Gi',
+      cpuLimitUnit: '',
       memoryLimitUnit: 'Gi'
     };
     this.onResourceNameChanged = this.onResourceNameChanged.bind(this);
@@ -261,33 +261,35 @@ class ResourceQuotaClaimFormComponent extends React.Component {
               {this.state.inputError.resourceName && <p className="cos-error-title">{this.state.inputError.resourceName}</p>}
             </Section>
             <Section label={t('CONTENT:NAMESPACERESOURCEQUOTA')} isRequired={true} paddingTop={'5px'}>
-              <div className="row">
-                <div className="col-md-2 col-xs-2 pairs-list__name-field">
-                  <div>CPU Limits</div>
+              <div className="row" style={{ paddingLeft: '15px' }}>
+                <div className="col-md-3 col-xs-3 pairs-list__name-field" style={{ paddingLeft: '0px' }}>
+                  <div className="row" style={{ marginLeft: '10px' }}>
+                    {t("CONTENT:CPULIMITS")}
+                  </div>
+                  <div className="row" style={{ margin: '0 0 20px 0' }}>
+                    <div className="col-md-6 col-xs-6 pairs-list__protocol-field"
+                      style={{ padding: '0' }}>
+                      <input type="text" className="form-control" value={this.state.cpuLimit} onChange={this.onCpuLimitChanged} onBlur={this._onBlurKey} />
+                    </div>
+                    <div className="col-md-5 col-xs-5 pairs-list__name-field" id='cpu-units' style={{ paddingTop: '0px' }}>
+                      <SingleSelect options={ResourceQuotaClaimFormComponent.CpulimitUnitOptions} value={this.state.cpuLimitUnit} onChange={this.onCPULimitsUnitChanged} />
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="row">
-                <div className="col-md-2 col-xs-2 pairs-list__name-field" id='cpu'>
-                  <input className="form-control" type="text"
-                    onChange={this.onCpuLimitChanged} id="cpuLimit"
-                    value={this.state.cpuLimit} />
-                </div>
-                <div className="col-md-1 col-xs-1 pairs-list__name-field" id='cpu-units'>
-                  <SingleSelect options={ResourceQuotaClaimFormComponent.limitsUnitOptions} value={this.state.cpuLimitUnit} onChange={this.onCPULimitsUnitChanged} />
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-2 col-xs-2 pairs-list__name-field">
-                  <div>Memory Limits</div>
-                </div>
-              </div>
-              <div className="row" style={{ marginBottom: '20px' }}>
-                <div className="col-md-2 col-xs-2 pairs-list__name-field" id='memory'>
-                  <input className="form-control" type="text" id="memoryLimit"
-                    onChange={this.onMemoryLimitChanged} value={this.state.memoryLimit} />
-                </div>
-                <div className="col-md-1 col-xs-1 pairs-list__name-field" id='memory-units'>
-                  <SingleSelect options={ResourceQuotaClaimFormComponent.limitsUnitOptions} value={this.state.memoryLimitUnit} onChange={this.onMemoryLimitsUnitChanged} />
+                <div className="col-md-3 col-xs-3 pairs-list__name-field" style={{ paddingLeft: '0px' }}>
+                  <div className="row" style={{ marginLeft: '10px' }}>
+                    {t("CONTENT:MEMORYLIMITS")}
+                  </div>
+                  <div className="row" style={{ margin: '0 0 20px 0' }}>
+                    <div className="col-md-6 col-xs-6 pairs-list__protocol-field"
+                      style={{ padding: '0' }}>
+                      <input type="text" className="form-control" value={this.state.memoryLimit} onChange={this.onMemoryLimitChanged} onBlur={this._onBlurKey} />
+                    </div>
+                    <div className="col-md-5 col-xs-5 pairs-list__name-field" id='memory-units'
+                      style={{ paddingTop: '0px' }}>
+                      <SingleSelect options={ResourceQuotaClaimFormComponent.MemorylimitUnitOptions} value={this.state.memoryLimitUnit} onChange={this.onMemoryLimitsUnitChanged} />
+                    </div>
+                  </div>
                 </div>
               </div>
               <SelectKeyValueEditor isRequired={false} desc={t('STRING:RESOURCEQUOTA-CREATE-2')} t={t} anotherDesc={t('STRING:RESOURCEQUOTA-CREATE-3')} options={namespaceResourceQuotaOptions} keyValuePairs={this.state.quota} keyString="resourcetype" valueString="value" updateParentData={this._updateQuota} isDuplicated={this.state.isDuplicated} />
@@ -313,7 +315,13 @@ export const CreateResouceQuotaClaim = ({ match: { params } }) => {
   return <ResourceQuotaClaimFormComponent t={t} fixed={{ metadata: { namespace: params.ns } }} resourceQuotaClaimTypeAbstraction={params.type} titleVerb="Create" isCreate={true} />;
 };
 
-ResourceQuotaClaimFormComponent.limitsUnitOptions = [
+
+ResourceQuotaClaimFormComponent.CpulimitUnitOptions = [
+  { value: '', label: 'CPU' },
+  { value: 'm', label: 'm' },
+];
+
+ResourceQuotaClaimFormComponent.MemorylimitUnitOptions = [
   { value: 'Mi', label: 'Mi' },
   { value: 'Gi', label: 'Gi' },
   { value: 'Ti', label: 'Ti' },

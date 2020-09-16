@@ -121,6 +121,9 @@ func main() {
 	// NOTE: hyperauth 연동 추가 // 윤진수
 	fhyperAuthEndpoint := fs.String("hyperauth-endpoint", "", "URL of the HyperAuth")
 
+	// NOTE: webhook 연동 추가
+	fwebhookEndpoint := fs.String("webhook-endpoint", "", "URL of the hypercloud webhook endpoint")
+
 	// Add loger
 	infoLog := LOG.New(os.Stdout, "INFO\t", LOG.Ldate|LOG.Ltime)
 	// errorLog := LOG.New(os.Stderr, "ERROR\t", LOG.Ldate|LOG.Ltime|LOG.Lshortfile)
@@ -343,6 +346,17 @@ func main() {
 			Endpoint:        hyperAuthEndpoint,
 		}
 
+		// NOTE: webhook 추가, using https  // 윤진수
+		webhookEndpoint := validateFlagIsURL("webhook-endpoint", *fwebhookEndpoint)
+		srv.WebhookProxyConfig = &proxy.Config{
+			HeaderBlacklist: []string{"X-CSRFToken"},
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+			Endpoint: webhookEndpoint,
+			Origin:   "http://localhost",
+		}
+
 		// NOTE: in-cluster인 경우 master token을 empty string으로 수정 // 정동민
 		srv.MasterToken = ""
 
@@ -447,7 +461,7 @@ func main() {
 		kialiEndpoint := validateFlagIsURL("kiali-endpoint", *fKialiEndpoint)
 		srv.KialiProxyConfig = &proxy.Config{
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: *fK8sModeOffClusterSkipVerifyTLS,
+				InsecureSkipVerify: true,
 			},
 			// HeaderBlacklist: []string{"Cookie", "X-CSRFToken"},
 			HeaderBlacklist: []string{"X-CSRFToken"},
@@ -483,6 +497,17 @@ func main() {
 			},
 			HeaderBlacklist: []string{"X-CSRFToken"},
 			Endpoint:        hyperAuthEndpoint,
+		}
+
+		// NOTE: webhook 추가, using https  // 윤진수
+		webhookEndpoint := validateFlagIsURL("webhook-endpoint", *fwebhookEndpoint)
+		srv.WebhookProxyConfig = &proxy.Config{
+			HeaderBlacklist: []string{"X-CSRFToken"},
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+			Endpoint: webhookEndpoint,
+			Origin:   "http://localhost",
 		}
 
 		k8sEndpoint = validateFlagIsURL("k8s-mode-off-cluster-endpoint", *fK8sModeOffClusterEndpoint)

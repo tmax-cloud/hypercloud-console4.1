@@ -255,7 +255,7 @@ class AuditPage_ extends React.Component {
       });
     }
 
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
     if (e !== 'all') {
       uri += `&resource=${e}`;
     }
@@ -285,7 +285,7 @@ class AuditPage_ extends React.Component {
 
     this.setState({ offset: 0 });
 
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
     if (value !== 'all') {
       uri += `&verb=${value}`;
     }
@@ -327,7 +327,7 @@ class AuditPage_ extends React.Component {
 
     this.setState({ offset: 0 });
 
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
     if (value !== 'all') {
       uri += `&status=${value}`;
     }
@@ -366,7 +366,7 @@ class AuditPage_ extends React.Component {
 
     this.setState({ offset: 0 });
 
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
     if (value !== 'all') {
       uri += `&code=${value}`;
     }
@@ -400,7 +400,7 @@ class AuditPage_ extends React.Component {
 
     this.setState({ offset: 0 });
 
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=0&startTime=${date.getTime()}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&startTime=${date.getTime()}`;
 
     date_.setDate(date_.getDate() + 7);
     if (date_ < this.state.end) {
@@ -445,7 +445,7 @@ class AuditPage_ extends React.Component {
 
     this.setState({ offset: 0 });
 
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=0&endTime=${date.getTime()}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&endTime=${date.getTime()}`;
 
     date_.setDate(date_.getDate() - 7);
     if (date_ < this.state.end) {
@@ -488,7 +488,7 @@ class AuditPage_ extends React.Component {
       textFilter: '',
     });
 
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=${e.selected * 100}&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=${e.selected * 100}&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
 
     if (this.state.action !== this.state.actionList.all) {
       uri += `&verb=${this.state.action}`;
@@ -523,7 +523,7 @@ class AuditPage_ extends React.Component {
       offset: 0,
     });
 
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}&message=${e.target.value}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}&message=${e.target.value}`;
 
     if (this.state.action !== this.state.actionList.all) {
       uri += `&verb=${this.state.action}`;
@@ -562,7 +562,7 @@ class AuditPage_ extends React.Component {
       status: this.statuslist.all,
       code: this.codeList.all,
     });
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
 
     if (namespace === undefined) {
       // all namespace
@@ -589,7 +589,7 @@ class AuditPage_ extends React.Component {
     const namespace = _.get(this.props, 'match.params.ns');
     this.setState({ namespace: namespace });
     this.setState({ action: this.state.actionList.all });
-    let uri = `${document.location.origin}/api/hypercloud/audit?limit=100&offset=${this.state.offset}&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
+    let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=${this.state.offset}&startTime=${this.state.start.getTime()}&endTime=${this.state.end.getTime()}`;
 
     if (namespace === undefined) {
       // all namespace
