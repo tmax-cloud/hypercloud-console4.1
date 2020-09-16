@@ -175,7 +175,7 @@ class NamespaceClaimFormComponent extends React.Component {
     });
 
     if (quota !== {}) {
-      Object.assign(newNamespaceclaim.spec.hard, quota);
+      newNamespaceclaim.spec.hard = quota;
     }
 
     const ko = kindObj(kind);
