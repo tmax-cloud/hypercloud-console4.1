@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="17px" viewBox="0 0 16 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ic/window/normal</title>
+    <g id="Page-1:-HyperCloud-Layout" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="3_7_6_Auth_User-group" transform="translate(-184.000000, -804.000000)">
+            <g id="LNB_Basic" transform="translate(0.000000, 56.000000)">
+                <g id="Line" transform="translate(19.000000, 23.999977)">
+                    <g id="Group-3" transform="translate(0.000000, -0.000106)">
+                        <path d="M181,794 L181,795 L0,795 L0,794 L181,794 Z M181,661 L181,662 L0,662 L0,661 L181,661 Z" id="Line-2-Copy" fill="#BCBDBE"></path>
+                        <g id="ic/window/normal" transform="translate(165.000000, 725.000000)" fill="#747474">
+                            <path d="M9.2995,0 L9.2995,2.5 L11.7995,2.5 L4.4995,9.801 L6.2,11.5015 L13.5005,4.201 L13.5005,6.751 L16,6.751 L16,0 L9.2995,0 Z M0,0.0005 L0,16.001 L16,16.001 L16,9.2505 L13.5005,9.2505 L13.5005,13.5005 L2.5005,13.5005 L2.5005,2.5005 L6.8,2.5005 L6.8,0.0005 L0,0.0005 Z" id="Fill-1"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
