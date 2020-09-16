@@ -88,10 +88,37 @@ class TaskFormComponent extends React.Component {
     this.setState({ task });
   }
   onNamespaceChanged(namespace) {
-    let task = { ...this.state.task };
+    let task = {
+      apiVersion: 'tekton.dev/v1beta1',
+      kind: 'Task',
+      metadata: {
+        name: this.state.task.metadata.name,
+        namespace: '',
+      },
+      spec: {
+        resources: {
+          inputs: [],
+          outputs: [],
+        },
+        params: [],
+        volumes: [],
+        steps: [],
+      },
+    };
     task.metadata.namespace = String(namespace);
     this.setState({ task });
     this.setState({ namespace });
+
+    this.setState({ inputResourceNames: '' });
+    this.setState({ inputResources: '' });
+    this.setState({ outputResourceNames: '' });
+    this.setState({ outputResources: '' });
+    this.setState({ parameterConfigNames: '' });
+    this.setState({ parameterConfigs: '' });
+    this.setState({ volumeNames: '' });
+    this.setState({ volumes: '' });
+    this.setState({ stepNames: '' });
+    this.setState({ steps: '' });
   }
 
   _updateInputName(resources) {

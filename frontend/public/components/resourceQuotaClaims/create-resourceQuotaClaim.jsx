@@ -198,7 +198,7 @@ class ResourceQuotaClaimFormComponent extends React.Component {
     });
 
     if (quota !== {}) {
-      Object.assign(newResourceQuotaClaim.spec.hard, quota);
+      newResourceQuotaClaim.spec.hard = quota;
     }
 
     const ko = kindObj(kind);
