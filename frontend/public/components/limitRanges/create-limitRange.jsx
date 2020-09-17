@@ -188,8 +188,12 @@ class LimitRangeFormComponent extends React.Component {
                 newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.MemoryRatio];
               }
             } else {
-              newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu] + limit[ResourceLimitEditorPair.CpuUnit];
-              newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory] + limit[ResourceLimitEditorPair.MemoryUnit];
+              if (limit[ResourceLimitEditorPair.Cpu] !== '') {
+                newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu] + limit[ResourceLimitEditorPair.CpuUnit];
+              }
+              if (limit[ResourceLimitEditorPair.Memory] !== '') {
+                newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory] + limit[ResourceLimitEditorPair.MemoryUnit];
+              }
             }
           }
         });
