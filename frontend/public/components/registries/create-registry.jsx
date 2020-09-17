@@ -66,7 +66,6 @@ class RegistryFormComponent extends React.Component {
       serviceType: 'ingress',
       pvcType: 'exist',
       pvc: '',
-      domainName: '',
       port: '',
       accessModes: 'ReadWriteOnce',
       storageSize: '',
@@ -110,7 +109,7 @@ class RegistryFormComponent extends React.Component {
         return true;
       }
     } else if (item === 'service') {
-      if ((this.state.serviceType === 'ingress' && this.state.domainName === '') || (this.state.serviceType === 'loadBalancer' && this.state.port === '')) {
+      if (this.state.serviceType === 'loadBalancer' && this.state.port === '') {
         this.setState({ inputError: { [item]: t(`VALIDATION:EMPTY-${element}`, { something: t(`CONTENT:${item.toUpperCase()}`) }) } });
         return false;
       } else {
@@ -222,9 +221,6 @@ class RegistryFormComponent extends React.Component {
   onServiceTypeChanged = e => {
     this.setState({ serviceType: e.target.value });
   };
-  onServiceDomainNameChanged = e => {
-    this.setState({ domainName: e.target.value });
-  };
   onServicePortChanged = e => {
     this.setState({ port: e.target.value });
   };
@@ -272,6 +268,7 @@ class RegistryFormComponent extends React.Component {
     const newRegistry = _.assign({}, this.state.registry);
 
     if (!this.isRequiredFilled(newRegistry, 'name', 'INPUT') || !this.isRequiredFilled(newRegistry, 'namespace', 'SELECT') || !this.isRequiredFilled(newRegistry, 'image', 'INPUT') || !this.isRequiredFilled(newRegistry, 'loginInformation', 'INPUT') || !this.isRequiredFilled(newRegistry, 'service', 'INPUT') || !this.isRequiredFilled(newRegistry, 'pvc', 'INPUT')) {
+      console.log('음 if문 안에 들어옴');
       this.setState({ inProgress: false });
       return;
     }
@@ -281,11 +278,10 @@ class RegistryFormComponent extends React.Component {
     } else {
       let service = {};
       const serviceType = this.state.serviceType;
-      service[serviceType] = {};
-      if (serviceType === 'ingress') {
-        service[serviceType]['domainName'] = this.state.domainName;
-        service[serviceType]['port'] = 443;
-      } else {
+      service['serviceType'] = serviceType.charAt(0).toUpperCase() + serviceType.slice(1);
+
+      if (this.state.serviceType === 'loadBalancer') {
+        service[serviceType] = {};
         service[serviceType]['port'] = Number(this.state.port);
       }
 
@@ -363,7 +359,6 @@ class RegistryFormComponent extends React.Component {
             <Section label={t('CONTENT:SERVICE')} isRequired={true}>
               <label>{t('CONTENT:SERVICETYPE')}</label>
               <RadioGroup currentValue={this.state.serviceType} items={serviceTypes} onChange={this.onServiceTypeChanged} formRow={true} />
-              {this.state.serviceType === 'ingress' ? <LabelInput label={t('CONTENT:DOMAINNAME')} onChange={this.onServiceDomainNameChanged} onFocus={this.onFocusService} value={this.state.domainName} id="registry-domain-name" placeholder={t('STRING:REGISTRY-CREATE_8')} /> : ''}
               {this.state.serviceType === 'loadBalancer' ? <LabelInput label={t('CONTENT:PORT')} onChange={this.onServicePortChanged} onFocus={this.onFocusService} value={this.state.port} id="registry-port" placeholder="1~65535" half /> : ''}
               <span>{t('STRING:REGISTRY-CREATE_3')}</span>
               {this.state.inputError.service && <p className="cos-error-title">{this.state.inputError.service}</p>}
