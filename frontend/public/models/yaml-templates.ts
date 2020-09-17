@@ -1312,6 +1312,7 @@ spec:
       loginId: tmax
       loginPassword: tmax123
       service:
+        serviceType: LoadBalancer
         loadBalancer:
           port: 443
       persistentVolumeClaim:
@@ -1341,6 +1342,7 @@ spec:
         nodeSelector:
           kubernetes.io/hostname: worker01
       service:
+        serviceType: LoadBalancer
         loadBalancer:     
           port: 443
       persistentVolumeClaim:
