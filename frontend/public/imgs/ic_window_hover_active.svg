@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>ic/window/hover_active</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="3_0_4_Service-instance_popup" transform="translate(-1405.000000, -434.000000)" fill="#1E6CB9">
+            <g id="ic/window/hover_active" transform="translate(1405.000000, 434.000000)">
+                <path d="M11.624375,0 L11.624375,3.125 L14.749375,3.125 L5.624375,12.25125 L7.75,14.376875 L16.875625,5.25125 L16.875625,8.43875 L20,8.43875 L20,0 L11.624375,0 Z M0,0.000625 L0,20.00125 L20,20.00125 L20,11.563125 L16.875625,11.563125 L16.875625,16.875625 L3.125625,16.875625 L3.125625,3.125625 L8.5,3.125625 L8.5,0.000625 L0,0.000625 Z" id="Fill-1"></path>
+            </g>
+        </g>
+    </g>
+</svg>
