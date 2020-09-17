@@ -156,6 +156,7 @@ const TrainingJobsPage = ({ namespace, showTitle }) => {
       filterLabel="TrainingJobs by name"
       flatten={resources => _.flatMap(resources, 'data').filter(r => !!r)}
       createButtonText={t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural('TrainingJob', t) })}
+      label="Training Job"
       resources={[
         { kind: 'TFJob', namespaced: true, optional: true },
         { kind: 'PyTorchJob', namespaced: true, optional: true },
