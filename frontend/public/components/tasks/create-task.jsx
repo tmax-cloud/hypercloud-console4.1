@@ -413,7 +413,7 @@ class TaskFormComponent extends React.Component {
               <VolumeModalEditor desc={} title="false" valueString="Volume" t={t} volumes={this.state.volumes} names={this.state.volumeNames} visibleData={this._updateVolumeName} realData={this._updateVolumes} />
             </FirstSection>
             <FirstSection label={t('CONTENT:STEP')} isRequired={true}>
-              <StepModalEditor desc={} title="false" valueString="Step" t={t} namespace={this.state.namespace} steps={this.state.steps} names={this.state.stepNames} visibleData={this._updateStepName} realData={this._updateSteps} volumeList={this.state.volumeNames} />
+              <StepModalEditor desc={} title="false" valueString="Step" t={t} namespace={this.state.namespace} steps={this.state.steps} names={this.state.stepNames} visibleData={this._updateStepName} realData={this._updateSteps} volumeList={this.state.volumes} />
               {this.state.inputError.step && <p className="error_text">{this.state.inputError.step}</p>}
             </FirstSection>
 
