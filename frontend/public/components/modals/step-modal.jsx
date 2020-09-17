@@ -42,7 +42,7 @@ class BaseStepModal extends React.Component {
       isType: props.step?.[13],
       preset: props.step?.[14] || 'Approve',
       imagetype: (props.step?.[15] = false),
-      selfimage: props.step?.[16] || 'tmaxcloudck/approve-step-server:latest',
+      selfimage: props.step?.[16] || 'tmaxcloudck/approval-step-server:latest',
       imageRegistryList: [],
       imageList: [],
       imageTagList: [],
@@ -248,7 +248,7 @@ class BaseStepModal extends React.Component {
       });
       if (this.state.preset === 'Approve') {
         this.setState({
-          selfimage: 'tmaxcloudck/approve-step-server:latest',
+          selfimage: 'tmaxcloudck/approval-step-server:latest',
         });
       } else if (this.state.preset === 'Notify') {
         this.setState({
@@ -269,7 +269,7 @@ class BaseStepModal extends React.Component {
     });
     if (preset.value === 'Approve') {
       this.setState({
-        selfimage: 'tmaxcloudck/approve-step-server:latest',
+        selfimage: 'tmaxcloudck/approval-step-server:latest',
       });
     } else if (preset.value === 'Notify') {
       this.setState({
@@ -365,7 +365,7 @@ class BaseStepModal extends React.Component {
 
     let imageName = '';
     if (this.state.preset === 'Approve') {
-      imageName = 'tmaxcloudck/approve-step-server:latest';
+      imageName = 'tmaxcloudck/approval-step-server:latest';
     } else if (this.state.preset === 'Notify') {
       imageName = 'tmaxcloudck/mail-sender-client:latest';
     }
@@ -526,7 +526,7 @@ class BaseStepModal extends React.Component {
               ) : (
                 !this.state.isType && (
                   <div>
-                    <input className="form-control" style={{ marginBottom: '15px' }} type="text" id="self-image" value={this.state.selfimage} onChange={this.onSelfImageChange} />
+                    <input className="form-control" style={{ marginBottom: '15px' }} type="text" id="self-image" value={imageName} onChange={this.onSelfImageChange} />
                     {this.state.inputError.selfImage && <p className="error_text">{this.state.inputError.selfImage}</p>}
                   </div>
                 )
