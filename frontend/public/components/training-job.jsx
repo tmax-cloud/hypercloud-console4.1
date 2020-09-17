@@ -1,7 +1,6 @@
 import * as _ from 'lodash-es';
 import * as React from 'react';
 
-
 import { ColHead, DetailsPage, List, ListHeader, MultiListPage } from './factory';
 import { Cog, SectionHeading, ResourceCog, ResourceLink, ResourceSummary, navFactory } from './utils';
 
@@ -16,7 +15,7 @@ const menuActions = [Cog.factory.ModifyLabels, Cog.factory.ModifyAnnotations, Co
 
 const tjPhase = tj => {
   let len = tj.status.conditions.length;
-  for (let i = len - 1; i>=0; i--) {
+  for (let i = len - 1; i >= 0; i--) {
     if (tj.status.conditions[i].status) {
       return tj.status.conditions[i].type;
     }
@@ -76,21 +75,25 @@ const TJComposition = ({ tj }) => {
     }
   }
 
-  return (
-    <span className="pvc-lost">
-      {str}
-    </span>
-  );
+  return <span className="pvc-lost">{str}</span>;
 };
 
 const Header = props => {
   const { t } = useTranslation();
   return (
     <ListHeader>
-      <ColHead {...props} className="col-sm-4 col-xs-6" sortField="metadata.name">{t('CONTENT:NAME')}</ColHead>
-      <ColHead {...props} className="col-sm-4 col-xs-6" sortField="metadata.namespace">{t('CONTENT:NAMESPACE')}</ColHead>
-      <ColHead {...props} className="col-sm-2 hidden-xs" sortFunc="tjPhase">{t('CONTENT:STATUS')}</ColHead>
-      <ColHead {...props} className="col-sm-2 hidden-xs" sortFunc="tjComposition">{t('CONTENT:COMPOSITION')}</ColHead>
+      <ColHead {...props} className="col-sm-4 col-xs-6" sortField="metadata.name">
+        {t('CONTENT:NAME')}
+      </ColHead>
+      <ColHead {...props} className="col-sm-4 col-xs-6" sortField="metadata.namespace">
+        {t('CONTENT:NAMESPACE')}
+      </ColHead>
+      <ColHead {...props} className="col-sm-2 hidden-xs" sortFunc="tjPhase">
+        {t('CONTENT:STATUS')}
+      </ColHead>
+      <ColHead {...props} className="col-sm-2 hidden-xs" sortFunc="tjComposition">
+        {t('CONTENT:COMPOSITION')}
+      </ColHead>
     </ListHeader>
   );
 };
@@ -130,7 +133,7 @@ const DetailsForKind = ({ obj }) => {
 const TrainingJobsList = props => <List {...props} Header={Header} Row={Row} />;
 TrainingJobsList.displayName = 'TrainingJobsList';
 
-const TrainingJobsPage = ({ namespace, showTitle}) => {
+const TrainingJobsPage = ({ namespace, showTitle }) => {
   const { t } = useTranslation();
 
   const createItems = {
@@ -175,14 +178,7 @@ const TrainingJobsPage = ({ namespace, showTitle}) => {
 
 const TrainingJobsDetailsPage = props => {
   const { t } = useTranslation();
-  return (
-    <DetailsPage
-      {...props}
-      menuActions={menuActions}
-      pages={[navFactory.details(DetailsForKind, t('CONTENT:OVERVIEW')), navFactory.editYaml() /*, navFactory.pods(t('CONTENT:PODS')) */]}
-    />
-  );
+  return <DetailsPage {...props} menuActions={menuActions} pages={[navFactory.details(DetailsForKind, t('CONTENT:OVERVIEW')), navFactory.editYaml() /*, navFactory.pods(t('CONTENT:PODS')) */]} />;
 };
 
-export { TrainingJobsList, TrainingJobsPage, TrainingJobsDetailsPage};
-
+export { TrainingJobsList, TrainingJobsPage, TrainingJobsDetailsPage };
