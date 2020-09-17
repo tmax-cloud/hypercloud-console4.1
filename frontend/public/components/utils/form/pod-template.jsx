@@ -77,7 +77,7 @@ export const PodTemplate = props => {
                 }}
                 checked={!usePodTemplate}
               />
-              {t('CONTENT:BYSELF')}
+              {t('STRING:TASK_CREATE_3')}
             </div>
           </div>
         </FirstSection>

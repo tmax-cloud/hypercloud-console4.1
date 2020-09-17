@@ -106,9 +106,10 @@ class BaseResourceModal extends PromiseComponent {
           </SecondSection>
           <SecondSection isModal={true} label={''} isRequired={false}>
             <label>
-              <input className="" type="checkbox" id="cbx-select" checked={this.state.optional} onChange={this.onOptionalChange} />이 리소스를 선택 항목으로 제공합니다.
+              <input className="" type="checkbox" id="cbx-select" checked={this.state.optional} onChange={this.onOptionalChange} />
+              {t('STRING:TASK_CREATE_1')}
             </label>
-            <p>선택 항목으로 제공할 경우, 태스크 런 또는 파이프라인 메뉴에서 파이프라인 리소스를 필요에 따라 할당할 수 있습니다. </p>
+            <p>{t('STRING:TASK_CREATE_2')}</p>
           </SecondSection>
         </ModalBody>
         <ModalSubmitFooter errorMessage={this.state.errorMessage} inProgress={this.state.inProgress} submitText={this.props.isNew ? t('CONTENT:ADD') : t('CONTENT:EDIT')} cancel={this._cancel} />

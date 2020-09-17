@@ -117,7 +117,7 @@ class BaseParameterModal extends PromiseComponent {
 
           <SecondSection isModal={true} label={t('CONTENT:DEFAULTVALUE')} isRequired={false}>
             {this.state.type === 'String' ? <input className="form-control form-group" type="text" id="resource-default" value={this.state.default} onChange={this.onDefaultChange} /> : <ValueEditor desc="" title="false" valueString="DefaultValue" t={t} values={this.state.defaultArray} updateParentData={this._updateDefaults} isModal={true} />}
-            <p>태스크 런 또는 파이프라인 생성 시 파라미터를 입력하지 않을 경우 기본 값으로 설정됩니다.</p>
+            <p>{t('STRING:TASK_CREATE_4')}</p>
           </SecondSection>
         </ModalBody>
         <ModalSubmitFooter errorMessage={this.state.errorMessage} inProgress={this.state.inProgress} submitText={this.props.isNew ? t('CONTENT:ADD') : t('CONTENT:EDIT')} cancel={this._cancel} />
