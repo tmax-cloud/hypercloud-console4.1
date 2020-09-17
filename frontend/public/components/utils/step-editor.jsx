@@ -65,7 +65,7 @@ export class StepModalEditor extends React.Component {
       m.StepModal({
         title: t(`CONTENT:${valueString.toUpperCase()}`),
         isNew: true,
-        volumeNames: this.props.volumeList,
+        volumes: this.props.volumeList,
         updateParentData: this._updateParentData,
         namespace: this.props.namespace,
         steps: this.props.steps,
@@ -82,7 +82,7 @@ export class StepModalEditor extends React.Component {
         title: t(`CONTENT:${valueString.toUpperCase()}`),
         step: steps[i],
         isNew: false,
-        volumeNames: this.props.volumeList,
+        volumes: this.props.volumeList,
         updateParentData: this._updateParentData,
         namespace: this.props.namespace,
         steps: this.props.steps,
