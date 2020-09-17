@@ -299,7 +299,7 @@ class TaskFormComponent extends React.Component {
             }
           } else if (cur[14] === 'Notify') {
             // preset: Notify
-            let env = ['MAIL_SERVER', 'MAIL_FROM', 'MAIL_SUBJECT', 'MAILCONTENT'].map((val, idx) => ({
+            let env = ['MAIL_SERVER', 'MAIL_FROM', 'MAIL_SUBJECT', 'MAIL_CONTENT'].map((val, idx) => ({
               name: val,
               value: cur[idx + 4],
             }));
