@@ -29,7 +29,7 @@ import './TaskSidebar.scss';
 
 type TaskSidebarProps = {
   errorMap: TaskErrorMap;
-  onRemoveTask: (taskName: string) => void;
+  onRemoveTask: (taskName: string, t: any) => void;
   onUpdateTask: (data: UpdateOperationUpdateTaskData) => void;
   resourceList: PipelineResource[];
   selectedPipelineTaskIndex: number;
@@ -125,7 +125,7 @@ const TaskSidebar: React.FC<TaskSidebarProps> = props => {
                 {
                   // label: 'Remove Task',
                   label: _label,
-                  callback: () => onRemoveTask(taskField.value.name)
+                  callback: () => onRemoveTask(taskField.value.name, t)
                 }
               ]}
             />

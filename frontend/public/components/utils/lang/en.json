@@ -46,7 +46,8 @@
     "NAMESPACE-MODAL_0": "Confirm deletion by typing {{something}} below ",
     "PODSELECTOR-EMPTY_0": "All pods within {{something}}",
     "GENERATEDFROM": "Generated from {{something}}",
-    "SELECT": "Select {{something}}"
+    "SELECT": "Select {{something}}",
+    "REMOVETASK": "Are you sure you want to {{something}}?"
   },
   "VALIDATION": {
     "LABEL_FORM": "Lables must be 'key=value' form.",

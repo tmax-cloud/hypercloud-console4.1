@@ -43,7 +43,8 @@
     "NAMESPACE-MODAL_0": "아래 {{something}}를 입력하여 삭제를 확인하십시오",
     "PODSELECTOR-EMPTY_0": "{{something}}내의 모든 파드",
     "GENERATEDFROM": "{{something}} 생성",
-    "SELECT": "{{something}} 선택"
+    "SELECT": "{{something}} 선택",
+    "REMOVETASK": "정말로 {{something}} 을 삭제하시겠습니까?"
   },
   "VALIDATION": {
     "LABEL_FORM": "레이블은 '키=값' 형식이어야 합니다.",

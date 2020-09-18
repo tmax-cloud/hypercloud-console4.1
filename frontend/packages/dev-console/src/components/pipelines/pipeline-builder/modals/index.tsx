@@ -3,19 +3,22 @@ import { confirmModal } from '../../../../../../../public/components/modals/conf
 import ModalContent from './ModalContent';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
-
+import { useTranslation } from 'react-i18next';
 type ModalCallback = () => void;
 
-export const removeTaskModal = (taskName: string, onRemove: ModalCallback) => {
+export const removeTaskModal = (taskName: string, t: any, onRemove: ModalCallback) => {
   confirmModal({
-    title: 'Remove Task',
+    title: t('CONTENT:REMOVETASK'),
     message: (
       <ModalContent
         icon={<ExclamationTriangleIcon size="lg" color={warningColor.value} />}
-        title={`Remove ${taskName}?`}
-        message={`Are you sure you want to remove ${taskName}?`}
+        // title={`Remove ${taskName}?`}
+        title={t('ADDITIONAL:DELETE', { something: `${taskName}` })}
+        // message={`Are you sure you want to remove ${taskName}?`}
+        message={t('ADDITIONAL:REMOVETASK', { something: `${taskName}` })}
       />
     ),
+    btnText: t('CONTENT:CONFIRM'),
     buttonText: 'Remove',
     executeFn: () => {
       onRemove();
