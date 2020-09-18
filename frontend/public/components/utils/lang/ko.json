@@ -43,7 +43,8 @@
     "NAMESPACE-MODAL_0": "아래 {{something}}를 입력하여 삭제를 확인하십시오",
     "PODSELECTOR-EMPTY_0": "{{something}}내의 모든 파드",
     "GENERATEDFROM": "{{something}} 생성",
-    "SELECT": "{{something}} 선택"
+    "SELECT": "{{something}} 선택",
+    "REMOVETASK": "정말로 {{something}} 을 삭제하시겠습니까?"
   },
   "VALIDATION": {
     "LABEL_FORM": "레이블은 '키=값' 형식이어야 합니다.",
@@ -89,6 +90,11 @@
   },
   "STRING": {
     "TASK-CREATE_0": "입력을 처리하고 출력을 생성하는 특정 빌드 또는 배치 도구의 시작을 위한 일련의 스텝(Step)을 정의하십시오.",
+    "TASK_CREATE_1": "이 리소스를 선택 항목으로 제공합니다.",
+    "TASK_CREATE_2": "선택 항목으로 제공할 경우, 태스크 런 또는 파이프라인 메뉴에서 파이프라인 리소스를 필요에 따라 할당할 수 있습니다.",
+    "TASK_CREATE_3": "직접 입력",
+    "TASK_CREATE_4": "태스크 런 또는 파이프라인 생성 시 파라미터를 입력하지 않을 경우 기본 값으로 설정됩니다.",
+    "TASK_CREATE_5": "마운트할 볼륨을 먼저 추가해 주세요.",
     "DAEMONSET-CREATE_0": "모든 노드에 파드 실행",
     "DAEMONSET-CREATE_1": "특정 노드에 파드 실행",
     "DAEMONSET-CREATE_2": "일부 노드에 파드 실행",
@@ -406,7 +412,7 @@
     "TASKRUN-CREATE_4": "분",
     "TASKRUN-CREATE_5": "서비스 어카운트 지정",
     "TASKRUN-CREATE_6": "서비스 어카운트 선택",
-    "TASKRUN-CREATE_7": "서비스 계정을 지정하면 특정 자격 증명으로 태스크 런에서 해당 태스크를 실행할 수 있습니다. 지정하지 않을 경우, 태스크 런은 configmap-defaults ConfigMap에 지정된 자격 증명으로 실행됩니다. 기본값을 지정하지 않으면, 태스크 런은 대상 네임스페이스에 대해 설정된 기본 서비스 계정으로 실행됩니다.",
+    "TASKRUN-CREATE_7": "서비스 계정을 지정하면 특정 자격 증명으로 태스크 런에서 해당 태스크를 실행할 수 있습니다. 지정하지 않을 경우, 태스크 런은 config-defaults 컨피그맵에 지정된 자격 증명으로 실행됩니다. 기본값을 지정하지 않으면, 태스크 런은 대상 네임스페이스에 대해 설정된 기본 서비스 계정으로 실행됩니다.",
     "TASKRUN-CREATE_8": "특정 입력, 출력, 실행 파라미터로 실행할 태스크를 인스턴스화합니다. 단독으로 또는 파이프라인의 일부로 호출할 수 있습니다.  ",
     "VM-SIDEBAR_0": "Windows 가상머신 샘플",
     "VM-SIDEBAR_1": "Windows 가상머신에 대한 VM 오브젝트를 생성하는데 사용할 수 있습니다.\n.spec.template.spec.Affinity.nodeAffinity - 생성 시 선호 노드 설정\n.spec.template.domain.devices.disk - 인스턴스에 attach할 디스크 설정\n.spec.template.domain.devices.interfaces - 네트워크 인터페이스에 대한 설정\n.spec.template.domain.gpus - attach할 GPU device 설정\n.spec.template.domain.cpu - attach할 CPU 설정\n.spec.template.domain.memory - attach할 Memory 설정",
@@ -910,7 +916,6 @@
     "GRANTRESOURCES": "리소스 허용",
     "CONFIGMAPVALUE": "컨피그 맵 값",
     "IMAGEREGISTRY": "이미지 레지스트리",
-    "BYSELF": "직접 입력",
     "PODTEMPLATE": "파드 템플릿",
     "REPLICA": "레플리카",
     "USE": "사용",
@@ -943,7 +948,8 @@
     "MAILCONFIG": "메일 설정",
     "MAILFROM": "발신자",
     "MAILSUBJECT": "제목",
-    "MAILCONTENT": "내용"
+    "MAILCONTENT": "내용",
+    "REMOVETASK": "태스크 삭제"
   },
   "RESOURCE": {
     "HOME": "홈",

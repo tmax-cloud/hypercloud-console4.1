@@ -46,7 +46,8 @@
     "NAMESPACE-MODAL_0": "Confirm deletion by typing {{something}} below ",
     "PODSELECTOR-EMPTY_0": "All pods within {{something}}",
     "GENERATEDFROM": "Generated from {{something}}",
-    "SELECT": "Select {{something}}"
+    "SELECT": "Select {{something}}",
+    "REMOVETASK": "Are you sure you want to {{something}}?"
   },
   "VALIDATION": {
     "LABEL_FORM": "Lables must be 'key=value' form.",
@@ -92,6 +93,11 @@
   },
   "STRING": {
     "TASK-CREATE_0": "Define a series of steps which launch specific build or delivery tools that ingest specific inputs and produce specific outputs.",
+    "TASK_CREATE_1": "Make this resource optional.",
+    "TASK_CREATE_2": "If provided as an option, you can allocate Pipeline resources as needed from the TaskRun or Pipeline menu.",
+    "TASK_CREATE_3": "Input Directly",
+    "TASK_CREATE_4": "If no parameter is entered when creating a TaskRun or Pipeline, it is set to the default value.",
+    "TASK_CREATE_5": "Please add the volume to be mounted first",
     "DAEMONSET-CREATE_0": "Run pods in all nodes",
     "DAEMONSET-CREATE_1": "Run pods in specific nodes.",
     "DAEMONSET-CREATE_2": "Run pods in some nodes.",
@@ -408,7 +414,7 @@
     "TASKRUN-CREATE_4": "Min",
     "TASKRUN-CREATE_5": "Service Account Settings",
     "TASKRUN-CREATE_6": "Select a service account.",
-    "TASKRUN-CREATE_7": "You can execute the Task in your TaskRun with a specific set of credentials by specifying a ServiceAccount. If you do not explicitly specify this, the TaskRun executes with the credentials specified in the configmap-defaults ConfigMap. If this default is not specified, TaskRuns will execute with the default service account set for the target namespace.",
+    "TASKRUN-CREATE_7": "You can execute the Task in your TaskRun with a specific set of credentials by specifying a ServiceAccount. If you do not explicitly specify this, the TaskRun executes with the credentials specified in the config-defaults ConfigMap. If this default is not specified, TaskRuns will execute with the default service account set for the target namespace.",
     "TASKRUN-CREATE_8": "Instantiate a Task for execution with specific inputs, outputs, and execution parameters. Can be invoked on its own or as part of a Pipeline.",
     "VM-SIDEBAR_0": "Windows Virtual Machine Sample",
     "VM-SIDEBAR_1": "Creates VM objects for Windows virtual machine.\n.spec.template.spec.Affinity.nodeAffinity- Node affinity setting\n.spec.template.domain.devices.disk – Instance-attached disk setting\n.spec.template.domain.devices.interfaces- Network interface setting\n.spec.template.domain.gpus – CPU device setting .spec.template.domain.cpu – CPU setting\n.spec.template.domain.memory – Memory setting",
@@ -909,7 +915,6 @@
     "GRANTRESOURCES": "Grant Resources",
     "CONFIGMAPVALUE": "Config Map Value",
     "IMAGEREGISTRY": "Image Registry",
-    "BYSELF": "직접 입력",
     "PODTEMPLATE": "Pod Template",
     "REPLICA": "Replica",
     "USE": "Use",
@@ -945,7 +950,8 @@
     "SERVICECLASSLIST": "Service Class List",
     "SERVICECLASSCLASSIFICATION": "Service Class Classification",
     "MAILSUBJECT": "Title",
-    "MAILCONTENT": "Contents"
+    "MAILCONTENT": "Contents",
+    "REMOVETASK": "Remove Task"
   },
   "RESOURCE": {
     "HOME": "Home",
