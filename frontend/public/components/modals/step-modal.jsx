@@ -42,7 +42,7 @@ class BaseStepModal extends React.Component {
       isType: props.step?.[13],
       preset: props.step?.[14] || 'Approve',
       imagetype: (props.step?.[15] = false),
-      selfimage: props.step?.[16] || 'tmaxcloudck/approve-step-server:latest',
+      selfimage: props.step?.[16] || 'tmaxcloudck/approval-step-server:latest',
       imageRegistryList: [],
       imageList: [],
       imageTagList: [],
@@ -248,7 +248,7 @@ class BaseStepModal extends React.Component {
       });
       if (this.state.preset === 'Approve') {
         this.setState({
-          selfimage: 'tmaxcloudck/approve-step-server:latest',
+          selfimage: 'tmaxcloudck/approval-step-server:latest',
         });
       } else if (this.state.preset === 'Notify') {
         this.setState({
@@ -269,7 +269,7 @@ class BaseStepModal extends React.Component {
     });
     if (preset.value === 'Approve') {
       this.setState({
-        selfimage: 'tmaxcloudck/approve-step-server:latest',
+        selfimage: 'tmaxcloudck/approval-step-server:latest',
       });
     } else if (preset.value === 'Notify') {
       this.setState({
@@ -365,7 +365,7 @@ class BaseStepModal extends React.Component {
 
     let imageName = '';
     if (this.state.preset === 'Approve') {
-      imageName = 'tmaxcloudck/approve-step-server:latest';
+      imageName = 'tmaxcloudck/approval-step-server:latest';
     } else if (this.state.preset === 'Notify') {
       imageName = 'tmaxcloudck/mail-sender-client:latest';
     }
@@ -399,7 +399,7 @@ class BaseStepModal extends React.Component {
                     }}
                     checked={!this.state.isType}
                   />
-                  {t('CONTENT:BYSELF')}
+                  {t('STRING:TASK_CREATE_3')}
                 </div>
               </div>
             </SecondSection>
@@ -465,7 +465,7 @@ class BaseStepModal extends React.Component {
                           }}
                           checked={!this.state.imagetype}
                         />
-                        {t('CONTENT:BYSELF')}
+                        {t('STRING:TASK_CREATE_3')}
                       </div>
                     </div>
                   )}
@@ -579,7 +579,7 @@ class BaseStepModal extends React.Component {
                     />
                   </div>
                 ) : (
-                  '마운트할 볼륨을 먼저 추가해 주세요.'
+                  t('STRING:TASK_CREATE_5')
                 )}
                 {this.state.inputError.volume && (
                   <p className="error_text" style={{ marginTop: 0 }}>

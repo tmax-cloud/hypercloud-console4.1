@@ -11,7 +11,7 @@ import { useTranslation, Trans } from 'react-i18next';
 class BaseTaskModal extends PromiseComponent {
   constructor(props) {
     super(props);
-    let {onInputResource} = this.props;
+    let { onInputResource } = this.props;
     this._submit = this._submit.bind(this);
     this._cancel = props.cancel.bind(this);
   }
@@ -41,31 +41,53 @@ class BaseTaskModal extends PromiseComponent {
 
   render() {
     const { kind, resource, pair, onInputResource, t } = this.props;
-    const typeOptions = [{value: 'Git', label: t('CONTENT:GIT')}, {value: 'Image', label: t('CONTENT:IMAGE')}];
+    const typeOptions = [
+      { value: 'Git', label: t('CONTENT:GIT') },
+      { value: 'Image', label: t('CONTENT:IMAGE') },
+    ];
 
     return (
-      <form style={{width: '500px'}} onSubmit={this._submit} name="form">
+      <form style={{ width: '500px' }} onSubmit={this._submit} name="form">
         <ModalTitle>{t('CONTENT:INPUTRESOURCE')}</ModalTitle>
         <ModalBody>
           <SecondSection label={t('CONTENT:NAME')} isRequired={true}>
             {/* <input className="form-control form-group" type="text" onChange={this.onNameChanged} value={this.state.task.metadata.name} id="task-name" required /> */}
-            <input className="form-control form-group" type="text" id="inputresource-name" onChange={e => {
-              onInputResource({id:'name', value: e.target});
-            }} required />
+            <input
+              className="form-control form-group"
+              type="text"
+              id="inputresource-name"
+              onChange={e => {
+                onInputResource({ id: 'name', value: e.target });
+              }}
+              required
+            />
           </SecondSection>
           <SecondSection label={t('CONTENT:TYPE')} isRequired={true}>
-            <SingleSelect options={typeOptions} name="Type" placeholder="Select Type" onChange={e => {
-              onInputResource({id:'type', value:'e'});
-            }} />
+            <SingleSelect
+              options={typeOptions}
+              name="Type"
+              placeholder="Select Type"
+              onChange={e => {
+                onInputResource({ id: 'type', value: 'e' });
+              }}
+            />
           </SecondSection>
           <SecondSection label={t('CONTENT:RESOURCESTORAGEPATH')} isRequired={false}>
-            <input className="form-control form-group" type="text" id="resourcestoragepath-name" onChange={e => {
-              onInputResource({id:'path', value:'e.target'});
-            }} />
+            <input
+              className="form-control form-group"
+              type="text"
+              id="resourcestoragepath-name"
+              onChange={e => {
+                onInputResource({ id: 'path', value: 'e.target' });
+              }}
+            />
           </SecondSection>
           <SecondSection label={''} isRequired={false}>
-            <label><input className="" type="checkbox" id="cbx-select" />이 리소스를 선택 항목으로 제공합니다.</label>
-            <p>선택 항목으로 제공할 경우, 태스크 런 또는 파이프라인 메뉴에서 파이프라인 리소스를 필요에 따라 할당할 수 있습니다. </p>
+            <label>
+              <input className="" type="checkbox" id="cbx-select" />
+              {t('STRING:TASK_CREATE_1')}
+            </label>
+            <p>{t('STRING:TASK_CREATE_2')} </p>
           </SecondSection>
         </ModalBody>
         <ModalSubmitFooter errorMessage={this.state.errorMessage} inProgress={this.state.inProgress} submitText={t('Content:Add')} cancel={this._cancel} />
@@ -76,5 +98,5 @@ class BaseTaskModal extends PromiseComponent {
 
 export const TaskModal = createModalLauncher(props => {
   const { t } = useTranslation();
-  return <BaseTaskModal {...props} t={t} onChange= {props.onInputResource} />;
+  return <BaseTaskModal {...props} t={t} onChange={props.onInputResource} />;
 });

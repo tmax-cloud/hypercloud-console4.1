@@ -104,12 +104,12 @@ class BaseVolumeModal extends PromiseComponent {
           </SecondSection>
           {this.state.type === 'ConfigMap' && (
             <SecondSection isModal={true} label={t('CONTENT:CONFIGMAP')} isRequired={false}>
-              <input className="form-control form-group" type="text" id="resource-configmap" value={this.state.default} onChange={this.onConfigMapChange} />
+              <input className="form-control form-group" type="text" id="resource-configmap" value={this.state.configMap} onChange={this.onConfigMapChange} />
             </SecondSection>
           )}
           {this.state.type === 'Secret' && (
             <SecondSection isModal={true} label={t('CONTENT:SECRET')} isRequired={false}>
-              <input className="form-control form-group" type="text" id="resource-secret" value={this.state.default} onChange={this.onSecretChange} />
+              <input className="form-control form-group" type="text" id="resource-secret" value={this.state.secret} onChange={this.onSecretChange} />
             </SecondSection>
           )}
         </ModalBody>

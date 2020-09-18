@@ -1286,11 +1286,9 @@ spec:
       #key: node.kubernetes.io/unreachable
       #tolerationSeconds: 10
   service:
-    #ingress:
-      #domainName: 192.168.6.110.nip.io
-      #port: 443 # (optional) [integer] external port (default: 443)
+    serviceType: LoadBalancer
     loadBalancer:
-      port: 443 # (optional) [integer] external port (default: 443)
+      port: 443 # (required) [integer] external port (default: 443)
   persistentVolumeClaim:
     create:
       accessModes: [ReadWriteOnce] # (required) [array] (ex: [ReadWriteOnce, ReadWriteMany])
@@ -1314,6 +1312,7 @@ spec:
       loginId: tmax
       loginPassword: tmax123
       service:
+        serviceType: LoadBalancer
         loadBalancer:
           port: 443
       persistentVolumeClaim:
@@ -1343,6 +1342,7 @@ spec:
         nodeSelector:
           kubernetes.io/hostname: worker01
       service:
+        serviceType: LoadBalancer
         loadBalancer:     
           port: 443
       persistentVolumeClaim:
