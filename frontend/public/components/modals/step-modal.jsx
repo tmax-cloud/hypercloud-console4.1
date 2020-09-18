@@ -526,7 +526,7 @@ class BaseStepModal extends React.Component {
               ) : (
                 !this.state.isType && (
                   <div>
-                    <input className="form-control" style={{ marginBottom: '15px' }} type="text" id="self-image" value={imageName} onChange={this.onSelfImageChange} />
+                    <input className="form-control" style={{ marginBottom: '15px' }} type="text" id="self-image" value={this.state.selfimage} onChange={this.onSelfImageChange} />
                     {this.state.inputError.selfImage && <p className="error_text">{this.state.inputError.selfImage}</p>}
                   </div>
                 )
