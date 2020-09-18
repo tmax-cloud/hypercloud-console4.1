@@ -943,7 +943,8 @@
     "MAILCONFIG": "메일 설정",
     "MAILFROM": "발신자",
     "MAILSUBJECT": "제목",
-    "MAILCONTENT": "내용"
+    "MAILCONTENT": "내용",
+    "REMOVETASK": "태스크 삭제"
   },
   "RESOURCE": {
     "HOME": "홈",

@@ -945,7 +945,8 @@
     "SERVICECLASSLIST": "Service Class List",
     "SERVICECLASSCLASSIFICATION": "Service Class Classification",
     "MAILSUBJECT": "Title",
-    "MAILCONTENT": "Contents"
+    "MAILCONTENT": "Contents",
+    "REMOVETASK": "Remove Task"
   },
   "RESOURCE": {
     "HOME": "Home",
