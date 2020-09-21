@@ -273,7 +273,7 @@ class AuditPage_ extends React.Component {
       // console.log(response.items);
       this.setState({
         data: response.items,
-        pages: Math.ceil(response.totalNum / 100),
+        pages: Math.ceil(response.items.length / 100),
       });
     });
   }
@@ -306,7 +306,7 @@ class AuditPage_ extends React.Component {
         // console.log(response);
         this.setState({
           data: response.items,
-          pages: Math.ceil(response.totalNum / 100),
+          pages: Math.ceil(response.items.length / 100),
         });
       })
       .catch(error => {
@@ -348,7 +348,7 @@ class AuditPage_ extends React.Component {
       // console.log(response.items);
       this.setState({
         data: response.items,
-        pages: Math.ceil(response.totalNum / 100),
+        pages: Math.ceil(response.items.length / 100),
       });
     });
   }
@@ -386,7 +386,7 @@ class AuditPage_ extends React.Component {
       // console.log(response.items);
       this.setState({
         data: response.items,
-        pages: Math.ceil(response.totalNum / 100),
+        pages: Math.ceil(response.items.length / 100),
       });
     });
   }
@@ -431,7 +431,7 @@ class AuditPage_ extends React.Component {
       // console.log(response.items);
       this.setState({
         data: response.items,
-        pages: Math.ceil(response.totalNum / 100),
+        pages: Math.ceil(response.items.length / 100),
       });
     });
   }
@@ -476,7 +476,7 @@ class AuditPage_ extends React.Component {
       // console.log(response.items);
       this.setState({
         data: response.items,
-        pages: Math.ceil(response.totalNum / 100),
+        pages: Math.ceil(response.items.length / 100),
       });
     });
   }
@@ -509,7 +509,7 @@ class AuditPage_ extends React.Component {
       // console.log(response.items);
       this.setState({
         data: response.items,
-        pages: Math.ceil(response.totalNum / 100),
+        pages: Math.ceil(response.items.length / 100),
       });
     });
   }
@@ -544,7 +544,7 @@ class AuditPage_ extends React.Component {
       // console.log(response.items);
       this.setState({
         data: response.items,
-        pages: Math.ceil(response.totalNum / 100),
+        pages: Math.ceil(response.items.length / 100),
       });
     });
   }
@@ -567,19 +567,17 @@ class AuditPage_ extends React.Component {
     if (namespace === undefined) {
       // all namespace
       coFetchJSON(uri).then(response => {
-        // console.log(response.items);
         this.setState({
           data: response.items,
-          pages: Math.ceil(response.totalNum / 100),
+          pages: Math.ceil(response.items.length / 100),
         });
       });
     } else {
       uri += `&namespace=${namespace}`;
       coFetchJSON(uri).then(response => {
-        // console.log(response.items);
         this.setState({
           data: response.items,
-          pages: Math.ceil(response.totalNum / 100),
+          pages: Math.ceil(response.items.length / 100),
         });
       });
     }
@@ -594,19 +592,17 @@ class AuditPage_ extends React.Component {
     if (namespace === undefined) {
       // all namespace
       coFetchJSON(uri).then(response => {
-        // console.log(response.items);
         this.setState({
           data: response.items,
-          pages: Math.ceil(response.totalNum / 100),
+          pages: Math.ceil(response.items.length / 100),
         });
       });
     } else {
       uri += `&namespace=${namespace}`;
       coFetchJSON(uri).then(response => {
-        // console.log(response.items);
         this.setState({
           data: response.items,
-          pages: Math.ceil(response.totalNum / 100),
+          pages: Math.ceil(response.items.length / 100),
         });
       });
     }
