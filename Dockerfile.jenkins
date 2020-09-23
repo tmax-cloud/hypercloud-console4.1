@@ -3,7 +3,7 @@ FROM quay.io/coreos/tectonic-console-builder:v16 AS build
 RUN mkdir -p /go/src/github.com/openshift/console/
 ADD . /go/src/github.com/openshift/console/
 WORKDIR /go/src/github.com/openshift/console/
-RUN ./build.sh
+RUN ./script-linux/build-linux.sh
 
 FROM openshift/origin-base
 
