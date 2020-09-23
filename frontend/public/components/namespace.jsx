@@ -222,7 +222,7 @@ const ResourceUsage = requirePrometheus(({ ns }) => {
           />
         </div>
       </div>
-      <Bar title={t('CONTENT:MEMORYUSAGEBYPOD(TOP10)')} query={`sort(topk(10, sum by (pod_name)(container_memory_usage_bytes{pod_name!="", namespace="${ns.metadata.name}"})))`} humanize={humanizeMem} metric="pod_name" />
+      <Bar title={t('CONTENT:MEMORYUSAGEBYPOD(TOP10)')} query={`sort(topk(10,sum(container_memory_usage_bytes{container_name!="POD",pod!="",namespace="${ns.metadata.name}"})by(pod,namespace)))`} humanize={humanizeMem} metric="pod" />
     </div>
   );
 });
@@ -348,7 +348,7 @@ class NamespaceDropdown_ extends React.Component {
 
     if (data.length > 1) {
       // 객체는 iterable한 값이 아니어서 최상위 값을 고를 수가 없음 그래서 data를 다시 sorting해서 그 첫번째 값을 선택되는 namespace로 지정
-      data.sort(function (a, b) {
+      data.sort(function(a, b) {
         return a.metadata.name < b.metadata.name ? -1 : a.metadata.name > b.metadata.name ? 1 : 0;
       });
     }
