@@ -436,7 +436,11 @@
     "AUDIT-LIST_4": "to",
     "AUDIT-LIST_5": "Inquiry Period",
     "PIPELINERESOURCE-CREATE_0": "Defines locations for inputs ingested and outputs produced by the steps in Tasks.",
-    "TEMPLATEINSTANCE-CREATE_0": "Enter the parameters required by the template to deploy the application."
+    "TEMPLATEINSTANCE-CREATE_0": "Enter the parameters required by the template to deploy the application.",
+    "SERVICEBINDING-SIDEBAR_0": "Service Binding Sample",
+    "SERVICEBINDING-SIDEBAR_1": "Service binding serves to provide the connection between the service instance and application program.",
+    "SERVICEBINDING-SIDEBAR_2": "Service Binding Secret Key Addition Sample",
+    "SERVICEBINDING-SIDEBAR_3": "Service binding serves to provide the connection between the service instance and application program.\n When the broker responds, the service catalog records the credentials that it responds with into the secret specified in spec.secretName."
   },
   "CONTENT": {
     "TASKPARAMETERCONFIG": "Task Paramter Config",

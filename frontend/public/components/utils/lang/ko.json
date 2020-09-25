@@ -434,9 +434,15 @@
     "AUDIT-LIST_4": "~",
     "AUDIT-LIST_5": "조회 기간",
     "PIPELINERESOURCE-CREATE_0": "태스크 스텝(Step)에서 처리된 입력 및 생성된 출력의 위치를 정의합니다.",
-    "TEMPLATEINSTANCE-CREATE_0": "애플리케이션을 배치하기 위해 템플릿에 필요한 파라미터를 입력하십시오."
+    "TEMPLATEINSTANCE-CREATE_0": "애플리케이션을 배치하기 위해 템플릿에 필요한 파라미터를 입력하십시오.",
+    "SERVICEBINDING-SIDEBAR_0": "서비스 바인딩 샘플",
+    "SERVICEBINDING-SIDEBAR_1": "서비스 바인딩은 서비스 인스턴스와 응용프로그램 사이의 링크를 제공하는 역할을 한다.",
+    "SERVICEBINDING-SIDEBAR_2": "서비스 바인딩 secret key 추가 설정 샘플",
+    "SERVICEBINDING-SIDEBAR_3": "서비스 바인딩은 서비스 인스턴스와 응용프로그램 사이의 링크를 제공하는 역할을 한다.\n 브로커가 응답하면 서비스 카탈로그는 spec.secretName에서 지정한 secret에 응답하는 자격 증명을 기록한다."
   },
   "CONTENT": {
+    "AVAILABLEFUNCTIONS": "제공 기능",
+    "SERVICEPLANCHARGES": "플랜 요금",
     "ADD": "추가",
     "TASKPARAMETERCONFIG": "태스크 파라미터 구성",
     "STEP": "스텝",
