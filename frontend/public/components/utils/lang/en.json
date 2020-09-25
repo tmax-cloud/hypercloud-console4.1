@@ -450,6 +450,8 @@
     "SERVICEBINDING-SIDEBAR_3": "Service binding serves to provide the connection between the service instance and application program.\n When the broker responds, the service catalog records the credentials that it responds with into the secret specified in spec.secretName."
   },
   "CONTENT": {
+    "AVAILABLEFUNCTIONS": "Available Functions",
+    "SERVICEPLANCHARGES": "Service Plan Charges",
     "TASKPARAMETERCONFIG": "Task Paramter Config",
     "STEP": "Step",
     "REPORTEDFROM": "Reported from",
