@@ -199,6 +199,10 @@ const defaultMenu = `
       type: resourcenslink
     - name: ServiceAccount
       type: resourcenslink
+    - name: User
+      type: authadminlink
+    - name: Usergroup
+      type: authadminlink
 `;
 
 const stripNS = href => {
@@ -296,6 +300,32 @@ HrefLink.propTypes = {
   name: PropTypes.string.isRequired,
   startsWith: PropTypes.arrayOf(PropTypes.string),
   href: PropTypes.string.isRequired,
+};
+
+class AuthAdminLink extends NavLink {
+  static isActive(props, resourcePath) {
+    return false;
+  }
+
+  render() {
+    const { isActive, name, resource } = this.props;
+    const onClick = () => {
+      window.open(`${window.SERVER_FLAGS.KeycloakAuthURL}/admin/${SERVER_FLAGS.KeycloakRealm}/console/#/realms/${SERVER_FLAGS.KeycloakRealm}/${resource}`);
+    }
+
+    return (
+      <li className={classNames('co-m-nav-link', { active: isActive, 'co-m-nav-link__external': true })}>
+        <div onClick={onClick} className={classNames({ 'co-external-link': true })}>
+          {name}
+        </div>
+      </li>
+    );
+  }
+}
+
+AuthAdminLink.propTypes = {
+  name: PropTypes.string.isRequired,
+  startsWith: PropTypes.arrayOf(PropTypes.string),
 };
 
 const navSectionStateToProps = (state, { required }) => {
@@ -595,6 +625,18 @@ class CustomNav extends React.Component {
                 onClick={this.close}
               />
             );
+          case 'authadminlink': {
+            let resource;
+            switch(menuItem.name.toLowerCase()) {
+              case 'user':
+                resource = 'users';
+                break;
+              case 'usergroup':
+                resource = 'groups';
+                break;
+            }
+            return <AuthAdminLink {...menuItem} resource={resource} name={temp} onClick={this.close} />;
+          }
           default:
             return;
         }

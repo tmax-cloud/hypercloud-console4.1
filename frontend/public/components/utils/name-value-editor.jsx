@@ -256,12 +256,12 @@ const PairElement = DragSource(
                   <ValueFromPair pair={pair[NameValueEditorPair.Value]} configMaps={configMaps} secrets={secrets} onChange={this._onChangeValue} disabled={readOnly} />
                 </div>
               ) : (
-                <div className="col-md-6 col-xs-5 pairs-list__value-field">
-                  <input type="text" className="form-control" placeholder={valueString.toLowerCase()} value={pair[NameValueEditorPair.Value] || ''} onChange={this._onChangeValue} disabled={readOnly} />
-                </div>
-              )}
+                  <div className="col-md-5 col-xs-5 pairs-list__value-field">
+                    <input type="text" className="form-control" placeholder={valueString.toLowerCase()} value={pair[NameValueEditorPair.Value] || ''} onChange={this._onChangeValue} disabled={readOnly} />
+                  </div>
+                )}
               {readOnly ? null : (
-                <div className="col-md-1 col-xs-2">
+                <div className="col-md-2 col-xs-2">
                   <span className={classNames(allowSorting ? 'pairs-list__span-btns' : null)}>
                     {allowSorting ? (
                       <React.Fragment>
@@ -269,8 +269,8 @@ const PairElement = DragSource(
                         {deleteButton}
                       </React.Fragment>
                     ) : (
-                      deleteButton
-                    )}
+                        deleteButton
+                      )}
                   </span>
                 </div>
               )}

@@ -88,10 +88,37 @@ class TaskFormComponent extends React.Component {
     this.setState({ task });
   }
   onNamespaceChanged(namespace) {
-    let task = { ...this.state.task };
+    let task = {
+      apiVersion: 'tekton.dev/v1beta1',
+      kind: 'Task',
+      metadata: {
+        name: this.state.task.metadata.name,
+        namespace: '',
+      },
+      spec: {
+        resources: {
+          inputs: [],
+          outputs: [],
+        },
+        params: [],
+        volumes: [],
+        steps: [],
+      },
+    };
     task.metadata.namespace = String(namespace);
     this.setState({ task });
     this.setState({ namespace });
+
+    this.setState({ inputResourceNames: '' });
+    this.setState({ inputResources: '' });
+    this.setState({ outputResourceNames: '' });
+    this.setState({ outputResources: '' });
+    this.setState({ parameterConfigNames: '' });
+    this.setState({ parameterConfigs: '' });
+    this.setState({ volumeNames: '' });
+    this.setState({ volumes: '' });
+    this.setState({ stepNames: '' });
+    this.setState({ steps: '' });
   }
 
   _updateInputName(resources) {
@@ -248,7 +275,9 @@ class TaskFormComponent extends React.Component {
       this.state.steps.forEach(cur => {
         let step = {};
         let volumeMounts = [];
-        volumeMounts.push({ name: cur[11], mountPath: cur[12] });
+        let isImage = cur[1] && cur[2] && cur[3];
+        cur[11] && cur[12] && volumeMounts.push({ name: cur[11], mountPath: cur[12] });
+
         if (cur[13]) {
           // type: preset
           if (cur[14] === 'Approve') {
@@ -257,20 +286,20 @@ class TaskFormComponent extends React.Component {
               // imageType: imageRegistry
               step = {
                 name: cur[0].toLowerCase(),
-                image: `${cur[1]}/${cur[2]}:${cur[3]}`,
+                image: isImage ? `${cur[1].label}/${cur[2].value}:${cur[3].value}` : '',
                 volumeMounts: volumeMounts, // 여러개 올수 있음
               };
             } else {
               // imageType: free
               step = {
                 name: cur[0].toLowerCase(),
-                image: cur[16],
+                image: cur[16] ? cur[16] : '',
                 volumeMounts: volumeMounts,
               };
             }
           } else if (cur[14] === 'Notify') {
             // preset: Notify
-            let env = ['MAIL_SERVER', 'MAIL_FROM', 'MAIL_SUBJECT', 'MAILCONTENT'].map((val, idx) => ({
+            let env = ['MAIL_SERVER', 'MAIL_FROM', 'MAIL_SUBJECT', 'MAIL_CONTENT'].map((val, idx) => ({
               name: val,
               value: cur[idx + 4],
             }));
@@ -278,7 +307,7 @@ class TaskFormComponent extends React.Component {
               // imageType: imageRegistry
               step = {
                 name: cur[0].toLowerCase(),
-                image: `${cur[1]}/${cur[2]}:${cur[3]}`,
+                image: isImage ? `${cur[1].label}/${cur[2].value}:${cur[3].value}` : '',
                 env: env,
                 volumeMounts: volumeMounts,
               };
@@ -286,7 +315,7 @@ class TaskFormComponent extends React.Component {
               // imageType: free
               step = {
                 name: cur[0].toLowerCase(),
-                image: cur[16],
+                image: cur[16] ? cur[16] : '',
                 env: env,
                 volumeMounts: volumeMounts,
               };
@@ -300,11 +329,21 @@ class TaskFormComponent extends React.Component {
           }));
           let command = cur[9].map(val => val[0]);
           let args = cur[8].map(val => val[0]);
+          if (env[0].name === '' && env[0].value === '') {
+            env = [];
+          }
+          if (command[0] === '') {
+            command = [];
+          }
+          if (args[0] === '') {
+            args = [];
+          }
+
           if (cur[15]) {
             // imageType: imageRegistry
             step = {
               name: cur[0].toLowerCase(),
-              image: `${cur[1]}/${cur[2]}:${cur[3]}`,
+              image: isImage ? `${cur[1].label}/${cur[2].value}:${cur[3].value}` : '',
               env: env,
               command: command,
               args: args,
@@ -313,13 +352,16 @@ class TaskFormComponent extends React.Component {
           } else {
             step = {
               name: cur[0].toLowerCase(),
-              image: cur[16],
+              image: cur[16] ? cur[16] : '',
               env: env,
               command: command,
               args: args,
               volumeMounts: volumeMounts,
             };
           }
+        }
+        if (volumeMounts.length < 1) {
+          delete step.volumeMounts;
         }
         task.spec.steps.push(step);
       });
@@ -371,7 +413,7 @@ class TaskFormComponent extends React.Component {
               <VolumeModalEditor desc={} title="false" valueString="Volume" t={t} volumes={this.state.volumes} names={this.state.volumeNames} visibleData={this._updateVolumeName} realData={this._updateVolumes} />
             </FirstSection>
             <FirstSection label={t('CONTENT:STEP')} isRequired={true}>
-              <StepModalEditor desc={} title="false" valueString="Step" t={t} namespace={this.state.namespace} steps={this.state.steps} names={this.state.stepNames} visibleData={this._updateStepName} realData={this._updateSteps} volumeList={this.state.volumeNames} />
+              <StepModalEditor desc={} title="false" valueString="Step" t={t} namespace={this.state.namespace} steps={this.state.steps} names={this.state.stepNames} visibleData={this._updateStepName} realData={this._updateSteps} volumeList={this.state.volumes} />
               {this.state.inputError.step && <p className="error_text">{this.state.inputError.step}</p>}
             </FirstSection>
 

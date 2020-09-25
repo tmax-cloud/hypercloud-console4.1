@@ -14,6 +14,17 @@ import { useTranslation, Trans } from 'react-i18next';
 class BaseStepModal extends React.Component {
   constructor(props) {
     super(props);
+
+    const inputError = {
+      name: null,
+      imageRegistry: null,
+      image: null,
+      imageTag: null,
+      selfImage: null,
+      volume: null,
+      mountPath: null,
+    };
+
     this.state = {
       name: props.step?.[0] || '',
       imageregistry: props.step?.[1] || '',
@@ -27,15 +38,16 @@ class BaseStepModal extends React.Component {
       runcommandarguments: props.step?.[9] || [['']],
       env: props.step?.[10] || [['', '']],
       volumemountname: props.step?.[11] || '',
-      volumemountpath: props.step?.[12] || '',
+      volumemountpath: props.step?.[12] || '/tmp/config',
       isType: props.step?.[13],
       preset: props.step?.[14] || 'Approve',
-      imagetype: props.step?.[15],
-      selfimage: props.step?.[16] || '',
+      imagetype: (props.step?.[15] = false),
+      selfimage: props.step?.[16] || 'tmaxcloudck/approval-step-server:latest',
       imageRegistryList: [],
       imageList: [],
       imageTagList: [],
       imageAllTagList: [],
+      inputError: inputError,
       inProgress: false,
       errorMessage: '',
     };
@@ -60,9 +72,9 @@ class BaseStepModal extends React.Component {
     this._cancel = props.cancel.bind(this);
   }
   componentDidMount() {
-    if (!this.props.isNew) {
-      return;
-    }
+    // if (!this.props.isNew) {
+    //   return;
+    // }
     this.state.imagetype && this.getImageRegistryList();
   }
 
@@ -74,9 +86,10 @@ class BaseStepModal extends React.Component {
         data => {
           let imageRegistryList = data.map(cur => {
             return {
-              value: cur.spec.image.split('/')[0],
+              value: cur.metadata.name,
               id: 'imageRegistry',
               label: cur.metadata.name,
+              realValue: cur.spec.image.split('/')[0], // spec.image 값 중복되는 경우 중복 선택되는 버그 때문..
             };
           });
           this.setState({ imageRegistryList });
@@ -146,23 +159,61 @@ class BaseStepModal extends React.Component {
 
   _submit(e) {
     e.preventDefault();
-    const { kind, path, steps, updateParentData, isNew, index } = this.props;
+    const { kind, path, steps, updateParentData, isNew, index, t } = this.props;
     let name = '';
+
+    if (!this.state.isType && !this.state.name) {
+      this.setState({ inputError: { name: t('VALIDATION:EMPTY-INPUT', { something: t(`CONTENT:NAME`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { name: null } });
+    }
+    if (this.state.isType && this.state.imagetype && !this.state.imageregistry) {
+      this.setState({ inputError: { imageRegistry: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:IMAGEREGISTRY`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { imageRegsitry: null } });
+    }
+    if (this.state.isType && this.state.imagetype && !this.state.image) {
+      this.setState({ inputError: { image: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:IMAGE`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { image: null } });
+    }
+    if (this.state.isType && this.state.imagetype && !this.state.imagetag) {
+      this.setState({ inputError: { imageTag: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:IMAGETAG`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { imageTag: null } });
+    }
+    if (!this.state.isType && !this.state.imagetype && !this.state.selfimage) {
+      this.setState({ inputError: { selfImage: t('VALIDATION:EMPTY-INPUT', { something: t(`CONTENT:IMAGE`) }) } });
+      return;
+    } else if (!this.state.isType) {
+      this.setState({ inputError: { selfImage: null } });
+    }
+    if (this.state.isType && !this.state.volumemountname) {
+      this.setState({ inputError: { volume: t('VALIDATION:EMPTY-SELECT', { something: t(`CONTENT:VOLUME`) }) } });
+      return;
+    } else {
+      this.setState({ inputError: { volume: null } });
+    }
+
     if (this.state.isType) {
-      const name_idx = typeof steps !== 'string' && steps?.filter(cur => cur[13] === this.state.preset);
+      const name_idx = typeof steps !== 'string' && steps?.filter(cur => cur[14] === this.state.preset);
       if (name_idx.length > 0) {
         name = `${this.state.preset}-${name_idx.length}`;
       } else {
-        name = this.state.preset;
+        name = this.state.preset + '-0';
       }
       console.log(name);
     }
 
     updateParentData({
       name: this.state.name || name,
-      imageregistry: this.state.imageregistry?.label,
-      image: this.state.image?.value,
-      imageversion: this.state.imagetag?.value,
+      imageregistry: this.state.imageregistry,
+      image: this.state.image,
+      imageversion: this.state.imagetag,
       mailserver: this.state.mailserver,
       mailfrom: this.state.mailfrom,
       mailsubject: this.state.mailsubject,
@@ -195,6 +246,20 @@ class BaseStepModal extends React.Component {
       this.setState({
         name: this.setState.preset,
       });
+      if (this.state.preset === 'Approve') {
+        this.setState({
+          selfimage: 'tmaxcloudck/approval-step-server:latest',
+        });
+      } else if (this.state.preset === 'Notify') {
+        this.setState({
+          selfimage: 'tmaxcloudck/mail-sender-client:latest',
+        });
+      }
+    } else {
+      this.setState({ inputError: { volume: null } });
+      this.setState({
+        selfimage: '',
+      });
     }
   };
 
@@ -202,6 +267,15 @@ class BaseStepModal extends React.Component {
     this.setState({
       preset: preset.value,
     });
+    if (preset.value === 'Approve') {
+      this.setState({
+        selfimage: 'tmaxcloudck/approval-step-server:latest',
+      });
+    } else if (preset.value === 'Notify') {
+      this.setState({
+        selfimage: 'tmaxcloudck/mail-sender-client:latest',
+      });
+    }
   };
 
   onImageTypeChange = imagetype => {
@@ -228,7 +302,7 @@ class BaseStepModal extends React.Component {
           label: version,
         };
       });
-    this.setState({ imagetag: imageTagList[0] });
+    // this.setState({ imagetag: imageTagList[0] });
     this.setState({ imageTagList });
   };
 
@@ -277,7 +351,7 @@ class BaseStepModal extends React.Component {
     });
   }
   render() {
-    const { kind, step, pair, title, t, volumeNames } = this.props;
+    const { kind, step, pair, title, t, volumes } = this.props;
     const presetOptions = [
       // { value: 'SourceToImage', label: t('CONTENT:SOURCETOIMAGE') },
       // { value: 'Deploy', label: t('CONTENT:DEPLOY') },
@@ -286,8 +360,16 @@ class BaseStepModal extends React.Component {
       { value: 'Approve', label: t('CONTENT:APPROVE') },
       { value: 'Notify', label: t('CONTENT:NOTIFY') },
     ];
-    const volumeOptions = volumeNames ? volumeNames.map(cur => ({ value: cur[0], label: cur[0] })) : [];
+    const volumeOptions = volumes ? volumes.filter(cur => cur[1] === 'ConfigMap').map(cur => ({ value: cur[0], label: cur[0] })) : [];
     let maxHeight = window.innerHeight - 180;
+
+    let imageName = '';
+    if (this.state.preset === 'Approve') {
+      imageName = 'tmaxcloudck/approval-step-server:latest';
+    } else if (this.state.preset === 'Notify') {
+      imageName = 'tmaxcloudck/mail-sender-client:latest';
+    }
+
     return (
       <form style={{ width: '500px' }} onSubmit={this._submit} name="form">
         <ModalTitle>{title}</ModalTitle>
@@ -317,7 +399,7 @@ class BaseStepModal extends React.Component {
                     }}
                     checked={!this.state.isType}
                   />
-                  {t('CONTENT:BYSELF')}
+                  {t('STRING:TASK_CREATE_3')}
                 </div>
               </div>
             </SecondSection>
@@ -348,42 +430,51 @@ class BaseStepModal extends React.Component {
                       onChange={e => {
                         this.onNameChange(e.target);
                       }}
-                      required
                     />
+                    {this.state.inputError.name && (
+                      <p className="error_text" style={{ marginTop: 0 }}>
+                        {this.state.inputError.name}
+                      </p>
+                    )}
                   </SecondSection>
                 </div>
               )}
-              <SecondSection isModal={true} label={t('CONTENT:IMAGE')} isRequired={false}>
-                <div className="row">
-                  <div className="col-xs-6" style={{ float: 'left' }}>
-                    <input
-                      type="radio"
-                      value={true}
-                      name="imagetype"
-                      onChange={e => {
-                        this.onImageTypeChange(true);
-                      }}
-                      checked={this.state.imagetype}
-                    />
-                    {t('CONTENT:IMAGEREGISTRY')}
-                  </div>
-                  <div className="col-xs-6" style={{ float: 'left' }}>
-                    <input
-                      type="radio"
-                      value={false}
-                      name="imagetype"
-                      onChange={e => {
-                        this.onImageTypeChange(false);
-                      }}
-                      checked={!this.state.imagetype}
-                    />
-                    {t('CONTENT:BYSELF')}
-                  </div>
-                </div>
-              </SecondSection>
-              {this.state.imagetype ? (
+              {!this.state.isType && (
+                <SecondSection isModal={true} label={t('CONTENT:IMAGE')} isRequired={true}>
+                  {false && (
+                    <div className="row">
+                      <div className="col-xs-6" style={{ float: 'left' }}>
+                        <input
+                          type="radio"
+                          value={true}
+                          name="imagetype"
+                          onChange={e => {
+                            this.onImageTypeChange(true);
+                          }}
+                          checked={this.state.imagetype}
+                        />
+                        {t('CONTENT:IMAGEREGISTRY')}
+                      </div>
+                      <div className="col-xs-6" style={{ float: 'left' }}>
+                        <input
+                          type="radio"
+                          value={false}
+                          name="imagetype"
+                          onChange={e => {
+                            this.onImageTypeChange(false);
+                          }}
+                          checked={!this.state.imagetype}
+                        />
+                        {t('STRING:TASK_CREATE_3')}
+                      </div>
+                    </div>
+                  )}
+                </SecondSection>
+              )}
+              {/* {this.state.imagetype ? ( */}
+              {false ? (
                 <div>
-                  <SecondSection isModal={true} label={t('CONTENT:IMAGEREGISTRY')} id={'imageregistry'}>
+                  <SecondSection isModal={true} label={t('CONTENT:IMAGEREGISTRY')} id={'imageregistry'} isRequired={this.state.isType ? true : false}>
                     <SingleSelect
                       options={this.state.imageRegistryList}
                       name={'ImageRegistry'}
@@ -393,8 +484,13 @@ class BaseStepModal extends React.Component {
                         this.onImageRegistryChange(e);
                       }}
                     />
+                    {this.state.inputError.imageRegistry && (
+                      <p className="error_text" style={{ marginTop: 0 }}>
+                        {this.state.inputError.imageRegistry}
+                      </p>
+                    )}
                   </SecondSection>
-                  <SecondSection isModal={true} label={t('CONTENT:IMAGE')} id={'image'}>
+                  <SecondSection isModal={true} label={t('CONTENT:IMAGE')} id={'image'} isRequired={this.state.isType ? true : false}>
                     <SingleSelect
                       options={this.state.imageList}
                       name={'Image'}
@@ -404,8 +500,13 @@ class BaseStepModal extends React.Component {
                         this.onImageChange(e);
                       }}
                     />
+                    {this.state.inputError.image && (
+                      <p className="error_text" style={{ marginTop: 0 }}>
+                        {this.state.inputError.image}
+                      </p>
+                    )}
                   </SecondSection>
-                  <SecondSection isModal={true} label={t('CONTENT:IMAGETAG')} id={'image-tag'}>
+                  <SecondSection isModal={true} label={t('CONTENT:IMAGETAG')} id={'image-tag'} isRequired={this.state.isType ? true : false}>
                     <SingleSelect
                       options={this.state.imageTagList}
                       name={'ImageTag'}
@@ -415,16 +516,28 @@ class BaseStepModal extends React.Component {
                         this.onImageTagChange(e);
                       }}
                     />
+                    {this.state.inputError.imageTag && (
+                      <p className="error_text" style={{ marginTop: 0 }}>
+                        {this.state.inputError.imageTag}
+                      </p>
+                    )}
                   </SecondSection>
                 </div>
               ) : (
-                <div>
-                  <input className="form-control form-group" type="text" id="self-image" value={this.state.selfimage} onChange={this.onSelfImageChange} />
-                </div>
+                !this.state.isType && (
+                  <div>
+                    <input className="form-control" style={{ marginBottom: '15px' }} type="text" id="self-image" value={this.state.selfimage} onChange={this.onSelfImageChange} />
+                    {this.state.inputError.selfImage && <p className="error_text">{this.state.inputError.selfImage}</p>}
+                  </div>
+                )
               )}
               {this.state.isType && this.state.preset === 'Notify' && (
                 <div>
-                  <label>{t('CONTENT:MAILCONFIG')}</label>
+                  <div className={'row form-group required'} style={{ marginBottom: '0px' }}>
+                    <label className="control-label" style={{ marginLeft: '15px' }}>
+                      {t('CONTENT:MAILCONFIG')}
+                    </label>
+                  </div>
                   <SecondSection isModal={true} label={'- ' + t('CONTENT:MAILSERVER')} id={'mail-server'}>
                     <input className="form-control" type="text" id="mail-server" value={this.state.mailserver} onChange={this.onMailServerChange} />
                   </SecondSection>
@@ -452,13 +565,13 @@ class BaseStepModal extends React.Component {
                   </SecondSection>
                 </div>
               )}
-              <SecondSection isModal={true} label={t('CONTENT:VOLUMEMOUNT')} id={'volumemount'}>
+              <SecondSection isModal={true} label={t('CONTENT:VOLUMEMOUNT')} id={'volumemount'} isRequired={this.state.isType ? true : false}>
                 {volumeOptions.length > 0 ? (
                   <div>
                     <SingleSelect
                       options={volumeOptions}
                       name={'Volume'}
-                      value={this.state.volumemountname?.value || ''}
+                      value={this.state.volumemountname || ''}
                       placeholder={t('ADDITIONAL:SELECT', { something: t('CONTENT:VOLUME') })}
                       onChange={e => {
                         this.onVolumeMountNameChange(e);
@@ -466,12 +579,22 @@ class BaseStepModal extends React.Component {
                     />
                   </div>
                 ) : (
-                  '마운트할 볼륨을 먼저 추가해 주세요.'
+                  t('STRING:TASK_CREATE_5')
+                )}
+                {this.state.inputError.volume && (
+                  <p className="error_text" style={{ marginTop: 0 }}>
+                    {this.state.inputError.volume}
+                  </p>
                 )}
               </SecondSection>
-              {volumeOptions.length > 0 && (
+              {false && volumeOptions.length > 0 && (
                 <SecondSection isModal={true} label={t('CONTENT:VOLUMEMOUNTPATH')} id={'volumepath'}>
                   <input className="form-control" type="text" id="volumepath" value={this.state.volumemountpath} onChange={this.onVolumeMountPathChange} />
+                  {this.state.inputError.mountPath && (
+                    <p className="error_text" style={{ marginTop: 0 }}>
+                      {this.state.inputError.mountPath}
+                    </p>
+                  )}
                 </SecondSection>
               )}
             </div>

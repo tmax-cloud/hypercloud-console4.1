@@ -230,8 +230,8 @@ const PipelineBuilderForm: React.FC<PipelineBuilderFormProps> = props => {
                   })
                 );
               }}
-              onRemoveTask={taskName => {
-                removeTaskModal(taskName, () => {
+              onRemoveTask={(taskName, t) => {
+                removeTaskModal(taskName, t, () => {
                   setSelectedTask(null);
                   updateTasks(
                     applyChange(taskGroup, {

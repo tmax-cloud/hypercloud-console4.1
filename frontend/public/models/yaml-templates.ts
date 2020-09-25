@@ -1286,11 +1286,9 @@ spec:
       #key: node.kubernetes.io/unreachable
       #tolerationSeconds: 10
   service:
-    #ingress:
-      #domainName: 192.168.6.110.nip.io
-      #port: 443 # (optional) [integer] external port (default: 443)
+    serviceType: LoadBalancer
     loadBalancer:
-      port: 443 # (optional) [integer] external port (default: 443)
+      port: 443 # (required) [integer] external port (default: 443)
   persistentVolumeClaim:
     create:
       accessModes: [ReadWriteOnce] # (required) [array] (ex: [ReadWriteOnce, ReadWriteMany])
@@ -1314,6 +1312,7 @@ spec:
       loginId: tmax
       loginPassword: tmax123
       service:
+        serviceType: LoadBalancer
         loadBalancer:
           port: 443
       persistentVolumeClaim:
@@ -1343,6 +1342,7 @@ spec:
         nodeSelector:
           kubernetes.io/hostname: worker01
       service:
+        serviceType: LoadBalancer
         loadBalancer:     
           port: 443
       persistentVolumeClaim:
@@ -1480,11 +1480,17 @@ spec:
     metadata:
       name: apache-cicd-template
       namespace: default
+      annotations:
+        template-version: 1.1.2
+        tested-operator-version: 4.1.0.23
+      labels:
+        cicd-template-was: apache
     imageUrl: https://upload.wikimedia.org/wikipedia/commons/4/45/Apache_HTTP_server_logo_%282016%29.png
     provider: tmax
     recommend: false
     shortDescription: Apache CI/CD Template
     longDescription: Apache CI/CD Template
+    urlDescription: https://httpd.apache.org/
     tags:
     - was
     - apache
@@ -1496,10 +1502,6 @@ spec:
     - name: APP_NAME
       displayName: AppName
       description: Application name
-      required: true
-    - name: NAMESPACE
-      displayName: Namespace
-      description: Application namespace
       required: true
     - name: GIT_URL
       displayName: GitURL
@@ -1513,6 +1515,11 @@ spec:
       displayName: ImageURL
       description: Output Image URL
       required: true
+    - name: REGISTRY_SECRET_NAME
+      displayName: RegistrySecret
+      description: Secret for accessing image registry
+      required: false
+      value: ''
     - name: SERVICE_ACCOUNT_NAME
       displayName: serviceAccountName
       description: Service Account Name
@@ -1524,19 +1531,23 @@ spec:
       required: true
     - name: SERVICE_TYPE
       displayName: ServiceType
-      description: Service Type (ClsuterIP/NodePort/LoadBalancer)
+      description: Service Type (ClusterIP/NodePort/LoadBalancer)
       required: true
     - name: PACKAGE_SERVER_URL
       displayName: PackageServerUrl
       description: URL (including protocol, ip, port, and path) of private package server
         (e.g., devpi, pypi, verdaccio, ...)
       required: false
+    - name: DEPLOY_ENV_JSON
+      displayName: DeployEnvJson
+      description: Deployment environment variable in JSON object form
+      required: false
+      value: '{}'
     objects:
     - apiVersion: v1
       kind: Service
       metadata:
         name: \${APP_NAME}-service
-        namespace: \${NAMESPACE}
         labels:
           app: \${APP_NAME}
       spec:
@@ -1550,7 +1561,8 @@ spec:
       kind: ConfigMap
       metadata:
         name: \${APP_NAME}-deploy-cfg
-        namespace: \${NAMESPACE}
+        labels:
+          app: \${APP_NAME}
       data:
         deploy-spec.yaml: |
           spec:
@@ -1564,128 +1576,110 @@ spec:
                   app: \${APP_NAME}
                   tier: was
               spec:
+                imagePullSecrets:
+                - name: \${REGISTRY_SECRET_NAME}
                 containers:
                 - ports:
                   - containerPort: \${WAS_PORT}
-    - apiVersion: tekton.dev/v1alpha1
-      kind: PipelineResource
-      metadata:
-        name: \${APP_NAME}-input-git
-        namespace: \${NAMESPACE}
-      spec:
-        type: git
-        params:
-        - name: revision
-          value: \${GIT_REV}
-        - name: url
-          value: \${GIT_URL}
-    - apiVersion: tekton.dev/v1alpha1
-      kind: PipelineResource
-      metadata:
-        name: \${APP_NAME}-output-image
-        namespace: \${NAMESPACE}
-      spec:
-        type: image
-        params:
-        - name: url
-          value: \${IMAGE_URL}
     - apiVersion: tekton.dev/v1beta1
       kind: Pipeline
       metadata:
         name: \${APP_NAME}-pipeline
-        namespace: \${NAMESPACE}
+        labels:
+          app: \${APP_NAME}
       spec:
-        resources:
-        - name: source-repo
-          type: git
-        - name: image
-          type: image
         params:
         - name: app-name
           type: string
           description: Application name
-        - name: replica
-          type: string
-          description: Number of replica
-          default: "1"
-        - name: port
-          type: string
-          description: Application port
-          default: "8080"
         - name: deploy-cfg-name
           description: Configmap name for description
+        - name: deploy-env-json
+          description: Deployment environment variable in JSON object form
+        - name: git-url
+          description: Git url
+        - name: git-rev
+          description: Git revision
+        workspaces:
+        - name: git-source
+          description: The git repo will be cloned onto the volume backing this workspace
         tasks:
+        - name: git-clone
+          taskRef:
+            name: git-clone
+            kind: ClusterTask
+          workspaces:
+          - name: output
+            workspace: git-source
+          params:
+          - name: url
+            value: $(params.git-url)
+          - name: revision
+            value: $(params.git-rev)
         - name: build-source
           taskRef:
             name: s2i
             kind: ClusterTask
+          runAfter:
+          - git-clone
+          workspaces:
+          - name: git-source
+            workspace: git-source
           params:
           - name: BUILDER_IMAGE
-            value: \${DOCKER_REGISTRY_URL:PORT}/{IMAGE_NAME:TAG}
+            value: tmaxcloudck/s2i-apache:2.4
           - name: PACKAGE_SERVER_URL
             value: \${PACKAGE_SERVER_URL}
-          resources:
-            inputs:
-            - name: source
-              resource: source-repo
-            outputs:
-            - name: image
-              resource: image
-            - name: scan-and-sign-image
-              taskRef:
-                name: analyze-image-vulnerabilities
-                kind: ClusterTask
-              resources:
-                inputs:
-                - name: scanned-image
-                  resource: image
-                  from:
-                  - build-source
-              params:
-              - name: image-url
-                value: $(tasks.build-source.results.image-url)
-            - name: deploy
-              taskRef:
-                name: generate-and-deploy-using-kubectl
-                kind: ClusterTask
-              runAfter:
-              - scan-and-sign-image
-              resources:
-                inputs:
-                - name: image
-                  resource: image
-              params:
-              - name: app-name
-                value: $(params.app-name)
-              - name: replica
-                value: $(params.replica)
-              - name: port
-                value: $(params.port)
-              - name: image-url
-                value: $(tasks.build-source.results.image-url)
-              - name: deploy-cfg-name
-                value: $(params.deploy-cfg-name)
+          - name: REGISTRY_SECRET_NAME
+            value: \${REGISTRY_SECRET_NAME}
+          - name: IMAGE_URL
+            value: \${IMAGE_URL}
+        - name: deploy
+          taskRef:
+            name: generate-and-deploy-using-kubectl
+            kind: ClusterTask
+          runAfter:
+          - build-source
+          params:
+          - name: app-name
+            value: $(params.app-name)
+          - name: image-url
+            value: $(tasks.build-source.results.image-url)
+          - name: deploy-cfg-name
+            value: $(params.deploy-cfg-name)
+          - name: deploy-env-json
+            value: $(params.deploy-env-json)
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
         generateName: \${APP_NAME}-pipeline-run-
-        namespace: \${NAMESPACE}
+        labels:
+          app: \${APP_NAME}
       spec:
         serviceAccountName: \${SERVICE_ACCOUNT_NAME}
         pipelineRef:
           name: \${APP_NAME}-pipeline
-        resources:
-        - name: source-repo
-          resourceRef:
-            name: \${APP_NAME}-input-git
-        - name: image
-          resourceRef:
-            name: \${APP_NAME}-output-image
+        workspaces:
+        - name: git-source
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              storageClassName: csi-cephfs-sc
+              resources:
+                requests:
+                  storage: 500Mi
         params:
         - name: app-name
           value: \${APP_NAME}
         - name: deploy-cfg-name
           value: \${APP_NAME}-deploy-cfg
+        - name: deploy-env-json
+          value: \${DEPLOY_ENV_JSON}
+        - name: git-url
+          value: \${GIT_URL}
+        - name: git-rev
+          value: \${GIT_REV}
 `,
   )
   .setIn(
@@ -1696,8 +1690,12 @@ spec:
     metadata:
       name: mysql-template
       namespace: default
+      annotations:
+        template-version: 1.1.2
+        tested-operator-version: 4.1.0.23
     shortDescription: MySQL Deployment
     longDescription: MySQL Deployment
+    urlDescription: https://www.mysql.com/
     imageUrl: https://upload.wikimedia.org/wikipedia/en/6/62/MySQL.svg
     provider: tmax
     tags:
@@ -1708,7 +1706,6 @@ spec:
       kind: Service
       metadata:
         name: \${APP_NAME}-service
-        namespace: \${NAMESPACE}
         labels:
           app: \${APP_NAME}
       spec:
@@ -1722,7 +1719,6 @@ spec:
       kind: PersistentVolumeClaim
       metadata:
         name: \${APP_NAME}-pvc
-        namespace: \${NAMESPACE}
         labels:
           app: \${APP_NAME}
       spec:
@@ -1736,17 +1732,15 @@ spec:
       kind: Secret
       metadata:
         name: \${APP_NAME}-secret
-        namespace: \${NAMESPACE}
       type: Opaque
       stringData:
-        user: \${MYSQL_USER}
-        password: \${MYSQL_PASSWORD}
-        database: \${MYSQL_DATABASE}
+        MYSQL_USER: \${MYSQL_USER}
+        MYSQL_PASSWORD: \${MYSQL_PASSWORD}
+        MYSQL_DATABASE: \${MYSQL_DATABASE}
     - apiVersion: apps/v1
       kind: Deployment
       metadata:
         name: \${APP_NAME}-mysql
-        namespace: \${NAMESPACE}
         labels:
           app: \${APP_NAME}
       spec:
@@ -1770,23 +1764,32 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: \${APP_NAME}-secret
-                    key: user
+                    key: MYSQL_USER
               - name: MYSQL_PASSWORD
                 valueFrom:
                   secretKeyRef:
                     name: \${APP_NAME}-secret
-                    key: password
+                    key: MYSQL_PASSWORD
               - name: MYSQL_DATABASE
                 valueFrom:
                   secretKeyRef:
                     name: \${APP_NAME}-secret
-                    key: database
+                    key: MYSQL_DATABASE
               ports:
               - containerPort: 3306
                 name: mysql
               volumeMounts:
               - name: mysql-persistent-storage
                 mountPath: /var/lib/mysql/data
+              readinessProbe:
+                initialDelaySeconds: 5
+                periodSeconds: 10
+                exec:
+                  command:
+                  - /bin/bash
+                  - -c
+                  - MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE
+                    -e 'SELECT 1'
             volumes:
             - name: mysql-persistent-storage
               persistentVolumeClaim:
@@ -1796,10 +1799,6 @@ spec:
       displayName: AppName
       description: Application name
       required: true
-    - name: NAMESPACE
-      displayName: Namespace
-      required: true
-      description: Application namespace
     - name: DB_STORAGE
       displayName: DBStorage
       description: Storage size for DB
@@ -1836,12 +1835,11 @@ spec:
         service_instance:
           create:
             parameters:
-              NAMESPACE: default
               DB_STORAGE: 5Gi
               APP_NAME: mysql-deploy
-              MYSQL_USER: $USERID
-              MYSQL_PASSWORD: $PASSWORD
-              MYSQL_DATABASE: $DATABASENAME
+              MYSQL_USER: root1
+              MYSQL_PASSWORD: tmax@23
+              MYSQL_DATABASE: root1
     - name: mysql-plan2
       description: mysql
       metadata:
@@ -1857,7 +1855,6 @@ spec:
         service_instance:
           create:
             parameters:
-              NAMESPACE: default
               DB_STORAGE: 30Gi
               APP_NAME: mysql-deploy
               MYSQL_USER: root1
@@ -1873,11 +1870,15 @@ kind: Template
 metadata:
   name: nodejs-mysql-template
   namespace: default
+  annotations:
+    template-version: 1.1.2
+    tested-operator-version: 4.1.0.23
 imageUrl: https://i.imgur.com/ImDhuQF.png
 provider: tmax
 recommend: false
 shortDescription: NodeJS & MySQL Template
 longDescription: NodeJS & MySQL Template
+urlDescription: https://nodejs.org/ko/
 tags:
 - was
 - nodejs
@@ -1891,7 +1892,6 @@ plans:
     service_instance:
       create:
         parameters:
-          NAMESPACE: default
           DB_STORAGE: 5Gi
           APP_NAME: mysql-deploy
           MYSQL_USER: root1
@@ -1901,10 +1901,6 @@ parameters:
 - name: APP_NAME
   displayName: PipelineName
   description: Pipeline name
-  required: true
-- name: NAMESPACE
-  displayName: Namespace
-  description: Application namespace
   required: true
 - name: DB_STORAGE
   displayName: DBStorage
@@ -1934,19 +1930,9 @@ parameters:
   displayName: ImageURL
   description: Output Image URL
   required: true
-- name: REGISTRY_SECRET
+- name: REGISTRY_SECRET_NAME
   displayName: RegistrySecret
   description: Secret for accessing image registry
-  required: false
-  value: ''
-- name: REGISTRY_ID
-  displayName: RegistryId
-  description: ID for accessing image registry
-  required: false
-  value: ''
-- name: REGISTRY_PW
-  displayName: RegistryPw
-  description: PW for accessing image registry
   required: false
   value: ''
 - name: SERVICE_ACCOUNT_NAME
@@ -1976,7 +1962,6 @@ objects:
   kind: Service
   metadata:
     name: \${APP_NAME}-service
-    namespace: \${NAMESPACE}
     labels:
       app: \${APP_NAME}
   spec:
@@ -1990,7 +1975,6 @@ objects:
   kind: Service
   metadata:
     name: \${APP_NAME}-db-service
-    namespace: \${NAMESPACE}
     labels:
       app: \${APP_NAME}
   spec:
@@ -2004,7 +1988,6 @@ objects:
   kind: PersistentVolumeClaim
   metadata:
     name: \${APP_NAME}-db-pvc
-    namespace: \${NAMESPACE}
     labels:
       app: \${APP_NAME}
   spec:
@@ -2018,17 +2001,15 @@ objects:
   kind: Secret
   metadata:
     name: \${APP_NAME}-secret
-    namespace: \${NAMESPACE}
   type: Opaque
   stringData:
-    user: \${MYSQL_USER}
-    password: \${MYSQL_PASSWORD}
-    database: \${MYSQL_DATABASE}
+    MYSQL_USER: \${MYSQL_USER}
+    MYSQL_PASSWORD: \${MYSQL_PASSWORD}
+    MYSQL_DATABASE: \${MYSQL_DATABASE}
 - apiVersion: apps/v1
   kind: Deployment
   metadata:
     name: \${APP_NAME}-mysql
-    namespace: \${NAMESPACE}
     labels:
       app: \${APP_NAME}
   spec:
@@ -2062,17 +2043,17 @@ objects:
             valueFrom:
               secretKeyRef:
                 name: \${APP_NAME}-secret
-                key: user
+                key: MYSQL_USER
           - name: MYSQL_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: \${APP_NAME}-secret
-                key: password
+                key: MYSQL_PASSWORD
           - name: MYSQL_DATABASE
             valueFrom:
               secretKeyRef:
                 name: \${APP_NAME}-secret
-                key: database
+                key: MYSQL_DATABASE
           ports:
           - containerPort: 3306
             name: mysql
@@ -2100,7 +2081,6 @@ objects:
   kind: ConfigMap
   metadata:
     name: \${APP_NAME}-deploy-cfg
-    namespace: \${NAMESPACE}
   data:
     deploy-spec.yaml: |
       spec:
@@ -2115,7 +2095,7 @@ objects:
               tier: nodejs
           spec:
             imagePullSecrets:
-            - name: \${REGISTRY_SECRET}
+            - name: \${REGISTRY_SECRET_NAME}
             containers:
             - env:
               - name: DB_HOST
@@ -2126,144 +2106,108 @@ objects:
                 valueFrom:
                   secretKeyRef:
                     name: \${APP_NAME}-secret
-                    key: user
+                    key: MYSQL_USER
               - name: DB_PW
                 valueFrom:
                   secretKeyRef:
                     name: \${APP_NAME}-secret
-                    key: password
+                    key: MYSQL_PASSWORD
               - name: DB_NAME
                 valueFrom:
                   secretKeyRef:
                     name: \${APP_NAME}-secret
-                    key: database
+                    key: MYSQL_DATABASE
               ports:
               - containerPort: \${WAS_PORT}
 - apiVersion: tekton.dev/v1alpha1
-  kind: PipelineResource
-  metadata:
-    name:\${APP_NAME}-input-git
-    namespace:\${NAMESPACE}
-  spec:
-    type: git
-    params:
-    - name: revision
-      value: \${GIT_REV}
-    - name: url
-      value: \${GIT_URL}
-- apiVersion: tekton.dev/v1alpha1
-  kind: PipelineResource
-  metadata:
-    name: \${APP_NAME}-output-image
-    namespace: \${NAMESPACE}
-  spec:
-    type: image
-    params:
-    - name: url
-      value: \${IMAGE_URL}
-- apiVersion: tekton.dev/v1beta1
   kind: Pipeline
   metadata:
     name: \${APP_NAME}-pipeline
-    namespace: \${NAMESPACE}
   spec:
-    resources:
-    - name: source-repo
-      type: git
-    - name: image
-      type: image
     params:
     - name: app-name
       type: string
       description: Application name
-    - name: replica
-      type: string
-      description: Number of replica
-      default: "1"
-    - name: port
-      type: string
-      description: Application port
-      default: "8080"
     - name: deploy-cfg-name
       description: Configmap name for description
+    - name: git-url
+      description: Git url
+    - name: git-rev
+      description: Git revision
+    workspaces:
+      - name: git-source
+        description: The git repo will be cloned onto the volume backing this workspace
     tasks:
+    - name: git-clone
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      workspaces:
+        - name: output
+          workspace: git-source
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-rev)
     - name: build-source
       taskRef:
         name: s2i
         kind: ClusterTask
+      runAfter:
+        - git-clone
+      workspaces:
+        - name: git-source
+          workspace: git-source
       params:
       - name: BUILDER_IMAGE
-        value: 192.168.6.110:5000/s2i-nodejs:12
+        value: tmaxcloudck/s2i-nodejs:12
       - name: PACKAGE_SERVER_URL
         value: \${PACKAGE_SERVER_URL}
-      - name: REGISTRY_ID
-        value: \${REGISTRY_ID}
-      - name: REGISTRY_PW
-        value: \${REGISTRY_PW}
-      resources:
-        inputs:
-        - name: source
-          resource: source-repo
-        outputs:
-        - name: image
-          resource: image
-    - name: scan-and-sign-image
-      taskRef:
-        name: analyze-image-vulnerabilities
-        kind: ClusterTask
-      resources:
-        inputs:
-        - name: scanned-image
-          resource: image
-          from:
-          - build-source
-      params:
-      - name: image-url
-        value: $(tasks.build-source.results.image-url)
+      - name: REGISTRY_SECRET_NAME
+        value: \${REGISTRY_SECRET_NAME}
+      - name: IMAGE_URL
+        value: \${IMAGE_URL}
     - name: deploy
       taskRef:
         name: generate-and-deploy-using-kubectl
         kind: ClusterTask
       runAfter:
-      - scan-and-sign-image
-      resources:
-        inputs:
-        - name: image
-          resource: image
+        - build-source
       params:
       - name: app-name
         value: $(params.app-name)
-      - name: replica
-        value: $(params.replica)
-      - name: port
-        value: $(params.port)
       - name: image-url
         value: $(tasks.build-source.results.image-url)
       - name: deploy-cfg-name
         value: $(params.deploy-cfg-name)
-- apiVersion: tekton.dev/v1beta1
+- apiVersion: tekton.dev/v1alpha1
   kind: PipelineRun
   metadata:
     generateName: \${APP_NAME}-run-
-    namespace: \${NAMESPACE}
   spec:
     serviceAccountName: \${SERVICE_ACCOUNT_NAME}
     pipelineRef:
       name: \${APP_NAME}-pipeline
-    resources:
-    - name: source-repo
-      resourceRef:
-        name: \${APP_NAME}-input-git
-    - name: image
-      resourceRef:
-        name: \${APP_NAME}-output-image
     params:
     - name: app-name
       value: \${APP_NAME}
-    - name: replica
-      value: "1"
     - name: deploy-cfg-name
       value: \${APP_NAME}-deploy-cfg
+    - name: git-url
+      value: \${GIT_URL}
+    - name: git-rev
+      value: \${GIT_REV}
+    workspaces:
+      - name: git-source
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            storageClassName: csi-cephfs-sc
+            resources:
+              requests:
+                storage: 500Mi
 `,
   )
   .setIn(
@@ -4888,6 +4832,10 @@ spec:
           type: resourcenslink
         - name: ServiceAccount
           type: resourcenslink
+        - name: User
+          type: authadminlink
+        - name: Usergroup
+          type: authadminlink
 `,
   )
   .setIn(

@@ -188,8 +188,12 @@ class LimitRangeFormComponent extends React.Component {
                 newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.MemoryRatio];
               }
             } else {
-              newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu] + limit[ResourceLimitEditorPair.CpuUnit];
-              newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory] + limit[ResourceLimitEditorPair.MemoryUnit];
+              if (limit[ResourceLimitEditorPair.Cpu] !== '') {
+                newLimit[limit[ResourceLimitEditorPair.LimitType]]['cpu'] = limit[ResourceLimitEditorPair.Cpu] + limit[ResourceLimitEditorPair.CpuUnit];
+              }
+              if (limit[ResourceLimitEditorPair.Memory] !== '') {
+                newLimit[limit[ResourceLimitEditorPair.LimitType]]['memory'] = limit[ResourceLimitEditorPair.Memory] + limit[ResourceLimitEditorPair.MemoryUnit];
+              }
             }
           }
         });
@@ -262,11 +266,11 @@ class LimitRangeFormComponent extends React.Component {
           <p className="co-m-pane__explanation">{t('STRING:LIMITRANGE-CREATE-0')}</p>
           <fieldset disabled={!this.props.isCreate}>
             <Section label={t('CONTENT:NAME')} isRequired={true}>
-              <input className="form-control" type="text" onChange={this.onNameChanged} value={this.state.limitRange.metadata.name} id="limit-range-name" />
+              <input className="form-control" type="text" onFocus={this.onFocusName} onChange={this.onNameChanged} value={this.state.limitRange.metadata.name} id="limit-range-name" />
               {this.state.inputError.name && <p className="cos-error-title">{this.state.inputError.name}</p>}
             </Section>
             <Section label={t('CONTENT:NAMESPACE')} isRequired={true}>
-              <NsDropdown id="limit-range-namespace" t={t} onChange={this.onNamespaceChanged} />
+              <NsDropdown id="limit-range-namespace" t={t} onFocus={this.onFocusNamespace} onChange={this.onNamespaceChanged} />
               {this.state.inputError.namespace && <p className="cos-error-title">{this.state.inputError.namespace}</p>}
             </Section>
             <Section label={t('CONTENT:LABELS')} isRequired={false}>
