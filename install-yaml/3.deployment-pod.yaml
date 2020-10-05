@@ -29,12 +29,12 @@ spec:
             - --hypercloud-endpoint=http://@@HC4@@
             - --prometheus-endpoint=http://@@PROM@@/api
             - --grafana-endpoint=http://@@GRAFANA@@/
-            # - --kiali-endpoint=http://@@KIALI@@/api/kiali
-            # - --jaeger-endpoint=http://@@JAEGER@@/api/jaeger
-            # - --approval-endpoint=http://@@APPROVAL@@/approve
+            - --kiali-endpoint=http://@@KIALI@@/api/kiali
+            - --jaeger-endpoint=http://@@JAEGER@@/api/jaeger
+            - --approval-endpoint=http://@@APPROVAL@@/approve
             - --hdc-mode=@@HDC_FLAG@@
             - --tmaxcloud-portal=@@PORTAL@@
-          image: tmaxcloudck/hypercloud-console:@@VER@@
+          image: tmaxcloudck/multicluster-console:@@VER@@
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /var/https-cert
