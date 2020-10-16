@@ -6,6 +6,7 @@ import { Cog, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSum
 import { fromNow } from './utils/datetime';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from './utils/lang/resource-plural';
+import WorkflowVisualization from '../../packages/dev-console/src/components/pipelines/detail-page-tabs/pipeline-details/WorkflowVisualization';
 
 const menuActions = [...Cog.factory.common];
 
@@ -72,9 +73,69 @@ export const WorkflowTemplatePage = props => {
 };
 WorkflowTemplatePage.displayName = 'WorkflowTemplatePage';
 
+const Template = ({ obj }) => {
+  const { t } = useTranslation();
+  const templates = _.get(obj, ['spec', 'templates', '1']);
+  //   const tasks = _.get(obj, ['spec', 'templates', '1', 'dag', 'tasks']).map(item => {
+  if (templates && templates.hasOwnProperty('dag')) {
+    const tasks = _.get(templates, ['dag', 'tasks']).map(item => {
+      return {
+        name: item.name,
+        runAfter: item.dependencies || [],
+        taskRef: {
+          kind: 'Task',
+          name: item.name,
+        },
+        ...item,
+      };
+    });
+    obj.spec.tasks = tasks;
+  } else if (templates && templates.hasOwnProperty('steps')) {
+    const tasks = templates.steps
+      .map(item => item[0])
+      .map((item, idx, arr) => {
+        return {
+          name: item.name,
+          runAfter: idx ? [arr[idx - 1].name] : [],
+          taskRef: {
+            kind: 'Task',
+            name: item.name,
+          },
+          ...item,
+        };
+      });
+    obj.spec.tasks = tasks;
+  }
+  return (
+    <div className="co-m-pane__body">
+      <div className="row">
+        <div className="col-xs-12">
+          <div className="panel-body"></div>
+          <WorkflowVisualization workflowTemplate={obj} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const WorkflowTemplateDetailsPage = props => {
   const { t } = useTranslation();
-  return <DetailsPage {...props} kind="WorkflowTemplate" menuActions={menuActions} pages={[navFactory.details(Details, t('CONTENT:OVERVIEW')), navFactory.editYaml()]} />;
+  return (
+    <DetailsPage
+      {...props}
+      kind="WorkflowTemplate"
+      menuActions={menuActions}
+      pages={[
+        navFactory.details(Details, t('CONTENT:OVERVIEW')),
+        {
+          href: 'template',
+          name: '템플릿',
+          component: Template,
+        },
+        navFactory.editYaml(),
+      ]}
+    />
+  );
 };
 
 WorkflowTemplateDetailsPage.displayName = 'WorkflowTemplateDetailsPage';
