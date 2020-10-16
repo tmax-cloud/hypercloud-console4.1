@@ -49,6 +49,19 @@ const WorkflowRow = () =>
     );
   };
 
+const Workflow = ({ obj }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="co-m-pane__body">
+      <div className="row">
+        <div className="col-xs-12">
+          <div className="panel-body">워크플로우</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Details = ({ obj: workflow }) => {
   const { t } = useTranslation();
   return (
@@ -82,7 +95,22 @@ WorkflowPage.displayName = 'WorkflowPage';
 
 export const WorkflowDetailsPage = props => {
   const { t } = useTranslation();
-  return <DetailsPage {...props} kind="Workflow" menuActions={menuActions} pages={[navFactory.details(Details, t('CONTENT:OVERVIEW')), navFactory.editYaml()]} />;
+  return (
+    <DetailsPage
+      {...props}
+      kind="Workflow"
+      menuActions={menuActions}
+      pages={[
+        navFactory.details(Details, t('CONTENT:OVERVIEW')),
+        {
+          href: 'workflow',
+          name: '워크플로우',
+          component: Workflow,
+        },
+        navFactory.editYaml(),
+      ]}
+    />
+  );
 };
 
 WorkflowDetailsPage.displayName = 'WorkflowDetailsPage';
