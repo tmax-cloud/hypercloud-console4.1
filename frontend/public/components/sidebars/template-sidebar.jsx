@@ -12,8 +12,6 @@ export const TemplateSidebar = ({ loadSampleYaml, downloadSampleYaml }) => {
     {
       header: t('STRING:TEMPLATE-SIDEBAR_0'),
       details: t('STRING:TEMPLATE-SIDEBAR_1'),
-      header: '템플릿 샘플',
-      details: `응용 프로그램의 모든 개체를 쉽게 다시 만들 수 있도록 템플릿을 정의한다. 템플릿은 생성된 객체와 메타 데이터를 정의하고 있다.`,
       templateName: 'template-sample',
       kind: referenceForModel(TemplateModel),
     },
