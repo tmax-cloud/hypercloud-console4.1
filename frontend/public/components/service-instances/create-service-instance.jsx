@@ -7,15 +7,13 @@ import Stepper from 'react-stepper-horizontal';
 import { CardList } from '../card';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from '../utils/lang/resource-plural';
-
+import { getActiveNamespace } from '../../ui/ui-actions';
 import { ButtonBar, Firehose, StatusBox, kindObj, history, SelectorInput } from '../utils';
 import { formatNamespacedRouteForResource } from '../../ui/ui-actions';
 import * as k8sModels from '../../models';
 import { coFetch } from '../../co-fetch';
 import { k8sCreate } from '../../module/k8s';
 import { NsDropdown } from '../RBAC';
-import { TextFilter } from '../factory';
-// import { element } from 'prop-types';
 
 const ServiceInstanceTypeAbstraction = {
   generic: 'generic',
@@ -38,6 +36,7 @@ const Section = ({ label, children, isRequired }) => (
 // withServiceInstanceForm returns SubForm which is a Higher Order Component for all the types of secret forms.
 const withServiceInstanceForm = SubForm =>
   class ServiceInstanceFormComponent extends React.Component {
+
     constructor(props) {
       super(props);
       this.state = {
@@ -79,8 +78,11 @@ const withServiceInstanceForm = SubForm =>
         planList: [],
         selectedPlan: null,
         paramList: [],
-        namespace: 'default'
+        namespace: null
       };
+
+      //Namespace
+      this.setDefaultNS = this.setDefaultNS.bind(this);
       // stepper
       this.onClickNext = this.onClickNext.bind(this);
       this.onClickBack = this.onClickBack.bind(this);
@@ -102,6 +104,11 @@ const withServiceInstanceForm = SubForm =>
       this.onLabelChanged = this.onLabelChanged.bind(this);
 
       this.save = this.save.bind(this);
+    }
+    setDefaultNS() {
+      let namespace = getActiveNamespace();
+      namespace = (namespace === 'all namespaces') ? 'default' : (namespace === '#ALL_NS#' ? 'default' : namespace);
+      this.setState({ namespace: namespace });
     }
     getClassList() {
 
@@ -296,6 +303,7 @@ const withServiceInstanceForm = SubForm =>
     }
     componentDidMount() {
       this.getClassList();
+      this.setDefaultNS();
       // this.getPlanList();
       // this.getParams();
     }
@@ -303,14 +311,14 @@ const withServiceInstanceForm = SubForm =>
     componentDidUpdate(prevProps, prevState) {
       if (!_.isEqual(prevState.namespace, this.state.namespace) || !_.isEqual(prevState.serviceClass, this.state.serviceClass)) {
         this.getClassList();
+        this.setDefaultNS()
       }
       return;
     }
 
     setKind(e) {
       this.setState({
-        serviceClass: e.target.value,
-        namespace: 'default'
+        serviceClass: e.target.value // Cluster or Namespace
       });
     }
 
@@ -323,7 +331,7 @@ const withServiceInstanceForm = SubForm =>
     render() {
       const { t } = this.props;
       const title = t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural('ServiceInstance', t) });
-      const { steps, currentStep, selectedClass, selectedPlan, paramList, errorMessage } = this.state;
+      const { steps, currentStep, selectedClass, selectedPlan, paramList } = this.state;
       const ServicePlanList = ({ planList, onChangePlan, selectedPlan }) => {
         return (
           <div className="row">
@@ -367,7 +375,7 @@ const withServiceInstanceForm = SubForm =>
                 </Section>
                 {this.state.serviceClass === "Namespace" && (
                   <Section label={t('CONTENT:NAMESPACE')}>
-                    <NsDropdown id="namespace" t={t} defaultValue={this.state.namespace} onChange={this.onNamespaceChanged} />
+                    <NsDropdown id="namespace" t={t} selectedKey={this.state.namespace} onChange={this.onNamespaceChanged} />
                     <p style={{ color: '#777' }}>{t('STRING:SERVICEINSTANCE-CREATE_5')}</p>
                   </Section>
                 )}
@@ -486,28 +494,6 @@ const withServiceInstanceForm = SubForm =>
               </form>
             )}
           </div>
-          {/* <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
-            <div style={{ marginTop: '15px' }}>
-              {currentStep !== 0 && (
-                <button type="button" className="btn btn-default" onClick={this.onClickBack}>
-                  {t('CONTENT:BACK')}
-                </button>
-              )}
-              {currentStep !== 2 && (
-                <button type="button" className="btn btn-primary" onClick={this.onClickNext}>
-                  {t('CONTENT:NEXT')}
-                </button>
-              )}
-              {currentStep === 2 && !errorMessage && (
-                <button type="submit" className="btn btn-primary" id="save-changes">
-                  {t('CONTENT:CREATE')}
-                </button>
-              )}
-              <Link to={formatNamespacedRouteForResource('serviceinstances')} className="btn btn-default" id="cancel">
-                {t('CONTENT:CANCEL')}
-              </Link>
-            </div>
-          </ButtonBar> */}
         </div>
       );
     }
@@ -544,7 +530,6 @@ const ServiceInstanceLoadingWrapper = props => {
   const ServiceInstanceTypeAbstraction = determineServiceInstanceTypeAbstraction(_.get(props.obj.data, 'data'));
   const ServiceInstanceFormComponent = serviceInstanceFormFactory(ServiceInstanceTypeAbstraction);
   const { t } = useTranslation();
-  // const fixed = _.reduce(props.fixedKeys, (acc, k) => ({...acc, k: _.get(props.obj.data, k)}), {});
   return (
     <StatusBox {...props.obj}>
       <ServiceInstanceFormComponent
@@ -552,8 +537,6 @@ const ServiceInstanceLoadingWrapper = props => {
         {...props}
         ServiceInstanceTypeAbstraction={ServiceInstanceTypeAbstraction}
         obj={props.obj.data}
-      // fixed={fixed}
-      // explanation={serviceInstanceFormExplanation[ServiceInstanceTypeAbstraction]}
       />
     </StatusBox>
   );
