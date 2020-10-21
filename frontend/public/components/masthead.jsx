@@ -231,19 +231,9 @@ export class ExpTimer extends Component {
   }
 
   tick() {
-    const { keycloak } = this.props;
-    if (HDCModeFlag) {
-      const curTime = new Date();
-      const tokenExpTime = new Date((keycloak.idTokenParsed.exp + keycloak.timeSkew) * 1000);
-      const logoutTime = (tokenExpTime.getTime() - curTime.getTime()) / 1000;
-
-      expTime = logoutTime;
-    } else {
-      if (expTime > 0) {
-        expTime -= 1;
-      }
+    if (expTime > 0) {
+      expTime -= 1;
     }
-
     if (Math.floor(expTime) === 20) {
       NoticeExpirationModal_({ logout: this.props.logout, tokenRefresh: this.props.tokenRefresh, time: expTime });
     }
