@@ -44,6 +44,7 @@ export type TaskNodeModelData = PipelineRunAfterNodeModelData & {
 type PipelineNodeModel<D extends PipelineRunAfterNodeModelData> = NodeModel & {
   data: D;
   type: NodeType;
+  isWorkflow?: boolean;
 };
 export type PipelineMixedNodeModel = PipelineNodeModel<
   PipelineRunAfterNodeModelData

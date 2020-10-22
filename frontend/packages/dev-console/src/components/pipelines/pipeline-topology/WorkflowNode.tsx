@@ -23,6 +23,7 @@ const WorkflowNode: React.FC<TaskNodeProps> = ({ element }) => {
         namespace={pipeline?.metadata?.namespace}
         disableTooltip={true}
         selected={selected}
+        isWorkflow={true}
       />
     </foreignObject>
   );

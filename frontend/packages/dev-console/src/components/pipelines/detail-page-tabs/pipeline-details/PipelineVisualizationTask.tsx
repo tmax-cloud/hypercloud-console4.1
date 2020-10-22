@@ -47,6 +47,7 @@ interface TaskProps {
   isPipelineRun: boolean;
   disableTooltip?: boolean;
   selected?: boolean;
+  isWorkflow?: boolean;
 }
 
 interface PipelineVisualizationTaskProp {
@@ -64,6 +65,7 @@ interface PipelineVisualizationTaskProp {
   pipelineRunStatus?: string;
   disableTooltip?: boolean;
   selected?: boolean;
+  isWorkflow?: boolean;
 }
 
 export const PipelineVisualizationTask: React.FC<PipelineVisualizationTaskProp> = ({
@@ -72,13 +74,14 @@ export const PipelineVisualizationTask: React.FC<PipelineVisualizationTaskProp> 
   namespace,
   pipelineRunStatus,
   disableTooltip,
-  selected
+  selected,
+  isWorkflow
 }) => {
   const taskStatus = task.status || {
     duration: '',
     reason: runStatus.Idle
   };
-  
+
   if (
     pipelineRunStatus === runStatus.Failed ||
     pipelineRunStatus === runStatus.Cancelled
@@ -101,6 +104,7 @@ export const PipelineVisualizationTask: React.FC<PipelineVisualizationTaskProp> 
       isPipelineRun={!!pipelineRunStatus}
       disableTooltip={disableTooltip}
       selected={selected}
+      isWorkflow={isWorkflow}
     />
   );
 
@@ -139,9 +143,9 @@ const TaskComponent: React.FC<TaskProps> = ({
   name,
   isPipelineRun,
   disableTooltip,
-  selected
+  selected,
+  isWorkflow
 }) => {
-  
   const stepList = _.get(task, ['data', 'spec', 'steps'], []);
   const stepStatusList: StepStatus[] = stepList.map(step =>
     createStepStatus(step, status)
@@ -215,7 +219,7 @@ const TaskComponent: React.FC<TaskProps> = ({
   );
   return (
     <div className="odc-pipeline-vis-task">
-      {path ? (
+      {path && !isWorkflow ? (
         <Link to={path} style={{ textDecoration: 'none' }}>
           {visTask}
         </Link>
