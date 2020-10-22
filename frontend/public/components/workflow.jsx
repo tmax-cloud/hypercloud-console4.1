@@ -6,6 +6,7 @@ import { Cog, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSum
 import { fromNow } from './utils/datetime';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from './utils/lang/resource-plural';
+import { WorkflowVisualization } from '../../packages/dev-console/src/components/pipelineruns/detail-page-tabs/WorkflowVisualization';
 
 const menuActions = [...Cog.factory.common];
 
@@ -51,13 +52,41 @@ const WorkflowRow = () =>
 
 const Workflow = ({ obj }) => {
   const { t } = useTranslation();
+  const templates = _.get(obj, ['spec', 'templates', '1']);
+  if (templates && templates.hasOwnProperty('dag')) {
+    const tasks = _.get(templates, ['dag', 'tasks']).map(item => {
+      return {
+        name: item.name,
+        runAfter: item.dependencies || [],
+        taskRef: {
+          kind: 'Task',
+          name: item.name,
+        },
+        ...item,
+      };
+    });
+    obj.spec.tasks = tasks;
+  } else if (templates && templates.hasOwnProperty('steps')) {
+    const tasks = templates.steps
+      .map(item => item[0])
+      .map((item, idx, arr) => {
+        return {
+          name: item.name,
+          runAfter: idx ? [arr[idx - 1].name] : [],
+          taskRef: {
+            kind: 'Task',
+            name: item.name,
+          },
+          ...item,
+        };
+      });
+    obj.spec.tasks = tasks;
+  }
+  console.log('obj', obj);
+
   return (
     <div className="co-m-pane__body">
-      <div className="row">
-        <div className="col-xs-12">
-          <div className="panel-body">워크플로우</div>
-        </div>
-      </div>
+      <WorkflowVisualization workflow={obj} />
     </div>
   );
 };

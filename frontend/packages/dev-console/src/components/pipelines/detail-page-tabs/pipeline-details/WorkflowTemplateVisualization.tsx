@@ -7,14 +7,14 @@ import { PipelineLayout } from '../../pipeline-topology/const';
 
 import './PipelineVisualization.scss';
 
-interface WorkflowTopologyVisualizationProps {
+interface WorkflowTemplateTopologyVisualizationProps {
   workflowTemplate: any;
   workflow?: any;
 }
 
-export const WorkflowVisualization: React.FC<WorkflowTopologyVisualizationProps> = ({
+export const WorkflowTemplateVisualization: React.FC<WorkflowTemplateTopologyVisualizationProps> = ({
   workflowTemplate,
-  workflow
+  workflow = undefined
 }) => {
   const { nodes, edges } = getTopologyNodesEdges(workflowTemplate, workflow);
 
@@ -25,7 +25,7 @@ export const WorkflowVisualization: React.FC<WorkflowTopologyVisualizationProps>
       <Alert
         variant="info"
         isInline
-        title="This Workflow has no step to visualize."
+        title="This Workflow Template has no step to visualize."
       />
     );
   }
@@ -42,4 +42,4 @@ export const WorkflowVisualization: React.FC<WorkflowTopologyVisualizationProps>
   );
 };
 
-export default WorkflowVisualization;
+// export default WorkflowTemplateVisualization;
