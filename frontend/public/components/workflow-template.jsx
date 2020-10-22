@@ -6,7 +6,7 @@ import { Cog, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSum
 import { fromNow } from './utils/datetime';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from './utils/lang/resource-plural';
-import WorkflowVisualization from '../../packages/dev-console/src/components/pipelines/detail-page-tabs/pipeline-details/WorkflowVisualization';
+import { WorkflowTemplateVisualization } from '../../packages/dev-console/src/components/pipelines/detail-page-tabs/pipeline-details/WorkflowTemplateVisualization';
 
 const menuActions = [...Cog.factory.common];
 
@@ -111,7 +111,7 @@ const Template = ({ obj }) => {
       <div className="row">
         <div className="col-xs-12">
           <div className="panel-body"></div>
-          <WorkflowVisualization workflowTemplate={obj} />
+          <WorkflowTemplateVisualization workflowTemplate={obj} />
         </div>
       </div>
     </div>
