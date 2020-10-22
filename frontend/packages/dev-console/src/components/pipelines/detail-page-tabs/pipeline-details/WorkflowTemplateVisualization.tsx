@@ -3,7 +3,7 @@ import { Alert } from '@patternfly/react-core';
 import { Pipeline, PipelineRun } from '../../../../utils/pipeline-augment';
 import PipelineTopologyGraph from '../../pipeline-topology/PipelineTopologyGraph';
 import { getTopologyNodesEdges } from '../../pipeline-topology/utils';
-import { PipelineLayout } from '../../pipeline-topology/const';
+import { PipelineLayout, NodeType } from '../../pipeline-topology/const';
 
 import './PipelineVisualization.scss';
 
@@ -17,6 +17,8 @@ export const WorkflowTemplateVisualization: React.FC<WorkflowTemplateTopologyVis
   workflow = undefined
 }) => {
   const { nodes, edges } = getTopologyNodesEdges(workflowTemplate, workflow);
+  nodes.forEach(node => node.isWorkflow = true);
+  nodes.forEach(node => node.type = NodeType.WORKFLOW_NODE);
 
   if (nodes.length === 0 && edges.length === 0) {
     // Nothing to render
