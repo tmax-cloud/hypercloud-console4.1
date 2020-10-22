@@ -380,9 +380,7 @@ const keycloak = new Keycloak({
 keycloak.logout = keycloak.logout.bind(keycloak, { redirectUri: document.location.origin + '?first' });
 
 keycloak
-  .init({
-    checkLoginIframe : false
-  })
+  .init()
   .then(auth => {
     if (!auth) {
       keycloak.login();
