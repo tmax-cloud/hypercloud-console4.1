@@ -122,11 +122,11 @@ class App extends React.PureComponent {
     super(props);
 
     // HDC 모델
-    if (window.SERVER_FLAGS.HDCModeFlag && !getAccessToken()) {
-      // tmaxcloud portal 에서 로그인 안하고 넘어온 상태
-      window.location.href = window.SERVER_FLAGS.TmaxCloudPortalURL + '/#!/sign-in?redirect=console';
-      return;
-    }
+    // if (window.SERVER_FLAGS.HDCModeFlag && !getAccessToken()) {
+    //   // tmaxcloud portal 에서 로그인 안하고 넘어온 상태
+    //   window.location.href = window.SERVER_FLAGS.TmaxCloudPortalURL + '/#!/sign-in?redirect=console';
+    //   return;
+    // }
 
     if (window.location.search === '?first') {
       window.location.href = window.location.href.split('?')[0];

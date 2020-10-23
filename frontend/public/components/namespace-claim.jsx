@@ -27,7 +27,7 @@ const NamespaceClaimHeader = props => {
       <ColHead {...props} className="col-xs-2 col-sm-2" sortField="status.status">
         {t('CONTENT:STATUS')}
       </ColHead>
-      <ColHead {...props} className="col-xs-2 col-sm-2" sortField="metadata.annotations.updater">
+      <ColHead {...props} className="col-xs-2 col-sm-2" sortField="metadata.annotations.owner">
         {t('CONTENT:USERNAME')}
       </ColHead>
       {/* <ColHead {...props} className="col-xs-3 col-sm-3">
@@ -61,7 +61,7 @@ const NamespaceClaimRow = () =>
         </div>
         <div className="col-md-3 col-xs-3 co-resource-link-wrapper">{obj.resourceName}</div>
         <div className="col-xs-2 col-sm-2 hidden-xs">{obj.status && obj.status.status}</div>
-        <div className="col-xs-2 col-sm-2 hidden-xs">{obj?.metadata?.labels?.owner}</div>
+        <div className="col-xs-2 col-sm-2 hidden-xs">{obj?.metadata?.annotations?.owner}</div>
         {/* <div className="col-xs-3 col-sm-3 hidden-xs">{time}</div> */}
         <div className="col-xs-2 col-sm-2 hidden-xs">{fromNow(new Date(obj.metadata.creationTimestamp.iMillis))}</div>
       </div>
