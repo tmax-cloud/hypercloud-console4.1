@@ -52,9 +52,18 @@ const WorkflowRow = () =>
 
 const Workflow = ({ obj }) => {
   const { t } = useTranslation();
-  const templates = _.get(obj, ['spec', 'templates', '1']);
-  if (templates && templates.hasOwnProperty('dag')) {
-    const tasks = _.get(templates, ['dag', 'tasks']).map(item => {
+  const templates = _.get(obj, ['spec', 'templates']) || [];
+  const template = null;
+  for (let tmp of templates) {
+    if (tmp.hasOwnProperty('dag')) {
+      template = { ...tmp, type: 'dag' };
+    }
+    else if (tmp.hasOwnProperty('steps')) {
+      template = { ...tmp, type: 'step' };
+    }
+  }
+  if (template?.type === 'dag') {
+    const tasks = _.get(template, ['dag', 'tasks']).map(item => {
       return {
         name: item.name,
         runAfter: item.dependencies || [],
@@ -65,9 +74,8 @@ const Workflow = ({ obj }) => {
         ...item,
       };
     });
-    obj.spec.tasks = tasks;
-  } else if (templates && templates.hasOwnProperty('steps')) {
-    const tasks = templates.steps
+  } else if (template?.type === 'step') {
+    const tasks = template.steps
       .map(item => item[0])
       .map((item, idx, arr) => {
         return {
@@ -80,10 +88,21 @@ const Workflow = ({ obj }) => {
           ...item,
         };
       });
-    obj.spec.tasks = tasks;
   }
-  console.log('obj', obj);
-
+  else {
+    const tasks = templates.map((item) => {
+      return {
+        name: item.name,
+        runAfter: [],
+        taskRef: {
+          kind: 'Task',
+          name: item.name,
+        },
+        ...item,
+      };
+    });
+  }
+  obj.spec.tasks = tasks;
   return (
     <div className="co-m-pane__body">
       <WorkflowVisualization workflow={obj} />
