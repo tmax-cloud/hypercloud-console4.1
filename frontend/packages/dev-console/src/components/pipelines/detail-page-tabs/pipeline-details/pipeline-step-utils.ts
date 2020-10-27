@@ -20,6 +20,7 @@ export type TaskStatus = {
   reason: runStatus;
   duration?: string;
   steps?: TaskStatusStep[];
+  phase?: string;
 };
 
 const getMatchingStep = (step, status: TaskStatus): TaskStatusStep => {
