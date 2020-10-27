@@ -27,9 +27,8 @@ export const WorkflowTemplateVisualization: React.FC<WorkflowTemplateTopologyVis
       <Alert
         variant="info"
         isInline
-        title={`This ${
-          workflow ? 'Workflow' : 'Workflow Template'
-        } has no step to visualize.`}
+        title={`This ${workflow ? 'Workflow' : 'Workflow Template'
+          } has no step to visualize.`}
       />
     );
   }
