@@ -6,6 +6,7 @@ import { getTopologyNodesEdges } from '../../pipeline-topology/utils';
 import { PipelineLayout, NodeType } from '../../pipeline-topology/const';
 
 import './PipelineVisualization.scss';
+import * as _ from 'lodash-es';
 
 interface WorkflowTemplateTopologyVisualizationProps {
   workflowTemplate: any;
@@ -16,6 +17,60 @@ export const WorkflowTemplateVisualization: React.FC<WorkflowTemplateTopologyVis
   workflowTemplate,
   workflow = undefined
 }) => {
+  const obj = workflow || workflowTemplate;
+  const templates = _.get(obj, ['spec', 'templates']) || [];
+  let template = null;
+  let tasks = [];
+  for (let tmp of templates) {
+    if (tmp.hasOwnProperty('dag')) {
+      template = { ...tmp, type: 'dag' };
+    }
+    else if (tmp.hasOwnProperty('steps')) {
+      template = { ...tmp, type: 'step' };
+    }
+  }
+  if (template?.type === 'dag') {
+    tasks = _.get(template, ['dag', 'tasks']).map(item => {
+      return {
+        name: item.name,
+        runAfter: item.dependencies || [],
+        taskRef: {
+          kind: 'Task',
+          name: item.name,
+        },
+        ...item,
+      };
+    });
+  } else if (template?.type === 'step') {
+    tasks = template.steps
+      .map(item => item[0])
+      .map((item, idx, arr) => {
+        return {
+          name: item.name,
+          runAfter: idx ? [arr[idx - 1].name] : [],
+          taskRef: {
+            kind: 'Task',
+            name: item.name,
+          },
+          ...item,
+        };
+      });
+  }
+  else {
+    // 그래프로 표현할 항목이 없을 경우 템플릿을 노드 하나로 표현
+    tasks = templates.map((item) => {
+      return {
+        name: item.name,
+        runAfter: [],
+        taskRef: {
+          kind: 'Task',
+          name: item.name,
+        },
+        ...item,
+      };
+    });
+  }
+  obj.spec.tasks = tasks;
   const { nodes, edges } = getTopologyNodesEdges(workflowTemplate, workflow);
   nodes.forEach(node => node.isWorkflow = true);
   nodes.forEach(node => node.type = NodeType.WORKFLOW_NODE);

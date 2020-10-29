@@ -73,67 +73,10 @@ export const WorkflowTemplatePage = props => {
 };
 WorkflowTemplatePage.displayName = 'WorkflowTemplatePage';
 
-const Template = ({ obj }) => {
-  const { t } = useTranslation();
-  const templates = _.get(obj, ['spec', 'templates']);
-  const template = null;
-  for (let tmp of templates) {
-    if (tmp.hasOwnProperty('dag')) {
-      template = { ...tmp, type: 'dag' };
-    }
-    else if (tmp.hasOwnProperty('steps')) {
-      template = { ...tmp, type: 'step' };
-    }
-  }
-  if (template?.type === 'dag') {
-    const tasks = _.get(template, ['dag', 'tasks']).map(item => {
-      return {
-        name: item.name,
-        runAfter: item.dependencies || [],
-        taskRef: {
-          kind: 'Task',
-          name: item.name,
-        },
-        ...item,
-      };
-    });
-  } else if (template?.type === 'step') {
-    const tasks = template.steps
-      .map(item => item[0])
-      .map((item, idx, arr) => {
-        return {
-          name: item.name,
-          runAfter: idx ? [arr[idx - 1].name] : [],
-          taskRef: {
-            kind: 'Task',
-            name: item.name,
-          },
-          ...item,
-        };
-      });
-  }
-  else {
-    const tasks = templates.map((item) => {
-      return {
-        name: item.name,
-        runAfter: [],
-        taskRef: {
-          kind: 'Task',
-          name: item.name,
-        },
-        ...item,
-      };
-    });
-  }
-  obj.spec.tasks = tasks;
+const WorkflowTemplateGraph = ({ obj }) => {
   return (
-    <div className="co-m-pane__body">
-      <div className="row">
-        <div className="col-xs-12">
-          <div className="panel-body"></div>
-          <WorkflowTemplateVisualization workflowTemplate={obj} />
-        </div>
-      </div>
+    <div class="co-m-pane__body">
+      <WorkflowTemplateVisualization workflowTemplate={obj} />
     </div>
   );
 };
@@ -150,7 +93,7 @@ export const WorkflowTemplateDetailsPage = props => {
         {
           href: 'template',
           name: '템플릿',
-          component: Template,
+          component: WorkflowTemplateGraph,
         },
         navFactory.editYaml(),
       ]}

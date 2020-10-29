@@ -2,11 +2,12 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSummary, ScrollToTopOnMount, kindObj } from './utils';
+import { Cog, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSummary, ScrollToTopOnMount, Firehose, LoadingBox } from './utils';
 import { fromNow } from './utils/datetime';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from './utils/lang/resource-plural';
-import { WorkflowVisualization } from '../../packages/dev-console/src/components/pipelineruns/detail-page-tabs/WorkflowVisualization';
+import { WorkflowVisualization, } from '../../packages/dev-console/src/components/pipelineruns/detail-page-tabs/WorkflowVisualization';
+import { WorkflowTemplateVisualization } from '../../packages/dev-console/src/components/pipelines/detail-page-tabs/pipeline-details/WorkflowTemplateVisualization';
 
 const menuActions = [...Cog.factory.common];
 
@@ -50,61 +51,33 @@ const WorkflowRow = () =>
     );
   };
 
-const Workflow = ({ obj }) => {
-  const { t } = useTranslation();
-  const templates = _.get(obj, ['spec', 'templates']) || [];
-  const template = null;
-  for (let tmp of templates) {
-    if (tmp.hasOwnProperty('dag')) {
-      template = { ...tmp, type: 'dag' };
-    }
-    else if (tmp.hasOwnProperty('steps')) {
-      template = { ...tmp, type: 'step' };
-    }
+export const WorkflowTemplateRef = ({ workflowTemplateRef }) => {
+  if (!workflowTemplateRef.loaded) {
+    return <LoadingBox className="loading-box loading-box__loading" />;
   }
-  if (template?.type === 'dag') {
-    const tasks = _.get(template, ['dag', 'tasks']).map(item => {
-      return {
-        name: item.name,
-        runAfter: item.dependencies || [],
-        taskRef: {
-          kind: 'Task',
-          name: item.name,
-        },
-        ...item,
-      };
-    });
-  } else if (template?.type === 'step') {
-    const tasks = template.steps
-      .map(item => item[0])
-      .map((item, idx, arr) => {
-        return {
-          name: item.name,
-          runAfter: idx ? [arr[idx - 1].name] : [],
-          taskRef: {
-            kind: 'Task',
-            name: item.name,
-          },
-          ...item,
-        };
-      });
-  }
-  else {
-    const tasks = templates.map((item) => {
-      return {
-        name: item.name,
-        runAfter: [],
-        taskRef: {
-          kind: 'Task',
-          name: item.name,
-        },
-        ...item,
-      };
-    });
-  }
-  obj.spec.tasks = tasks;
   return (
-    <div className="co-m-pane__body">
+    <div class="co-m-pane__body">
+      <WorkflowTemplateVisualization workflowTemplate={workflowTemplateRef.data} />
+    </div>
+  );
+}
+
+const WorkflowGraph = ({ obj }) => {
+  if (obj.spec.workflowTemplateRef) {
+    // workflowTempalteRef 가 있는 경우 workflowTemplate을 조회하여 graph 표현
+    // 상태값은 없음..
+    const resources = [
+      {
+        kind: 'WorkflowTemplate',
+        name: obj.spec.workflowTemplateRef.name,
+        namespace: obj.metadata.namespace,
+        prop: 'workflowTemplateRef'
+      }
+    ];
+    return <Firehose resources={resources}><WorkflowTemplateRef /></Firehose>;
+  }
+  return (
+    <div class="co-m-pane__body">
       <WorkflowVisualization workflow={obj} />
     </div>
   );
@@ -153,7 +126,7 @@ export const WorkflowDetailsPage = props => {
         {
           href: 'workflow',
           name: '워크플로우',
-          component: Workflow,
+          component: WorkflowGraph,
         },
         navFactory.editYaml(),
       ]}
