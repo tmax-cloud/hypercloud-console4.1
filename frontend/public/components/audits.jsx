@@ -279,9 +279,15 @@ class AuditPage_ extends React.Component {
   }
 
   onChangeAction_(value) {
-    this.setState({
-      action: value,
-    });
+    if (value !== 'all') {
+      this.setState({
+        action: value,
+      });
+    } else {
+      this.setState({
+        action: this.state.actionList.all,
+      });
+    }
 
     this.setState({ offset: 0 });
 
