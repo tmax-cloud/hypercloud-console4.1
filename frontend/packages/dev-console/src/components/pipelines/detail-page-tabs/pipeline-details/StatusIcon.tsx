@@ -83,3 +83,48 @@ export const ColoredStatusIcon: React.FC<StatusIconProps> = ({
     </div>
   );
 };
+
+// workflow용 status 
+export const StatusIconWorkFlow: React.FC<StatusIconProps> = ({ status, ...props }) => {
+
+  switch (status) {
+    case 'InProgress':
+      return <SyncAltIcon {...props} className="fa-spin" />;
+    case runStatus['In Progress']:
+      return <SyncAltIcon {...props} className="fa-spin" />;
+    case runStatus.Running:
+      return <SyncAltIcon {...props} className="fa-spin" />;
+    case runStatus.Succeeded:
+      return <CheckCircleIcon {...props} />;
+    case runStatus.Failed:
+      return <ExclamationCircleIcon {...props} />;
+    // default:
+    //   return <ExclamationCircleIcon {...props} />;
+    case runStatus.Idle:
+    case runStatus.Pending:
+      return <PendingIcon {...props} />;
+    case runStatus.Cancelled:
+      return <BanIcon {...props} />;
+    case runStatus.Skipped:
+      return <AngleDoubleRightIcon {...props} />;
+    default:
+      return <CircleIcon {...props} />;
+  }
+};
+
+export const ColoredStatusIconWorkFlow: React.FC<StatusIconProps> = ({
+  status,
+  ...others
+}) => {
+  return (
+    <div
+      style={{
+        color: status
+          ? getRunStatusColor(status).pftoken.value
+          : getRunStatusColor(runStatus.Cancelled).pftoken.value
+      }}
+    >
+      <StatusIcon status={status} {...others} />
+    </div>
+  );
+};

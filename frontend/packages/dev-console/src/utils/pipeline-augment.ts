@@ -147,6 +147,8 @@ export interface PipelineRun extends K8sResourceKind {
     startTime?: string;
     completionTime?: string;
     taskRuns?: TaskRuns;
+    phase?: string;
+    nodes?: any;
   };
 }
 
@@ -321,7 +323,9 @@ export enum runStatus {
   Skipped = 'Skipped',
   Cancelled = 'Cancelled',
   Pending = 'Pending',
-  Idle = 'Idle'
+  Idle = 'Idle',
+  Error = 'Error',
+  Omitted = 'Omitted',
 }
 
 export const getRunStatusColor = (status: string): StatusMessage => {
