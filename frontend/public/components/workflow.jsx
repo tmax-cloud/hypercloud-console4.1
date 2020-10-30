@@ -56,7 +56,7 @@ export const WorkflowTemplateRef = ({ workflowTemplateRef }) => {
     return <LoadingBox className="loading-box loading-box__loading" />;
   }
   return (
-    <div class="co-m-pane__body">
+    <div className="co-m-pane__body">
       <WorkflowTemplateVisualization workflowTemplate={workflowTemplateRef.data} />
     </div>
   );
@@ -77,7 +77,7 @@ const WorkflowGraph = ({ obj }) => {
     return <Firehose resources={resources}><WorkflowTemplateRef /></Firehose>;
   }
   return (
-    <div class="co-m-pane__body">
+    <div className="co-m-pane__body">
       <WorkflowVisualization workflow={obj} />
     </div>
   );

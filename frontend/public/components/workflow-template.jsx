@@ -75,7 +75,7 @@ WorkflowTemplatePage.displayName = 'WorkflowTemplatePage';
 
 const WorkflowTemplateGraph = ({ obj }) => {
   return (
-    <div class="co-m-pane__body">
+    <div className="co-m-pane__body">
       <WorkflowTemplateVisualization workflowTemplate={obj} />
     </div>
   );
