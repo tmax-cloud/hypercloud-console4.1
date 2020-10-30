@@ -16,7 +16,7 @@ import {
   StepStatus,
   TaskStatus
 } from './pipeline-step-utils';
-import './PipelineVisualizationTask.scss';
+import './WorkflowVisualizationTask.scss';
 
 interface TaskProps {
   pipelineRunName?: string;
