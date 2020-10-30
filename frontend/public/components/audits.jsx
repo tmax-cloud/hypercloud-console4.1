@@ -403,7 +403,7 @@ class AuditPage_ extends React.Component {
     let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&startTime=${date.getTime()}`;
 
     date_.setDate(date_.getDate() + 7);
-    if (date_ < this.state.end) {
+    if (date_ < this.state.end || date > this.state.end) {
       this.setState({
         end: date_,
       });
@@ -448,7 +448,7 @@ class AuditPage_ extends React.Component {
     let uri = `${document.location.origin}/api/webhook/audit?limit=100&offset=0&endTime=${date.getTime()}`;
 
     date_.setDate(date_.getDate() - 7);
-    if (date_ < this.state.end) {
+    if (date_ <= this.state.start) {
       uri += `&startTime=${this.state.start.getTime()}`;
     } else {
       this.setState({
