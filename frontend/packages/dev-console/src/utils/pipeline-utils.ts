@@ -56,7 +56,8 @@ export interface PipelineVisualizationTaskItem {
   params?: object;
   runAfter?: string[];
   taskRef: PipelineTaskRef;
-  status?: any
+  status?: any;
+  isTemplate?: boolean;
 }
 
 export const TaskStatusClassNameMap = {
@@ -105,7 +106,7 @@ const sortTasksByRunAfterAndFrom = (
         if (
           i < j &&
           output[j].taskRef.name ===
-            output[i].runAfter[output[i].runAfter.length - 1]
+          output[i].runAfter[output[i].runAfter.length - 1]
         ) {
           flag = j;
         }

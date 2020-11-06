@@ -10,8 +10,8 @@ $border-color: #b8bbbe;
   &__content {
     width: inherit;
     // height: 2.5em;
-    height: 38px;
-    padding: 0 20px;
+    height: 40px;
+    padding: 0 10px;
     white-space: normal;
     border: 1px solid $border-color;
     border-radius: 19px;
@@ -58,7 +58,7 @@ $border-color: #b8bbbe;
   &__title-wrapper {
     width: 81px;
     margin-left: 6px;
-    flex: 0 0 75px;
+    flex: 0 0 98px;
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -73,10 +73,10 @@ $border-color: #b8bbbe;
   }
 
   &__title {
-    font-size: 14px;
+    font-size: 13px;
     flex: 0 0 auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: auto;
+    text-overflow: initial;
     white-space: nowrap;
   }
 }

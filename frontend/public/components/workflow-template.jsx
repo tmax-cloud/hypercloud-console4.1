@@ -92,7 +92,7 @@ export const WorkflowTemplateDetailsPage = props => {
         navFactory.details(Details, t('CONTENT:OVERVIEW')),
         {
           href: 'template',
-          name: '템플릿',
+          name: t('RESOURCE:TEMPLATE'),
           component: WorkflowTemplateGraph,
         },
         navFactory.editYaml(),

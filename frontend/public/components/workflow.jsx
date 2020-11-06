@@ -125,7 +125,7 @@ export const WorkflowDetailsPage = props => {
         navFactory.details(Details, t('CONTENT:OVERVIEW')),
         {
           href: 'workflow',
-          name: '워크플로우',
+          name: t('RESOURCE:WORKFLOW'),
           component: WorkflowGraph,
         },
         navFactory.editYaml(),

@@ -14,7 +14,9 @@ const WorkflowNode: React.FC<TaskNodeProps> = ({ element }) => {
   const { pipeline, pipelineRun, task, selected } = element.getData();
   if (!!pipelineRun) {
     for (let node in pipelineRun.status.nodes) {
-      if (pipelineRun.status.nodes[node].displayName === task.name) {
+      // step, dag 인 경우 displayName으로 node 참조. 템플릿 항목 자체를 노드로 사용하는 경우 templateName으로 node 참조
+      const nodeNameField = task.isTemplate ? 'templateName' : 'displayName';
+      if (pipelineRun.status.nodes[node][nodeNameField] === task.name) {
         task.status = { reason: pipelineRun.status.nodes[node].phase }
         break;
       }

@@ -61,6 +61,7 @@ export const WorkflowTemplateVisualization: React.FC<WorkflowTemplateTopologyVis
     tasks = templates.map((item) => {
       return {
         name: item.name,
+        isTemplate: true,
         runAfter: [],
         taskRef: {
           kind: 'Task',
