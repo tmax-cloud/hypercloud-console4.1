@@ -73,7 +73,6 @@ export const WorkflowTemplateVisualization: React.FC<WorkflowTemplateTopologyVis
   }
   obj.spec.tasks = tasks;
   const { nodes, edges } = getTopologyNodesEdges(workflowTemplate, workflow);
-  nodes.forEach(node => node.isWorkflow = true);
   nodes.forEach(node => node.type = NodeType.WORKFLOW_NODE);
 
   if (nodes.length === 0 && edges.length === 0) {
@@ -101,4 +100,3 @@ export const WorkflowTemplateVisualization: React.FC<WorkflowTemplateTopologyVis
   );
 };
 
-// export default WorkflowTemplateVisualization;
