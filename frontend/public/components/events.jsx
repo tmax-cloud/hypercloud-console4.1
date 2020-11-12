@@ -104,7 +104,7 @@ class SysEvent extends React.Component {
   }
 
   render() {
-    const { index, style, reason, message, source, metadata, firstTimestamp, lastTimestamp, count, involvedObject: obj, t } = this.props;
+    const { index, style, reason, message, source, metadata, firstTimestamp, lastTimestamp, eventTime, count, involvedObject: obj, t } = this.props;
     const klass = classNames('co-sysevent', { 'co-sysevent--error': categoryFilter('error', this.props) });
     const tooltipMsg = `${reason} (${obj.kind.toLowerCase()})`;
 
@@ -119,7 +119,7 @@ class SysEvent extends React.Component {
     return (
       <div style={style}>
         <CSSTransition mountOnEnter={true} appear={shouldAnimate} in exit={false} timeout={timeout} classNames="slide">
-          {status => <Inner klass={klass} status={status} tooltipMsg={tooltipMsg} obj={obj} firstTimestamp={firstTimestamp} lastTimestamp={lastTimestamp} count={count} message={message} source={source} width={style.width} t={t} />}
+          {status => <Inner klass={klass} status={status} tooltipMsg={tooltipMsg} obj={obj} firstTimestamp={firstTimestamp || eventTime} lastTimestamp={lastTimestamp || eventTime} count={count} message={message} source={source} width={style.width} t={t} />}
         </CSSTransition>
       </div>
     );
