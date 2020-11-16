@@ -313,7 +313,7 @@ class AuthAdminLink extends NavLink {
     const { isActive, name, resource } = this.props;
     const onClick = () => {
       window.open(`${window.SERVER_FLAGS.KeycloakAuthURL}/admin/${SERVER_FLAGS.KeycloakRealm}/console/#/realms/${SERVER_FLAGS.KeycloakRealm}/${resource}`);
-    }
+    };
 
     return (
       <li className={classNames('co-m-nav-link', { active: isActive, 'co-m-nav-link__external': true })}>
@@ -618,12 +618,12 @@ class CustomNav extends React.Component {
             if (menuItem.name.indexOf('role') !== -1) {
               menuItem.name === 'roles' ? (startsWith = rolesStartsWith) : (startsWith = rolebindingsStartsWith);
             }
-            return <ResourceNSLink key={menuItem.name}  resource={resource} name={temp} onClick={this.close} startsWith={startsWith} />;
+            return <ResourceNSLink key={menuItem.name} resource={resource} name={temp} onClick={this.close} startsWith={startsWith} />;
           }
           case 'resourceclusterlink':
             return (
               <ResourceClusterLink
-                key={menuItem.name} 
+                key={menuItem.name}
                 resource={ResourcePlural(menuItem.name)
                   .replace(/ /g, '')
                   .toLowerCase()}
@@ -633,7 +633,7 @@ class CustomNav extends React.Component {
             );
           case 'authadminlink': {
             let resource;
-            switch(menuItem.name.toLowerCase()) {
+            switch (menuItem.name.toLowerCase()) {
               case 'user':
                 resource = 'users';
                 break;

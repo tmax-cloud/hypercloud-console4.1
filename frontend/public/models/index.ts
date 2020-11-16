@@ -843,7 +843,7 @@ export const ClusterTaskModel: K8sKind = {
   id: 'clustertask',
   crd: false,
   badge: BadgeType.TECH,
-  color
+  color,
 };
 export const TaskRunModel: K8sKind = {
   kind: 'TaskRun',
@@ -858,7 +858,7 @@ export const TaskRunModel: K8sKind = {
   id: 'taskrun',
   crd: false,
   badge: BadgeType.TECH,
-  color
+  color,
 };
 export const PipelineResourceModel: K8sKind = {
   kind: 'PipelineResource',
@@ -1358,7 +1358,7 @@ export const TriggerBindingModel: K8sKind = {
   labelPlural: 'Trigger Bindings',
   crd: true,
   badge: BadgeType.TECH,
-  color
+  color,
 };
 
 export const ClusterTriggerBindingModel: K8sKind = {
@@ -1374,5 +1374,5 @@ export const ClusterTriggerBindingModel: K8sKind = {
   labelPlural: 'Cluster Trigger Bindings',
   crd: true,
   badge: BadgeType.TECH,
-  color
+  color,
 };
