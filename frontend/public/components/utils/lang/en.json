@@ -995,6 +995,7 @@
     "STATEFULSET": "Stateful Set",
     "VIRTUALMACHINE": "Virtual Machine",
     "VIRTUALMACHINEINSTANCE": "Virtual Machine Instance",
+    "VIRTUALMACHINEINSTANCEREPLICASET": "VMIRS",
     "CONFIGMAP": "Config Map",
     "SECRET": "Secret",
     "JOB": "Job",

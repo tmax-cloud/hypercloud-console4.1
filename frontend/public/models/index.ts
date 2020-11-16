@@ -4,6 +4,20 @@ import { chart_color_green_400 as tektonGroupColor } from '@patternfly/react-tok
 const color = tektonGroupColor.value;
 import { BadgeType } from '../../packages/console-shared/src/components/badges/badge-factory';
 
+export const VirtualMachineInstanceReplicaSetModel: K8sKind = {
+  kind: 'VirtualMachineInstanceReplicaSet',
+  namespaced: true,
+  label: 'Virtual Machine Instance Replica Set',
+  plural: 'virtualmachineinstancereplicasets',
+  apiVersion: 'v1alpha3',
+  abbr: 'VMIRS',
+  apiGroup: 'kubevirt.io',
+  labelPlural: 'VMIR Sets',
+  path: 'virtualmachineinstancereplicasets',
+  id: 'virtualmachineinstancereplicaset',
+  crd: false,
+};
+
 export const VirtualMachineModel: K8sKind = {
   kind: 'VirtualMachine',
   namespaced: true,

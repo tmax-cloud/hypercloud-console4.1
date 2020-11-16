@@ -19,6 +19,46 @@ export const yamlTemplates = ImmutableMap<GroupVersionKind, ImmutableMap<string,
 `,
   )
   .setIn(
+    [referenceForModel(k8sModels.VirtualMachineInstanceReplicaSetModel), 'default'],
+    `
+      apiVersion: kubevirt.io/v1alpha3
+      kind: VirtualMachineInstanceReplicaSet
+      metadata:
+        name: windows-vm
+        namespace: default
+      spec:
+        replicas: 3
+        selector:
+          matchLabels:
+            myvmi: myvmi
+        template:
+          metadata:
+            name: test
+            labels:
+              myvmi: myvmi
+          spec:
+            domain:
+              devices:
+                disks:
+                - name: containerdisk
+                  disk:
+                    bus: virtio
+                - name: cloudinitdisk
+                  disk:
+                    bus: virtio
+            volumes:
+            - name: containerdisk
+              containerDisk:
+                image: kubevirt/fedora-cloud-container-disk-demo:latest
+            - name: cloudinitdisk
+              cloudInitNoCloud:
+                userData: |-
+                  #cloud-config
+                  password: a
+                  chpasswd: { expire: False }
+    `,
+  )
+  .setIn(
     [referenceForModel(k8sModels.VirtualMachineModel), 'default'],
     `
       apiVersion: kubevirt.io/v1alpha3

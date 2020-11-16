@@ -84,6 +84,8 @@ const defaultMenu = `
       type: resourcenslink
     - name: VirtualMachineInstance
       type: resourcenslink
+    - name: virtualmachineinstancereplicaset
+      type: resourcenslink
     - name: ConfigMap
       type: resourcenslink
     - name: Secret
@@ -580,6 +582,10 @@ class CustomNav extends React.Component {
               case 'horizontalpodautoscaler':
                 temp = 'HPAs';
                 resource = 'horizontalpodautoscalers';
+                break;
+              case 'virtualmachineinstancereplicaset':
+                temp = 'VMIRS';
+                resource = 'virtualmachineinstancereplicasets';
                 break;
               default:
                 resource = ResourcePlural(menuItem.name)
