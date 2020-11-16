@@ -992,6 +992,7 @@
     "STATEFULSET": "스테이트 풀셋",
     "VIRTUALMACHINE": "가상머신",
     "VIRTUALMACHINEINSTANCE": "가상머신 인스턴스",
+    "VIRTUALMACHINEINSTANCEREPLICASET": "VMIR",
     "CONFIGMAP": "컨피그 맵",
     "SECRET": "시크릿",
     "JOB": "잡",

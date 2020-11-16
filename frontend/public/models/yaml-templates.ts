@@ -19,6 +19,16 @@ export const yamlTemplates = ImmutableMap<GroupVersionKind, ImmutableMap<string,
 `,
   )
   .setIn(
+    [referenceForModel(k8sModels.VMIRModel), 'default'],
+    `
+      apiVersion: kubevirt.io/v1alpha3
+      kind: VirtualMachineInstanceReplicaSet
+      metadata:
+        name: windows-vm
+        namespace: default
+    `,
+  )
+  .setIn(
     [referenceForModel(k8sModels.VirtualMachineModel), 'default'],
     `
       apiVersion: kubevirt.io/v1alpha3

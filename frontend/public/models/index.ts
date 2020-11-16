@@ -4,6 +4,19 @@ import { chart_color_green_400 as tektonGroupColor } from '@patternfly/react-tok
 const color = tektonGroupColor.value;
 import { BadgeType } from '../../packages/console-shared/src/components/badges/badge-factory';
 
+export const VMIRModel: K8sKind = {
+  kind: 'VirtualMachineInstanceReplicaset',
+  namespaced: true,
+  label: 'Virtual Machine Instance Replicasets',
+  plural: 'virtualmachineinstancereplicasets',
+  apiVersion: 'v1alpha3',
+  abbr: 'VMIR',
+  apiGroup: 'apiextensions.k8s.io',
+  labelPlural: 'VMIRs',
+  path: 'virtualmachineinstancereplicasets',
+  id: 'virtualmachineinstancereplicaset',
+};
+
 export const VirtualMachineModel: K8sKind = {
   kind: 'VirtualMachine',
   namespaced: true,
@@ -829,7 +842,7 @@ export const ClusterTaskModel: K8sKind = {
   id: 'clustertask',
   crd: false,
   badge: BadgeType.TECH,
-  color
+  color,
 };
 export const TaskRunModel: K8sKind = {
   kind: 'TaskRun',
@@ -844,7 +857,7 @@ export const TaskRunModel: K8sKind = {
   id: 'taskrun',
   crd: false,
   badge: BadgeType.TECH,
-  color
+  color,
 };
 export const PipelineResourceModel: K8sKind = {
   kind: 'PipelineResource',
@@ -1344,7 +1357,7 @@ export const TriggerBindingModel: K8sKind = {
   labelPlural: 'Trigger Bindings',
   crd: true,
   badge: BadgeType.TECH,
-  color
+  color,
 };
 
 export const ClusterTriggerBindingModel: K8sKind = {
@@ -1360,5 +1373,5 @@ export const ClusterTriggerBindingModel: K8sKind = {
   labelPlural: 'Cluster Trigger Bindings',
   crd: true,
   badge: BadgeType.TECH,
-  color
+  color,
 };
