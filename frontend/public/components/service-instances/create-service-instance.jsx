@@ -300,7 +300,7 @@ const withServiceInstanceForm = SubForm =>
     componentDidMount() {
       this.getClassList();
       if (this.state.namespace == null) {
-      this.setDefaultNS();
+        this.setDefaultNS();
       }
       // this.getPlanList();
       // this.getParams();
@@ -310,7 +310,7 @@ const withServiceInstanceForm = SubForm =>
       if (!_.isEqual(prevState.namespace, this.state.namespace) || !_.isEqual(prevState.serviceClass, this.state.serviceClass)) {
         this.getClassList();
         if (this.state.namespace == null) {
-        this.setDefaultNS()
+          this.setDefaultNS();
         }
       }
       return;
