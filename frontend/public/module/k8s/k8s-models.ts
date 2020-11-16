@@ -11,15 +11,17 @@ import store from '../../redux';
  * Contains static resource definitions for Kubernetes objects.
  * Keys are of type `group:version:Kind`, but TypeScript doesn't support regex types (https://github.com/Microsoft/TypeScript/issues/6579).
  */
-const k8sModels = ImmutableMap<K8sResourceKindReference, K8sKind>()
-  .withMutations(models => _.forEach(staticModels, model => {
+const k8sModels = ImmutableMap<K8sResourceKindReference, K8sKind>().withMutations(models =>
+  _.forEach(staticModels, model => {
+    console.log('model? ', model);
     if (model.crd) {
       models.set(referenceForModel(model), model);
     } else {
       // TODO: Use `referenceForModel` even for known API objects
       models.set(model.kind, model);
     }
-  }));
+  }),
+);
 
 /**
  * Provides a synchronous way to acquire a statically-defined Kubernetes model.
@@ -35,11 +37,17 @@ export const modelFor = (ref: K8sResourceKindReference) => {
     return m;
   }
   // FIXME: Remove synchronous `store.getState()` call here, should be using `connectToModels` instead, only here for backwards-compatibility
-  m = store.getState().k8s.getIn(['RESOURCES', 'models']).get(ref);
+  m = store
+    .getState()
+    .k8s.getIn(['RESOURCES', 'models'])
+    .get(ref);
   if (m) {
     return m;
   }
-  m = store.getState().k8s.getIn(['RESOURCES', 'models']).get(kindForReference(ref));
+  m = store
+    .getState()
+    .k8s.getIn(['RESOURCES', 'models'])
+    .get(kindForReference(ref));
   if (m) {
     return m;
   }

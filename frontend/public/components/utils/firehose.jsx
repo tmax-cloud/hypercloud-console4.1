@@ -137,6 +137,7 @@ export const Firehose = connect(
       } else {
         this.firehoses = resources.map(resource => {
           const query = makeQuery(resource.namespace, resource.selector, resource.fieldSelector, resource.name);
+          console.log("k8sModels? ", k8sModels);
           const k8sKind = k8sModels.get(resource.kind);
           const id = makeReduxID(k8sKind, query);
           return _.extend({}, resource, {query, id, k8sKind});

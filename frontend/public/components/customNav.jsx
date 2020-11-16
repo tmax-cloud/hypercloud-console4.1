@@ -584,7 +584,7 @@ class CustomNav extends React.Component {
                 resource = 'horizontalpodautoscalers';
                 break;
               case 'virtualmachineinstancereplicaset':
-                temp = 'VMIRs';
+                temp = 'VMIRS';
                 resource = 'virtualmachineinstancereplicasets';
                 break;
               default:

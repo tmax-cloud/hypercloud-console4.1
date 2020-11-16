@@ -450,7 +450,7 @@ class Nav extends React.Component {
               {blockMenu.indexOf('statefulsets') === -1 && <ResourceNSLink resource="statefulsets" name={ResourcePlural('StatefulSet', t)} onClick={this.close} />}
               {blockMenu.indexOf('virtualmachines') === -1 && <ResourceNSLink resource="virtualmachines" name={ResourcePlural('VirtualMachine', t)} onClick={this.close} />}
               {blockMenu.indexOf('virtualmachineinstances') === -1 && <ResourceNSLink resource="virtualmachineinstances" name={ResourcePlural('VirtualMachineInstance', t)} onClick={this.close} />}
-              {blockMenu.indexOf('virtualmachineinstancereplicasets') === -1 && <ResourceNSLink resource="virtualmachineinstancereplicasets" name="VMIR" onClick={this.close} />}
+              {blockMenu.indexOf('virtualmachineinstancereplicasets') === -1 && <ResourceNSLink resource="virtualmachineinstancereplicasets" name={ResourcePlural('VirtualMachineInstanceReplicaSet', t)} onClick={this.close} />}
               {blockMenu.indexOf('configmaps') === -1 && <ResourceNSLink resource="configmaps" name={ResourcePlural('ConfigMap', t)} onClick={this.close} />}
               {blockMenu.indexOf('secrets') === -1 && <ResourceNSLink resource="secrets" name={ResourcePlural('Secret', t)} onClick={this.close} />}
               {/* <ResourceNSLink resource="replicationcontrollers" name="레플리케이션 컨트롤러" onClick={this.close} /> */}
