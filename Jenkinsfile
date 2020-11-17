@@ -14,6 +14,7 @@ def PRE_VERSION = (("${params.patch_version}" as int) - 1).toString()
 def HOTFIX_VERSION = "${params.hotfix_version}"
 def DOCKER_REGISTRY = "tmaxcloudck"
 def PRODUCT = "hypercloud-console"
+def PRODUCT = "hypercloud-console-TTA"
 def VER = "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION}"
 def PRE_VER = "${MAJOR_VERSION}.${MINOR_VERSION}.${PRE_VERSION}.${HOTFIX_VERSION}"
 // def VER = "1.1.38.1"
