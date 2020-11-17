@@ -46,6 +46,11 @@ export const yamlTemplates = ImmutableMap<GroupVersionKind, ImmutableMap<string,
                 - name: cloudinitdisk
                   disk:
                     bus: virtio
+              resources:
+                requests:
+                  memory: 1024M
+                limits:
+                  memory: 2048M
             volumes:
             - name: containerdisk
               containerDisk:
@@ -54,7 +59,7 @@ export const yamlTemplates = ImmutableMap<GroupVersionKind, ImmutableMap<string,
               cloudInitNoCloud:
                 userData: |-
                   #cloud-config
-                  password: a
+                  password: tmax123
                   chpasswd: { expire: False }
     `,
   )
