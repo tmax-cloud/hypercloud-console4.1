@@ -20,7 +20,7 @@ def PRE_VER = "${MAJOR_VERSION}.${MINOR_VERSION}.${PRE_VERSION}.${HOTFIX_VERSION
 def REALM = "${params.realm}"
 def KEYCLOAK = "${params.keycloak}"
 def CLIENTID = "${params.clientid}"
-def BRANCH = "hc-release"
+def BRANCH = "TTA"
  
 // k8s environment 
 def NAME_NS = "console-system"
