@@ -58,8 +58,8 @@ volumes: [
           usernameVariable: 'DOCKER_USER',
           passwordVariable: 'DOCKER_PWD')]){
           sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PWD}"
-          sh "docker build -t ${DOCKER_REGISTRY}/${PRODUCT}:${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION} -f ./Dockerfile.jenkins ."
-          sh "docker push ${DOCKER_REGISTRY}/${PRODUCT}:${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION}"
+          sh "docker build -t ${DOCKER_REGISTRY}/${PRODUCT}:${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION}-tta -f ./Dockerfile.jenkins ."
+          sh "docker push ${DOCKER_REGISTRY}/${PRODUCT}:${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION}-tta"
           }
       }
     }
@@ -106,7 +106,7 @@ volumes: [
           git config --global credential.username ${username}
           git config --global credential.helper "!echo password=${password}; echo"          
         """
-        sh "git tag ${PRODUCT}_${VER}"
+        sh "git tag ${PRODUCT}_${VER}_tta"
         sh "git push origin HEAD:${BRANCH} --tags"    
 
         sh """
@@ -123,7 +123,7 @@ volumes: [
 
         //// sh "rm -r ./temp-yaml"
         sh "git add -A"
-        sh "git commit -m 'build ${PRODUCT}_${VER}' "
+        sh "git commit -m 'build ${PRODUCT}_${VER}_tta' "
         sh "git push origin HEAD:${BRANCH}"        
 
       }
