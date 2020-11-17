@@ -13,16 +13,14 @@ def PATCH_VERSION = "${params.patch_version}"
 def PRE_VERSION = (("${params.patch_version}" as int) - 1).toString()
 def HOTFIX_VERSION = "${params.hotfix_version}"
 def DOCKER_REGISTRY = "tmaxcloudck"
-//def PRODUCT = "hypercloud-console"
-def PRODUCT = "hypercloud-console-TTA"
+def PRODUCT = "hypercloud-console"
 def VER = "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION}"
 def PRE_VER = "${MAJOR_VERSION}.${MINOR_VERSION}.${PRE_VERSION}.${HOTFIX_VERSION}"
 // def VER = "1.1.38.1"
 def REALM = "${params.realm}"
 def KEYCLOAK = "${params.keycloak}"
 def CLIENTID = "${params.clientid}"
-//def BRANCH = "hc-release"
-def BRANCH = "TTA"
+def BRANCH = "hc-release"
  
 // k8s environment 
 def NAME_NS = "console-system"
