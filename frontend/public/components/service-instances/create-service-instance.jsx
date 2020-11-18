@@ -166,9 +166,10 @@ const withServiceInstanceForm = SubForm =>
       if (!selectedClass) {
         return;
       }
+      const namespace = this.state.serviceClass === 'Cluster' ? 'default' : this.state.namespace;
       /* selectedClass.name에 'z'가 들어갈 시 IMS244691문제가 있어서 대체방안으로 selectedClass.spec.externalID를 name으로 사용함*/
       // coFetch(`/api/kubernetes/apis/${k8sModels.TemplateModel.apiGroup}/${k8sModels.TemplateModel.apiVersion}/namespaces/${this.state.namespace}/templates/${selectedClass.name}`)
-      coFetch(`/api/kubernetes/apis/${k8sModels.TemplateModel.apiGroup}/${k8sModels.TemplateModel.apiVersion}/namespaces/${this.state.namespace}/templates/${selectedClass.spec.externalID}`)
+      coFetch(`/api/kubernetes/apis/${k8sModels.TemplateModel.apiGroup}/${k8sModels.TemplateModel.apiVersion}/namespaces/${namespace}/templates/${selectedClass.spec.externalID}`)
         .then(res => res.json())
         .then(res => {
           let paramList = res.parameters.map(function(parm) {
