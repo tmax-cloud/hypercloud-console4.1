@@ -180,9 +180,9 @@ export const PodExec = connectToFlags(FLAGS.OPENSHIFT)(
             {!error && (
               <div className="co-toolbar__group co-toolbar__group--right">
                 <div className="co-toolbar__item">
-                  <button className="btn btn-link" onClick={() => this.setFullscreen(true)}>
+                  {/* <button className="btn btn-link" onClick={() => this.setFullscreen(true)}>
                     <i className="fa fa-expand" aria-hidden="true" /> {t('CONTENT:EXPAND')}
-                  </button>
+                  </button> */}
                 </div>
               </div>
             )}
