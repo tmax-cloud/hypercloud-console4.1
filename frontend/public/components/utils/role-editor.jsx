@@ -163,7 +163,7 @@ class RolePairElement extends React.Component {
         </div>
       );
     });
-    let APIOptions = APIGroupList !== [] ? APIGroupList.map(option => ({ value: option, label: option })) : [];
+    let APIOptions = APIGroupList !== [] ? APIGroupList.map(option => ({ value: option.split('/')[0], label: option.split('/')[0] })) : [];
     let ResourceList = pair[0] === '' ? this.props.ResourceList : !ResourceList.length ? this.props.ResourceList : ResourceList;
     let ResourceOptions = ResourceList.map(option => ({ value: option, label: option }));
 

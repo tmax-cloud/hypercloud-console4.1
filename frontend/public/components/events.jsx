@@ -51,13 +51,11 @@ const Inner = connectToFlags(FLAGS.CAN_LIST_NODE)(
             <div className="co-sysevent__header">
               <div className="co-sysevent__subheader">
                 <ResourceLink className="co-sysevent__resourcelink" kind={obj.kind} namespace={obj.namespace} name={obj.name} title={obj.uid} />
-                {/* <Timestamp timestamp={lastTimestamp} /> */}
                 <Timestamp timestamp={lastTimestamp} t={t} />
               </div>
               <div className="co-sysevent__details">
                 {!HDCModeFlag && (
                   <small className="co-sysevent__source">
-                    {/* {t('CONTENT:GENERATEDFROM')} <span>{source.component}</span> */}
                     {t('ADDITIONAL:GENERATEDFROM', { something: source.component })}
                     {source.component === 'kubelet' && <span> on {flags[FLAGS.CAN_LIST_NODE] ? <Link to={resourcePathFromModel(NodeModel, source.host)}>{source.host}</Link> : <React.Fragment>{source.host}</React.Fragment>}</span>}
                   </small>
@@ -65,7 +63,6 @@ const Inner = connectToFlags(FLAGS.CAN_LIST_NODE)(
                 {count > 1 && (
                   <small className="co-sysevent__count text-secondary">
                     {count} {t('CONTENT:TIMESINTHELAST')}
-                    {/* <Timestamp timestamp={firstTimestamp} simple={true} omitSuffix={true} /> */}
                     <Timestamp timestamp={firstTimestamp} simple={true} omitSuffix={true} t={t} />
                   </small>
                 )}
@@ -104,7 +101,7 @@ class SysEvent extends React.Component {
   }
 
   render() {
-    const { index, style, reason, message, source, metadata, firstTimestamp, lastTimestamp, count, involvedObject: obj, t } = this.props;
+    const { index, style, reason, message, source, metadata, firstTimestamp, lastTimestamp, eventTime, count, involvedObject: obj, t } = this.props;
     const klass = classNames('co-sysevent', { 'co-sysevent--error': categoryFilter('error', this.props) });
     const tooltipMsg = `${reason} (${obj.kind.toLowerCase()})`;
 
@@ -119,7 +116,7 @@ class SysEvent extends React.Component {
     return (
       <div style={style}>
         <CSSTransition mountOnEnter={true} appear={shouldAnimate} in exit={false} timeout={timeout} classNames="slide">
-          {status => <Inner klass={klass} status={status} tooltipMsg={tooltipMsg} obj={obj} firstTimestamp={firstTimestamp} lastTimestamp={lastTimestamp} count={count} message={message} source={source} width={style.width} t={t} />}
+          {status => <Inner klass={klass} status={status} tooltipMsg={tooltipMsg} obj={obj} firstTimestamp={firstTimestamp || eventTime} lastTimestamp={lastTimestamp || eventTime} count={count} message={message} source={source} width={style.width} t={t} />}
         </CSSTransition>
       </div>
     );

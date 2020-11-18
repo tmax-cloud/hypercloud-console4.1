@@ -57,7 +57,6 @@ export interface NodeModel extends ElementModel {
   group?: boolean;
   shape?: NodeShape;
   collapsed?: boolean;
-  isWorkflow?: boolean;
 }
 
 export interface EdgeModel extends ElementModel {

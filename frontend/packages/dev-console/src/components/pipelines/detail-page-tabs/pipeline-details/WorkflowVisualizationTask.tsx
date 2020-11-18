@@ -31,7 +31,6 @@ interface TaskProps {
   isPipelineRun: boolean;
   disableTooltip?: boolean;
   selected?: boolean;
-  isWorkflow?: boolean;
 }
 
 interface WorkflowVisualizationTaskProp {
@@ -49,7 +48,6 @@ interface WorkflowVisualizationTaskProp {
   pipelineRunStatus?: string;
   disableTooltip?: boolean;
   selected?: boolean;
-  isWorkflow?: boolean;
 }
 
 export const WorkflowVisualizationTask: React.FC<WorkflowVisualizationTaskProp> = ({
@@ -59,7 +57,6 @@ export const WorkflowVisualizationTask: React.FC<WorkflowVisualizationTaskProp> 
   pipelineRunStatus,
   disableTooltip,
   selected,
-  isWorkflow,
 }) => {
   const taskStatus = task.status;
   const taskComponent = (
@@ -71,7 +68,6 @@ export const WorkflowVisualizationTask: React.FC<WorkflowVisualizationTaskProp> 
       isPipelineRun={!!pipelineRunStatus}
       disableTooltip={disableTooltip}
       selected={selected}
-      isWorkflow={isWorkflow}
     />
   );
 
@@ -111,7 +107,6 @@ const TaskComponent: React.FC<TaskProps> = ({
   isPipelineRun,
   disableTooltip,
   selected,
-  isWorkflow
 }) => {
   const stepList = _.get(task, ['data', 'spec', 'steps'], []);
   const stepStatusList: StepStatus[] = stepList.map(step =>
