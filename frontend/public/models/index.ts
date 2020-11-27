@@ -4,6 +4,45 @@ import { chart_color_green_400 as tektonGroupColor } from '@patternfly/react-tok
 const color = tektonGroupColor.value;
 import { BadgeType } from '../../packages/console-shared/src/components/badges/badge-factory';
 
+export const VolumeSnapshotClassModel: K8sKind = {
+  abbr: "VSC",
+  apiGroup: "snapshot.storage.k8s.io",
+  apiVersion: "v1alpha1",
+  id: "volumesnapshotclass",
+  kind: "VolumeSnapshotClass",
+  label: "Volume Snapshot Class",
+  labelPlural: "Volume Snapshot Classes",
+  namespaced: false,
+  path: "volumesnapshotclasses",
+  plural: "volumesnapshotclasses",
+}
+
+export const VolumeSnapshotContentModel: K8sKind = {
+  abbr: "VSC",
+  apiGroup: "snapshot.storage.k8s.io",
+  apiVersion: "v1alpha1",
+  id: "volumesnapshotcontent",
+  kind: "VolumeSnapshotContent",
+  label: "Volume Snapshot Content",
+  labelPlural: "Volume Snapshot Contents",
+  namespaced: false,
+  path: "volumesnapshotcontents",
+  plural: "volumesnapshotcontents",
+}
+
+export const VolumeSnapshotModel: K8sKind = {
+  abbr: "VS",
+  apiGroup: "snapshot.storage.k8s.io",
+  apiVersion: "v1alpha1",
+  id: "volumesnapshot",
+  kind: "VolumeSnapshot",
+  label: "Volume Snapshot",
+  labelPlural: "Volume Snapshots",
+  namespaced: true,
+  path: "volumesnapshots",
+  plural: "volumesnapshots",
+}
+
 export const VirtualMachineInstanceReplicaSetModel: K8sKind = {
   kind: 'VirtualMachineInstanceReplicaSet',
   namespaced: true,

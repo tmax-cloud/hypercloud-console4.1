@@ -458,6 +458,9 @@
     "TEMPLATE-SIDEBAR_7": "WAS(nodejs) & DB(mysql) template"
   },
   "CONTENT": {
+    "VOLUMESNAPSHOT": "Volume Snapshot",
+    "VOLUMESNAPSHOTCONTENT": "Volume Snapshot Content",
+    "VOLUMESNAPSHOTCLASS": "Volume Snapshot Class",
     "AVAILABLEFUNCTIONS": "Available Functions",
     "SERVICEPLANCHARGES": "Service Plan Charges",
     "TASKPARAMETERCONFIG": "Task Paramter Config",
@@ -1067,6 +1070,9 @@
     "DASHBOARD": "Dashboard",
     "GRAFANA": "Grafana",
     "KIALI": "Kiali",
-    "NAMESPACESERVICECLASS": "Namespace Service Class"
+    "NAMESPACESERVICECLASS": "Namespace Service Class",
+    "VOLUMESNAPSHOT": "Volume Snapshot",
+    "VOLUMESNAPSHOTCONTENT": "Volume Snapshot Content",
+    "VOLUMESNAPSHOTCLASS": "Volume Snapshot Class"
   }
 }

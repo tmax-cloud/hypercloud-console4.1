@@ -5,6 +5,9 @@ import { Map as ImmutableMap } from 'immutable';
 import { ReportReference, ReportGenerationQueryReference } from './chargeback';
 import { referenceForModel, GroupVersionKind } from '../module/k8s';
 import {
+  VolumeSnapshotModel,
+  VolumeSnapshotContentModel,
+  VolumeSnapshotClassModel,
   ConditionModel,
   UserGroupModel,
   LimitRangeModel,
@@ -100,6 +103,9 @@ import {
 } from '../models';
 
 export const resourceDetailPages = ImmutableMap<GroupVersionKind | string, () => Promise<React.ComponentType<any>>>()
+.set(referenceForModel(VolumeSnapshotClassModel), () => import('./volume-snapshot-class' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotClassDetailsPage))
+.set(referenceForModel(VolumeSnapshotContentModel), () => import('./volume-snapshot-content' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotContentDetailsPage))
+.set(referenceForModel(VolumeSnapshotModel), () => import('./volume-snapshot' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotsDetailsPage))
   .set(referenceForModel(ImageModel), () => import('./image' /* webpackChunkName: "task" */).then(m => m.ImagesDetailsPage))
   .set(referenceForModel(UserGroupModel), () => import('./usergroup' /* webpackChunkName: "task" */).then(m => m.UsergroupsDetailsPage))
   .set(referenceForModel(LimitRangeModel), () => import('./limit-range' /* webpackChunkName: "task" */).then(m => m.LimitRangesDetailsPage))
@@ -192,6 +198,9 @@ export const resourceDetailPages = ImmutableMap<GroupVersionKind | string, () =>
   .set(referenceForModel(CatalogServiceClaimModel), () => import('./catalog-service-claim' /* webpackChunkName: "task" */).then(m => m.CatalogServiceClaimsDetailsPage));
 
 export const resourceListPages = ImmutableMap<GroupVersionKind | string, () => Promise<React.ComponentType<any>>>()
+.set(referenceForModel(VolumeSnapshotClassModel), () => import('./volume-snapshot-class' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotClassPage))
+.set(referenceForModel(VolumeSnapshotContentModel), () => import('./volume-snapshot-content' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotContentPage))
+.set(referenceForModel(VolumeSnapshotModel), () => import('./volume-snapshot' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotPage))
   .set(referenceForModel(CatalogServiceClaimModel), () => import('./catalog-service-claim' /* webpackChunkName: "task" */).then(m => m.CatalogServiceClaimPage))
   .set(referenceForModel(NotebookModel), () => import('./notebook' /* webpackChunkName: "task" */).then(m => m.NotebookPage))
   .set(referenceForModel(ExperimentModel), () => import('./experiment' /* webpackChunkName: "task" */).then(m => m.ExperimentPage))

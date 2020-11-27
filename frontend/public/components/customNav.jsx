@@ -133,6 +133,12 @@ const defaultMenu = `
       type: resourcenslink
     - name: PersistentVolume
       type: resourceclusterlink
+    - name: VolumeSnapshot
+      type: resourceclusterlink
+    - name: VolumeSnapshotContent
+      type: resourceclusterlink
+    - name: VolumeSnapshotClass
+      type: resourceclusterlink
 - name: cicd
   menu:
     - name: Task
