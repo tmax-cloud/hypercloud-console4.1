@@ -50,6 +50,12 @@ const validateStatus = (response, url) => {
     return response;
   }
 
+  if (response.status === 404) {
+    const error = new Error('The requested page could not be found.');
+    error.response = response;
+    throw error;
+  }
+
   const contentType = response.headers.get("content-type");
   if (!contentType || contentType.indexOf("json") === -1) {
     const error = new Error(response.statusText);
