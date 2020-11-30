@@ -152,6 +152,9 @@ export const PodExec = connectToFlags(FLAGS.OPENSHIFT)(
 
     setFullscreen(fullscreen) {
       this.terminal.current.setFullscreen(fullscreen);
+      document.getElementsByClassName('co-masthead')[0].style.visibility = "hidden";
+      document.getElementById('sidebar').style.visibility = "hidden";
+      document.getElementsByTagName('body')[0].style.overflow = "hidden";
     }
 
     onData_(data) {
@@ -167,7 +170,6 @@ export const PodExec = connectToFlags(FLAGS.OPENSHIFT)(
       } else if (open) {
         contents = <Terminal onResize={this.onResize} onData={this.onData} ref={this.terminal} />;
       }
-
       return (
         <div>
           <div className="co-toolbar">
@@ -180,9 +182,9 @@ export const PodExec = connectToFlags(FLAGS.OPENSHIFT)(
             {!error && (
               <div className="co-toolbar__group co-toolbar__group--right">
                 <div className="co-toolbar__item">
-                  {/* <button className="btn btn-link" onClick={() => this.setFullscreen(true)}>
+                  <button className="btn btn-link" onClick={() => this.setFullscreen(true)}>
                     <i className="fa fa-expand" aria-hidden="true" /> {t('CONTENT:EXPAND')}
-                  </button> */}
+                  </button>
                 </div>
               </div>
             )}
