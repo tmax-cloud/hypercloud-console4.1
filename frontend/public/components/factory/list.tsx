@@ -133,6 +133,8 @@ const listFilters = {
     const status = approval.status.result;
     return statuses.selected.has(status) || !_.includes(statuses.all, status);
   },
+  
+  'crd-name': (filter, obj) => fuzzyCaseInsensitive(filter, obj.spec.names.kind),
 };
 
 const getFilteredRows = (_filters, objects) => {

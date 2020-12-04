@@ -222,7 +222,7 @@ export const FireMan_ = connect(null, { filterList: k8sActions.filterList })(
 FireMan_.displayName = 'FireMan';
 
 FireMan_.defaultProps = {
-  textFilter: 'name',
+  textFilter: 'crd-name',
 };
 
 FireMan_.propTypes = {
