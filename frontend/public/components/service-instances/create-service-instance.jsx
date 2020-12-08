@@ -340,9 +340,17 @@ const withServiceInstanceForm = SubForm =>
               <strong>{t('CONTENT:SERVICEPLAN')}</strong>
             </div>
             <div className="col-xs-10">
-              {planList.map(item => (
-                <ServicePlanItem item={item} key={item.uid} onChangePlan={onChangePlan} selectedPlan={selectedPlan} />
-              ))}
+              {planList.map(item => {
+                if (!!item.status) {
+                  if (item.status.removedFromBrokerCatalog) {
+                    return null;
+                  } else {
+                    return <ServicePlanItem item={item} key={item.uid} onChangePlan={onChangePlan} selectedPlan={selectedPlan} />;
+                  }
+                } else {
+                  return <ServicePlanItem item={item} key={item.uid} onChangePlan={onChangePlan} selectedPlan={selectedPlan} />;
+                }
+              })}
             </div>
           </div>
         );
