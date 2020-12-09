@@ -7,7 +7,7 @@ import { BadgeType } from '../../packages/console-shared/src/components/badges/b
 export const VolumeSnapshotClassModel: K8sKind = {
   abbr: "VSC",
   apiGroup: "snapshot.storage.k8s.io",
-  apiVersion: "v1alpha1",
+  apiVersion: "v1beta1",
   id: "volumesnapshotclass",
   kind: "VolumeSnapshotClass",
   label: "Volume Snapshot Class",
@@ -20,7 +20,7 @@ export const VolumeSnapshotClassModel: K8sKind = {
 export const VolumeSnapshotContentModel: K8sKind = {
   abbr: "VSC",
   apiGroup: "snapshot.storage.k8s.io",
-  apiVersion: "v1alpha1",
+  apiVersion: "v1beta1",
   id: "volumesnapshotcontent",
   kind: "VolumeSnapshotContent",
   label: "Volume Snapshot Content",
@@ -33,7 +33,7 @@ export const VolumeSnapshotContentModel: K8sKind = {
 export const VolumeSnapshotModel: K8sKind = {
   abbr: "VS",
   apiGroup: "snapshot.storage.k8s.io",
-  apiVersion: "v1alpha1",
+  apiVersion: "v1beta1",
   id: "volumesnapshot",
   kind: "VolumeSnapshot",
   label: "Volume Snapshot",
