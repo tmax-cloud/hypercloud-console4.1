@@ -100,7 +100,7 @@ volumes: [
 
     stage('GIT Commit & Push'){
       withCredentials([usernamePassword(credentialsId: 'jinsoo-youn', usernameVariable: 'username', passwordVariable: 'password')]) {      
-      /*
+      
         sh """
           git config --global user.name ${username}
           git config --global user.email jinsoo_youn@tmax.co.kr
@@ -110,6 +110,7 @@ volumes: [
         sh "git tag ${PRODUCT}_${VER}_tta"
         sh "git push origin HEAD:${BRANCH} --tags"    
 
+/*
         sh """
           echo '# hypercloud-console patch note' > ./docs-internal/[HOTFIX]CHANGELOG.md
           echo '## [Product Name]_[major].[minor].[patch].[hotfix]' >> ./docs-internal/[HOTFIX]CHANGELOG.md
