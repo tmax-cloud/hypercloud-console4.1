@@ -100,6 +100,7 @@ volumes: [
 
     stage('GIT Commit & Push'){
       withCredentials([usernamePassword(credentialsId: 'jinsoo-youn', usernameVariable: 'username', passwordVariable: 'password')]) {      
+      /*
         sh """
           git config --global user.name ${username}
           git config --global user.email jinsoo_youn@tmax.co.kr
@@ -125,6 +126,7 @@ volumes: [
         sh "git add -A"
         sh "git commit -m 'build ${PRODUCT}_${VER}_tta' "
         sh "git push origin HEAD:${BRANCH}"        
+        */
 
       }
     }
