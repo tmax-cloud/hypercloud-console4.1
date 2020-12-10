@@ -166,7 +166,10 @@ const withServiceInstanceForm = SubForm =>
       if (!selectedClass) {
         return;
       }
-      coFetch(`/api/kubernetes/apis/${k8sModels.TemplateModel.apiGroup}/${k8sModels.TemplateModel.apiVersion}/namespaces/${this.state.namespace}/templates/${selectedClass.name}`)
+      const namespace = this.state.serviceClass === 'Cluster' ? 'default' : this.state.namespace;
+      /* selectedClass.name에 'z'가 들어갈 시 IMS244691문제가 있어서 대체방안으로 selectedClass.spec.externalID를 name으로 사용함*/
+      // coFetch(`/api/kubernetes/apis/${k8sModels.TemplateModel.apiGroup}/${k8sModels.TemplateModel.apiVersion}/namespaces/${this.state.namespace}/templates/${selectedClass.name}`)
+      coFetch(`/api/kubernetes/apis/${k8sModels.TemplateModel.apiGroup}/${k8sModels.TemplateModel.apiVersion}/namespaces/${namespace}/templates/${selectedClass.spec.externalID}`)
         .then(res => res.json())
         .then(res => {
           let paramList = res.parameters.map(function(parm) {
@@ -297,7 +300,9 @@ const withServiceInstanceForm = SubForm =>
     }
     componentDidMount() {
       this.getClassList();
-      this.setDefaultNS();
+      if (!this.state.namespace) {
+        this.setDefaultNS();
+      }
       // this.getPlanList();
       // this.getParams();
     }
@@ -305,7 +310,9 @@ const withServiceInstanceForm = SubForm =>
     componentDidUpdate(prevProps, prevState) {
       if (!_.isEqual(prevState.namespace, this.state.namespace) || !_.isEqual(prevState.serviceClass, this.state.serviceClass)) {
         this.getClassList();
-        this.setDefaultNS();
+        if (!this.state.namespace) {
+          this.setDefaultNS();
+        }
       }
       return;
     }
@@ -333,9 +340,17 @@ const withServiceInstanceForm = SubForm =>
               <strong>{t('CONTENT:SERVICEPLAN')}</strong>
             </div>
             <div className="col-xs-10">
-              {planList.map(item => (
-                <ServicePlanItem item={item} key={item.uid} onChangePlan={onChangePlan} selectedPlan={selectedPlan} />
-              ))}
+              {planList.map(item => {
+                if (!!item.status) {
+                  if (item.status.removedFromBrokerCatalog) {
+                    return null;
+                  } else {
+                    return <ServicePlanItem item={item} key={item.uid} onChangePlan={onChangePlan} selectedPlan={selectedPlan} />;
+                  }
+                } else {
+                  return <ServicePlanItem item={item} key={item.uid} onChangePlan={onChangePlan} selectedPlan={selectedPlan} />;
+                }
+              })}
             </div>
           </div>
         );
