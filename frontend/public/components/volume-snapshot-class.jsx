@@ -15,13 +15,10 @@ const VolumeSnapshotClassHeader = props => {
   const { t } = useTranslation();
   return (
     <ListHeader>
-      <ColHead {...props} className="col-xs-4 col-sm-4" sortField="metadata.name">
+      <ColHead {...props} className="col-xs-6 col-sm-6" sortField="metadata.name">
         {t('CONTENT:NAME')}
       </ColHead>
-      <ColHead {...props} className="col-xs-4 col-sm-4" sortField="metadata.namespace">
-        {t('CONTENT:NAMESPACE')}
-      </ColHead>
-      <ColHead {...props} className="col-sm-4 hidden-xs" sortField="metadata.creationTimestamp">
+      <ColHead {...props} className="col-sm-6 hidden-xs" sortField="metadata.creationTimestamp">
         {t('CONTENT:CREATED')}
       </ColHead>
     </ListHeader>
@@ -33,12 +30,11 @@ const VolumeSnapshotClassRow = () =>
   function VolumeSnapshotClassRow({ obj }) {
     return (
       <div className="row co-resource-list__item">
-        <div className="col-xs-4 col-sm-4 co-resource-link-wrapper">
+        <div className="col-xs-6 col-sm-6 co-resource-link-wrapper">
           <ResourceCog actions={menuActions} kind="VolumeSnapshotClass" resource={obj} />
           <ResourceLink kind="VolumeSnapshotClass" name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
         </div>
-        <div className="col-xs-4 col-sm-4 co-break-word">{obj.metadata.namespace ? <ResourceLink kind="Namespace" name={obj.metadata.namespace} title={obj.metadata.namespace} /> : 'None'}</div>
-        <div className="col-xs-4 col-sm-4 hidden-xs">{fromNow(obj.metadata.creationTimestamp)}</div>
+        <div className="col-xs-6 col-sm-6 hidden-xs">{fromNow(obj.metadata.creationTimestamp)}</div>
       </div>
     );
   };

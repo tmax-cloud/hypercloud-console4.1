@@ -33,7 +33,7 @@ export const yamlTemplates = ImmutableMap<GroupVersionKind, ImmutableMap<string,
     `,
   )
   .setIn(
-    [referenceForModel(k8sModels.VolumeSnapshotModel), 'default'],
+    [referenceForModel(k8sModels.VolumeSnapshotContentModel), 'default'],
     `
     apiVersion: snapshot.storage.k8s.io/v1beta1
     kind: VolumeSnapshotContent
