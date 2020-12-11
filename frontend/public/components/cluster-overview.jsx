@@ -54,7 +54,6 @@ const Graphs = requirePrometheus(
         <div className="group">
           <div className="group__title">
             <h2 className="h3">{t('CONTENT:HEALTH')}</h2>
-            <div style={{ fontSize: '12px' }}>{t('STRING:STATUS_0')}</div>
             {/* {!isOpenShift && <DashboardLink id="qa_dashboard_k8s_health" to="/grafana/dashboard/db/kubernetes-cluster-health?orgId=1" />} */}
           </div>
           <div className="container-fluid group__body">

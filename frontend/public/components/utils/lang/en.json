@@ -226,7 +226,6 @@
     "RESTRICTED_2": "View Details",
     "PIPELINERUN-CREATE_0": "Service Account is not automatically created",
     "PIPELINERUN-CREATE_1": "Instantiate a Pipeline for execution with specific inputs, outputs, and execution parameters.",
-    "STATUS_0": "It may be different from the actual data.",
     "CONTAINER-DETAIL_0": "No ports have been exposed",
     "CONTAINER-DETAIL_1": "Ports allow for traffic to enter this container",
     "CONTAINER-DETAIL_2": "No volumes have been mounted",
