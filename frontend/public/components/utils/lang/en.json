@@ -46,7 +46,8 @@
     "NAMESPACE-MODAL_0": "Confirm deletion by typing {{something}} below ",
     "PODSELECTOR-EMPTY_0": "All pods within {{something}}",
     "GENERATEDFROM": "Generated from {{something}}",
-    "SELECT": "Select {{something}}"
+    "SELECT": "Select {{something}}",
+    "REMOVETASK": "Are you sure you want to {{something}}?"
   },
   "VALIDATION": {
     "LABEL_FORM": "Lables must be 'key=value' form.",
@@ -92,6 +93,11 @@
   },
   "STRING": {
     "TASK-CREATE_0": "Define a series of steps which launch specific build or delivery tools that ingest specific inputs and produce specific outputs.",
+    "TASK_CREATE_1": "Make this resource optional.",
+    "TASK_CREATE_2": "If provided as an option, you can allocate Pipeline resources as needed from the TaskRun or Pipeline menu.",
+    "TASK_CREATE_3": "Input Directly",
+    "TASK_CREATE_4": "If no parameter is entered when creating a TaskRun or Pipeline, it is set to the default value.",
+    "TASK_CREATE_5": "Please add the volume to be mounted first",
     "DAEMONSET-CREATE_0": "Run pods in all nodes",
     "DAEMONSET-CREATE_1": "Run pods in specific nodes.",
     "DAEMONSET-CREATE_2": "Run pods in some nodes.",
@@ -220,7 +226,6 @@
     "RESTRICTED_2": "View Details",
     "PIPELINERUN-CREATE_0": "Service Account is not automatically created",
     "PIPELINERUN-CREATE_1": "Instantiate a Pipeline for execution with specific inputs, outputs, and execution parameters.",
-    "STATUS_0": "It may be different from the actual data.",
     "CONTAINER-DETAIL_0": "No ports have been exposed",
     "CONTAINER-DETAIL_1": "Ports allow for traffic to enter this container",
     "CONTAINER-DETAIL_2": "No volumes have been mounted",
@@ -273,7 +278,7 @@
     "PERSISTENTVOLUMECLAIM-SIDEBAR_0": "Create 1 Gi file storage in the RWX mode",
     "PERSISTENTVOLUMECLAIM-SIDEBAR_1": "Can create 1 Gi file storage using a storage class. Multiple pods can be connected and read/written. \nReadWriteOnce: The volume can be mounted as read-write by a single pod. \nReadOnlyMany: The volume can be mounted as read by multiple pods. \nReadWriteMany: The volume can be mounted as read-write by multiple pods. ",
     "PERSISTENTVOLUMECLAIM-SIDEBAR_2": "Create 1 Gi block storage in the ROX mode",
-    "PERSISTENTVOLUMECLAIM-SIDEBAR_3": "Use a storage class to create 1 Gi block storage. Multiple Pods can be connected and read/written.\n(volumeMode: Filesystem (Default)/Block)",
+    "PERSISTENTVOLUMECLAIM-SIDEBAR_3": "Use a storage class to create 1 Gi block storage. Multiple Pods can be mounted as read-only.\n(volumeMode: Filesystem (Default)/Block)",
     "PERSISTENTVOLUMECLAIM-SIDEBAR_4": "Create a PersistentVolumeClamin in the RWX mode with your PersistentVolume ",
     "PERSISTENTVOLUMECLAIM-SIDEBAR_5": "Can create a PersistentVolumeClaim in RWX mode to bind with the PersistentVolume (volumeName) you created.\nThe PersistentVolumeClaim’s access modes and resource requests must be satisfied in order for the PersistentVolume and PersistentVolumeClaim to be bound.",
     "PERSISTENTVOLUMECLAIM-SIDEBAR_6": "Create a PersistentVolumeClaim of the RWX mode to meet the conditions of the selector.",
@@ -408,7 +413,7 @@
     "TASKRUN-CREATE_4": "Min",
     "TASKRUN-CREATE_5": "Service Account Settings",
     "TASKRUN-CREATE_6": "Select a service account.",
-    "TASKRUN-CREATE_7": "You can execute the Task in your TaskRun with a specific set of credentials by specifying a ServiceAccount. If you do not explicitly specify this, the TaskRun executes with the credentials specified in the configmap-defaults ConfigMap. If this default is not specified, TaskRuns will execute with the default service account set for the target namespace.",
+    "TASKRUN-CREATE_7": "You can execute the Task in your TaskRun with a specific set of credentials by specifying a ServiceAccount. If you do not explicitly specify this, the TaskRun executes with the credentials specified in the config-defaults ConfigMap. If this default is not specified, TaskRuns will execute with the default service account set for the target namespace.",
     "TASKRUN-CREATE_8": "Instantiate a Task for execution with specific inputs, outputs, and execution parameters. Can be invoked on its own or as part of a Pipeline.",
     "VM-SIDEBAR_0": "Windows Virtual Machine Sample",
     "VM-SIDEBAR_1": "Creates VM objects for Windows virtual machine.\n.spec.template.spec.Affinity.nodeAffinity- Node affinity setting\n.spec.template.domain.devices.disk – Instance-attached disk setting\n.spec.template.domain.devices.interfaces- Network interface setting\n.spec.template.domain.gpus – CPU device setting .spec.template.domain.cpu – CPU setting\n.spec.template.domain.memory – Memory setting",
@@ -437,9 +442,23 @@
     "AUDIT-LIST_4": "to",
     "AUDIT-LIST_5": "Inquiry Period",
     "PIPELINERESOURCE-CREATE_0": "Defines locations for inputs ingested and outputs produced by the steps in Tasks.",
-    "TEMPLATEINSTANCE-CREATE_0": "Enter the parameters required by the template to deploy the application."
+    "TEMPLATEINSTANCE-CREATE_0": "Enter the parameters required by the template to deploy the application.",
+    "SERVICEBINDING-SIDEBAR_0": "Service Binding Sample",
+    "SERVICEBINDING-SIDEBAR_1": "Service binding serves to provide the connection between the service instance and application program.",
+    "SERVICEBINDING-SIDEBAR_2": "Service Binding Secret Key Addition Sample",
+    "SERVICEBINDING-SIDEBAR_3": "Service binding serves to provide the connection between the service instance and application program.\n When the broker responds, the service catalog records the credentials that it responds with into the secret specified in spec.secretName.",
+    "TEMPLATE-SIDEBAR_0": "Template Sample ",
+    "TEMPLATE-SIDEBAR_1": "Defining a template enables you to easily recreate all objects in your application. The template defines the created objects and metadata.",
+    "TEMPLATE-SIDEBAR_2": "WAS(Apache) Sample ",
+    "TEMPLATE-SIDEBAR_3": "WAS(e.g. Apache) catalog template",
+    "TEMPLATE-SIDEBAR_4": "DB(mysql) Sample ",
+    "TEMPLATE-SIDEBAR_5": "DB(ex:mysql) catalog template",
+    "TEMPLATE-SIDEBAR_6": "WAS & DB Sample ",
+    "TEMPLATE-SIDEBAR_7": "WAS(nodejs) & DB(mysql) template"
   },
   "CONTENT": {
+    "AVAILABLEFUNCTIONS": "Available Functions",
+    "SERVICEPLANCHARGES": "Service Plan Charges",
     "TASKPARAMETERCONFIG": "Task Paramter Config",
     "STEP": "Step",
     "REPORTEDFROM": "Reported from",
@@ -909,7 +928,6 @@
     "GRANTRESOURCES": "Grant Resources",
     "CONFIGMAPVALUE": "Config Map Value",
     "IMAGEREGISTRY": "Image Registry",
-    "BYSELF": "직접 입력",
     "PODTEMPLATE": "Pod Template",
     "REPLICA": "Replica",
     "USE": "Use",
@@ -945,7 +963,8 @@
     "SERVICECLASSLIST": "Service Class List",
     "SERVICECLASSCLASSIFICATION": "Service Class Classification",
     "MAILSUBJECT": "Title",
-    "MAILCONTENT": "Contents"
+    "MAILCONTENT": "Contents",
+    "REMOVETASK": "Remove Task"
   },
   "RESOURCE": {
     "HOME": "Home",

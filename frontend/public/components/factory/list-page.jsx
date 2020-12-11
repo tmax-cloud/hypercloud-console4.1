@@ -46,7 +46,7 @@ export const TextFilter = ({ label, onChange, defaultValue, style, className, au
       style={style}
       className={classNames('form-control text-filter', className)}
       tabIndex={0}
-      placeholder={(id === 'event' && t('CONTENT:FILTERLABELHOLDEREVENT')) || (id === 'rule' && t('CONTENT:FILTERLABELHOLDERRULE')) || (id === 'audit' && '메시지로 검색') || t('CONTENT:FILTERLABELHOLDER')}
+      placeholder={(id === 'event' && t('CONTENT:FILTERLABELHOLDEREVENT')) || (id === 'rule' && t('CONTENT:FILTERLABELHOLDERRULE')) || (id === 'audit' && t('CONTENT:FILTERLABELHOLDER')) || t('CONTENT:FILTERLABELHOLDER')}
       onChange={onChange}
       autoFocus={autoFocus}
       defaultValue={defaultValue}
@@ -222,7 +222,7 @@ export const FireMan_ = connect(null, { filterList: k8sActions.filterList })(
 FireMan_.displayName = 'FireMan';
 
 FireMan_.defaultProps = {
-  textFilter: 'name',
+  textFilter: 'crd-name',
 };
 
 FireMan_.propTypes = {

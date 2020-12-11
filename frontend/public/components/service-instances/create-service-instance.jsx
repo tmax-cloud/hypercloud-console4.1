@@ -7,15 +7,13 @@ import Stepper from 'react-stepper-horizontal';
 import { CardList } from '../card';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from '../utils/lang/resource-plural';
-
+import { getActiveNamespace } from '../../ui/ui-actions';
 import { ButtonBar, Firehose, StatusBox, kindObj, history, SelectorInput } from '../utils';
 import { formatNamespacedRouteForResource } from '../../ui/ui-actions';
 import * as k8sModels from '../../models';
 import { coFetch } from '../../co-fetch';
 import { k8sCreate } from '../../module/k8s';
 import { NsDropdown } from '../RBAC';
-import { TextFilter } from '../factory';
-// import { element } from 'prop-types';
 
 const ServiceInstanceTypeAbstraction = {
   generic: 'generic',
@@ -26,7 +24,7 @@ const determineServiceInstanceTypeAbstraction = () => {
   return 'form';
 };
 
-const Section = ({ label, children,  isRequired }) => (
+const Section = ({ label, children, isRequired }) => (
   <div className={'row form-group ' + (isRequired ? 'required' : '')}>
     <div className="col-xs-2 control-label">
       <strong>{label}</strong>
@@ -79,8 +77,11 @@ const withServiceInstanceForm = SubForm =>
         planList: [],
         selectedPlan: null,
         paramList: [],
-        namespace: 'default'
+        namespace: null,
       };
+
+      //Namespace
+      this.setDefaultNS = this.setDefaultNS.bind(this);
       // stepper
       this.onClickNext = this.onClickNext.bind(this);
       this.onClickBack = this.onClickBack.bind(this);
@@ -103,8 +104,12 @@ const withServiceInstanceForm = SubForm =>
 
       this.save = this.save.bind(this);
     }
+    setDefaultNS() {
+      let namespace = getActiveNamespace();
+      namespace = namespace === 'all namespaces' ? 'default' : namespace === '#ALL_NS#' ? 'default' : namespace;
+      this.setState({ namespace: namespace });
+    }
     getClassList() {
-
       const url = this.state.serviceClass === 'Cluster' ? 'clusterserviceclasses' : `namespaces/${this.state.namespace}/serviceclasses`;
 
       coFetch(`/api/kubernetes/apis/${k8sModels.ClusterServiceBrokerModel.apiGroup}/${k8sModels.ClusterServiceBrokerModel.apiVersion}/${url}`)
@@ -132,7 +137,6 @@ const withServiceInstanceForm = SubForm =>
         });
     }
     getPlanList() {
-
       const url = this.state.serviceClass === 'Cluster' ? 'clusterserviceplans' : `namespaces/${this.state.namespace}/serviceplans`;
       const ref = this.state.serviceClass === 'Cluster' ? 'spec.clusterServiceClassRef.name' : 'spec.serviceClassRef.name';
 
@@ -162,10 +166,13 @@ const withServiceInstanceForm = SubForm =>
       if (!selectedClass) {
         return;
       }
-      coFetch(`/api/kubernetes/apis/${k8sModels.TemplateModel.apiGroup}/${k8sModels.TemplateModel.apiVersion}/namespaces/${this.state.namespace}/templates/${selectedClass.name}`)
+      const namespace = this.state.serviceClass === 'Cluster' ? 'default' : this.state.namespace;
+      /* selectedClass.name에 'z'가 들어갈 시 IMS244691문제가 있어서 대체방안으로 selectedClass.spec.externalID를 name으로 사용함*/
+      // coFetch(`/api/kubernetes/apis/${k8sModels.TemplateModel.apiGroup}/${k8sModels.TemplateModel.apiVersion}/namespaces/${this.state.namespace}/templates/${selectedClass.name}`)
+      coFetch(`/api/kubernetes/apis/${k8sModels.TemplateModel.apiGroup}/${k8sModels.TemplateModel.apiVersion}/namespaces/${namespace}/templates/${selectedClass.spec.externalID}`)
         .then(res => res.json())
         .then(res => {
-          let paramList = res.parameters.map(function (parm) {
+          let paramList = res.parameters.map(function(parm) {
             return { name: parm.name, defaultValue: parm.value, value: '', description: parm.description, required: parm.required, displayName: parm.displayName };
           });
           if (paramList.length) {
@@ -254,16 +261,15 @@ const withServiceInstanceForm = SubForm =>
       const { kind } = this.state.serviceInstance;
       const newServiceInstance = _.cloneDeep(this.state.serviceInstance);
 
-      if(this.state.serviceClass==="Cluster"){
+      if (this.state.serviceClass === 'Cluster') {
         newServiceInstance.spec.clusterServiceClassName = this.state.selectedClass.name;
         newServiceInstance.spec.clusterServicePlanName = this.state.selectedPlan.name;
         newServiceInstance.metadata.namespace = this.state.namespace;
-        
+
         const ko = kindObj(kind);
         //     if (this.state.serviceInstance.metadata.name) {
         this.setState({ inProgress: true });
-  
-  
+
         k8sCreate(ko, newServiceInstance).then(
           () => {
             this.setState({ inProgress: false });
@@ -271,8 +277,7 @@ const withServiceInstanceForm = SubForm =>
           },
           err => this.setState({ error: err.message, inProgress: false }),
         );
-      }
-      else {
+      } else {
         const newNamespaceInstance = _.cloneDeep(this.state.NamespaceServiceInstance);
         newNamespaceInstance.metadata = newServiceInstance.metadata;
         newNamespaceInstance.metadata.namespace = this.state.namespace;
@@ -283,8 +288,7 @@ const withServiceInstanceForm = SubForm =>
         const ko = kindObj(kind);
         //     if (this.state.serviceInstance.metadata.name) {
         this.setState({ inProgress: true });
-  
-  
+
         k8sCreate(ko, newNamespaceInstance).then(
           () => {
             this.setState({ inProgress: false });
@@ -296,34 +300,39 @@ const withServiceInstanceForm = SubForm =>
     }
     componentDidMount() {
       this.getClassList();
+      if (!this.state.namespace) {
+        this.setDefaultNS();
+      }
       // this.getPlanList();
       // this.getParams();
     }
 
     componentDidUpdate(prevProps, prevState) {
-      if ( !_.isEqual(prevState.namespace, this.state.namespace) || !_.isEqual(prevState.serviceClass, this.state.serviceClass)) {
+      if (!_.isEqual(prevState.namespace, this.state.namespace) || !_.isEqual(prevState.serviceClass, this.state.serviceClass)) {
         this.getClassList();
-      }  
+        if (!this.state.namespace) {
+          this.setDefaultNS();
+        }
+      }
       return;
     }
 
-    setKind(e){
+    setKind(e) {
       this.setState({
-        serviceClass: e.target.value,
-        namespace : 'default'
+        serviceClass: e.target.value, // Cluster or Namespace
       });
     }
 
     onNamespaceChanged(namespace) {
       this.setState({
-        namespace : String(namespace)
+        namespace: String(namespace),
       });
     }
 
     render() {
       const { t } = this.props;
       const title = t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural('ServiceInstance', t) });
-      const { steps, currentStep, selectedClass, selectedPlan, paramList, errorMessage } = this.state;
+      const { steps, currentStep, selectedClass, selectedPlan, paramList } = this.state;
       const ServicePlanList = ({ planList, onChangePlan, selectedPlan }) => {
         return (
           <div className="row">
@@ -331,9 +340,17 @@ const withServiceInstanceForm = SubForm =>
               <strong>{t('CONTENT:SERVICEPLAN')}</strong>
             </div>
             <div className="col-xs-10">
-              {planList.map(item => (
-                <ServicePlanItem item={item} key={item.uid} onChangePlan={onChangePlan} selectedPlan={selectedPlan} />
-              ))}
+              {planList.map(item => {
+                if (!!item.status) {
+                  if (item.status.removedFromBrokerCatalog) {
+                    return null;
+                  } else {
+                    return <ServicePlanItem item={item} key={item.uid} onChangePlan={onChangePlan} selectedPlan={selectedPlan} />;
+                  }
+                } else {
+                  return <ServicePlanItem item={item} key={item.uid} onChangePlan={onChangePlan} selectedPlan={selectedPlan} />;
+                }
+              })}
             </div>
           </div>
         );
@@ -356,47 +373,45 @@ const withServiceInstanceForm = SubForm =>
                 <Section label={t('CONTENT:SERVICECLASSCLASSIFICATION')}>
                   <form>
                     <label className="radio-inline" style={{ marginRight: '50px' }}>
-                      <input type="radio" name = "ServiceClass" value="Cluster" checked={this.state.serviceClass === 'Cluster'} 
-                      onChange={this.setKind}/> {t('RESOURCE:CLUSTERSERVICECLASS')}
+                      <input type="radio" name="ServiceClass" value="Cluster" checked={this.state.serviceClass === 'Cluster'} onChange={this.setKind} /> {t('RESOURCE:CLUSTERSERVICECLASS')}
                     </label>
                     <label className="radio-inline" style={{ marginRight: '50px' }}>
-                      <input type="radio" name = "ServiceClass" value="Namespace" checked={this.state.serviceClass === 'Namespace'}
-                      onChange={this.setKind}/> {t('RESOURCE:NAMESPACESERVICECLASS')}
+                      <input type="radio" name="ServiceClass" value="Namespace" checked={this.state.serviceClass === 'Namespace'} onChange={this.setKind} /> {t('RESOURCE:NAMESPACESERVICECLASS')}
                     </label>
                   </form>
                 </Section>
-                {this.state.serviceClass === "Namespace" && (
+                {this.state.serviceClass === 'Namespace' && (
                   <Section label={t('CONTENT:NAMESPACE')}>
-                    <NsDropdown id="namespace" t={t} defaultValue={this.state.namespace} onChange={this.onNamespaceChanged} />
-                    <p style={{color: '#777'}}>{t('STRING:SERVICEINSTANCE-CREATE_5')}</p>
+                    <NsDropdown id="namespace" t={t} selectedKey={this.state.namespace} onChange={this.onNamespaceChanged} />
+                    <p style={{ color: '#777' }}>{t('STRING:SERVICEINSTANCE-CREATE_5')}</p>
                   </Section>
                 )}
                 <div className="separator"></div>
                 {this.state.classList.length > 0 ? (
-                <div>
-                  <div className = "row form-group">
-                    <div className = "col-xs-2 control-label">
-                      <b style={{fontSize : "16px"}}>{t('CONTENT:SERVICECLASSLIST')}</b>
-                    </div>
-                    {/* <div className = "co-m-pane__filter-bar-group co-m-pane__filter-bar-group--filter">
+                  <div>
+                    <div className="row form-group">
+                      <div className="col-xs-2 control-label">
+                        <b style={{ fontSize: '16px' }}>{t('CONTENT:SERVICECLASSLIST')}</b>
+                      </div>
+                      {/* <div className = "co-m-pane__filter-bar-group co-m-pane__filter-bar-group--filter">
                       <TextFilter id="serviceClass" autoFocus={true} onChange={e => this.applyFilter(textFilter, e.target.value)}></TextFilter>
                     </div> */}
-                  </div>
-                  <CardList classList={this.state.classList} onChangeClass={this.onChangeClass} selectedClass={selectedClass} />
-                  <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
-                    <div style={{ marginTop: '15px' }}>
-                      <button type="button" className="btn btn-primary" onClick={this.onClickNext}>
-                        {t('CONTENT:NEXT')}
-                      </button>
-                      <Link to={formatNamespacedRouteForResource('serviceinstances')} className="btn btn-default" id="cancel">
-                        {t('CONTENT:CANCEL')}
-                      </Link>
                     </div>
-                  </ButtonBar>
-                </div>
-              ) : (
-                <div>{t('STRING:SERVICEINSTANCE-CREATE_3')}</div>
-              )}
+                    <CardList classList={this.state.classList} onChangeClass={this.onChangeClass} selectedClass={selectedClass} />
+                    <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
+                      <div style={{ marginTop: '15px' }}>
+                        <button type="button" className="btn btn-primary" onClick={this.onClickNext}>
+                          {t('CONTENT:NEXT')}
+                        </button>
+                        <Link to={formatNamespacedRouteForResource('serviceinstances')} className="btn btn-default" id="cancel">
+                          {t('CONTENT:CANCEL')}
+                        </Link>
+                      </div>
+                    </ButtonBar>
+                  </div>
+                ) : (
+                  <div>{t('STRING:SERVICEINSTANCE-CREATE_3')}</div>
+                )}
               </div>
             )}
             {currentStep === 1 &&
@@ -423,7 +438,7 @@ const withServiceInstanceForm = SubForm =>
             {currentStep === 2 && (
               <form onSubmit={this.save}>
                 <Section label={t('RESOURCE:SERVICEINSTANCE')}>
-                  <div className = "registry-edit " >
+                  <div className="registry-edit ">
                     <label htmlFor="role-binding-name" className="rbac-edit-binding__input-label">
                       {t('CONTENT:NAME')}
                     </label>
@@ -431,9 +446,8 @@ const withServiceInstanceForm = SubForm =>
                     <p className="help-block" id="secret-name-help"></p>
                     <label htmlFor="role-binding-name" className="rbac-edit-binding__input-label">
                       {t('CONTENT:NAMESPACE')}
-                    </label >
-                    <NsDropdown id="namespace" fixed={this.state.serviceClass==="Namespace"} t={t}
-                    selectedKey={this.state.namespace} t={t} onChange={this.onNamespaceChanged} />
+                    </label>
+                    <NsDropdown id="namespace" fixed={this.state.serviceClass === 'Namespace'} t={t} selectedKey={this.state.namespace} t={t} onChange={this.onNamespaceChanged} />
                   </div>
                 </Section>
                 <div className="separator"></div>
@@ -454,7 +468,9 @@ const withServiceInstanceForm = SubForm =>
                           </div>
                           <div className="row">
                             <div className="col-xs-2" />
-                            <p className="col-xs-10" style={{color: '#777'}}>{parameter.description}</p>
+                            <p className="col-xs-10" style={{ color: '#777' }}>
+                              {parameter.description}
+                            </p>
                           </div>
                         </div>
                       );
@@ -463,7 +479,7 @@ const withServiceInstanceForm = SubForm =>
                 )}
                 <div className="separator"></div>
                 <Section label={t('CONTENT:LABELS')} isRequired={false}>
-                  <div className = "registry-edit " >
+                  <div className="registry-edit ">
                     <SelectorInput desc={t('STRING:RESOURCEQUOTA-CREATE-1')} isFormControl={true} labelClassName="co-text-namespace" tags={[]} onChange={this.onLabelChanged} />
                     <div id="labelErrMsg" style={{ display: 'none', color: 'red' }}>
                       <p>{t('VALIDATION:LABEL_FORM')}</p>
@@ -486,28 +502,6 @@ const withServiceInstanceForm = SubForm =>
               </form>
             )}
           </div>
-          {/* <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
-            <div style={{ marginTop: '15px' }}>
-              {currentStep !== 0 && (
-                <button type="button" className="btn btn-default" onClick={this.onClickBack}>
-                  {t('CONTENT:BACK')}
-                </button>
-              )}
-              {currentStep !== 2 && (
-                <button type="button" className="btn btn-primary" onClick={this.onClickNext}>
-                  {t('CONTENT:NEXT')}
-                </button>
-              )}
-              {currentStep === 2 && !errorMessage && (
-                <button type="submit" className="btn btn-primary" id="save-changes">
-                  {t('CONTENT:CREATE')}
-                </button>
-              )}
-              <Link to={formatNamespacedRouteForResource('serviceinstances')} className="btn btn-default" id="cancel">
-                {t('CONTENT:CANCEL')}
-              </Link>
-            </div>
-          </ButtonBar> */}
         </div>
       );
     }
@@ -544,17 +538,9 @@ const ServiceInstanceLoadingWrapper = props => {
   const ServiceInstanceTypeAbstraction = determineServiceInstanceTypeAbstraction(_.get(props.obj.data, 'data'));
   const ServiceInstanceFormComponent = serviceInstanceFormFactory(ServiceInstanceTypeAbstraction);
   const { t } = useTranslation();
-  // const fixed = _.reduce(props.fixedKeys, (acc, k) => ({...acc, k: _.get(props.obj.data, k)}), {});
   return (
     <StatusBox {...props.obj}>
-      <ServiceInstanceFormComponent
-        t={t}
-        {...props}
-        ServiceInstanceTypeAbstraction={ServiceInstanceTypeAbstraction}
-        obj={props.obj.data}
-        // fixed={fixed}
-        // explanation={serviceInstanceFormExplanation[ServiceInstanceTypeAbstraction]}
-      />
+      <ServiceInstanceFormComponent t={t} {...props} ServiceInstanceTypeAbstraction={ServiceInstanceTypeAbstraction} obj={props.obj.data} />
     </StatusBox>
   );
 };
@@ -584,9 +570,10 @@ export const EditServiceInstance = ({ match: { params }, kind }) => (
 
 const ServicePlanItem = ({ item, onChangePlan, selectedPlan }) => {
   const { description, bullets, amount, unit } = item;
+  const { t } = useTranslation();
   const bulletList = bullets.map((bullet, index) => <li key={index}>{bullet}</li>);
   const paramObj = item.spec.instanceCreateParameterSchema ? item.spec.instanceCreateParameterSchema : [];
-  let paramList = Object.keys(paramObj).map(function (key) {
+  let paramList = Object.keys(paramObj).map(function(key) {
     return `${key}:${paramObj[key]}`;
   });
   paramList = paramList.map((param, index) => <li key={index}>{param}</li>);
@@ -604,21 +591,21 @@ const ServicePlanItem = ({ item, onChangePlan, selectedPlan }) => {
           <br></br>
           {bullets.length > 0 && (
             <div>
-              <span>제공 기능</span>
+              <span>{t('CONTENT:AVAILABLEFUNCTIONS')}</span>
               <br></br>
               {bulletList}
             </div>
           )}
           {paramList.length > 0 && (
             <div>
-              <span>파라미터</span>
+              <span>{t('CONTENT:PARAMETERS')}</span>
               <br></br>
               {paramList}
             </div>
           )}
           {amount !== '' && amount !== 0 && (
             <div>
-              <span>플랜 요금</span>
+              <span>{t('CONTENT:SERVICEPLANCHARGES')}</span>
               <br></br>
               <span>{amount}</span>
               <span>{unit}</span>

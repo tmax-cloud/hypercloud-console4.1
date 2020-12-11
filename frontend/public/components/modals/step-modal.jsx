@@ -399,7 +399,7 @@ class BaseStepModal extends React.Component {
                     }}
                     checked={!this.state.isType}
                   />
-                  {t('CONTENT:BYSELF')}
+                  {t('STRING:TASK_CREATE_3')}
                 </div>
               </div>
             </SecondSection>
@@ -465,7 +465,7 @@ class BaseStepModal extends React.Component {
                           }}
                           checked={!this.state.imagetype}
                         />
-                        {t('CONTENT:BYSELF')}
+                        {t('STRING:TASK_CREATE_3')}
                       </div>
                     </div>
                   )}
@@ -526,7 +526,7 @@ class BaseStepModal extends React.Component {
               ) : (
                 !this.state.isType && (
                   <div>
-                    <input className="form-control" style={{ marginBottom: '15px' }} type="text" id="self-image" value={imageName} onChange={this.onSelfImageChange} />
+                    <input className="form-control" style={{ marginBottom: '15px' }} type="text" id="self-image" value={this.state.selfimage} onChange={this.onSelfImageChange} />
                     {this.state.inputError.selfImage && <p className="error_text">{this.state.inputError.selfImage}</p>}
                   </div>
                 )
@@ -579,7 +579,7 @@ class BaseStepModal extends React.Component {
                     />
                   </div>
                 ) : (
-                  '마운트할 볼륨을 먼저 추가해 주세요.'
+                  t('STRING:TASK_CREATE_5')
                 )}
                 {this.state.inputError.volume && (
                   <p className="error_text" style={{ marginTop: 0 }}>

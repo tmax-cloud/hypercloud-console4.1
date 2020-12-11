@@ -2,10 +2,11 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSummary, ScrollToTopOnMount, kindObj } from './utils';
+import { Cog, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSummary, ScrollToTopOnMount, Firehose, LoadingBox } from './utils';
 import { fromNow } from './utils/datetime';
 import { useTranslation } from 'react-i18next';
 import { ResourcePlural } from './utils/lang/resource-plural';
+import { WorkflowVisualization } from '../../packages/dev-console/src/components/pipelineruns/detail-page-tabs/WorkflowVisualization';
 
 const menuActions = [...Cog.factory.common];
 
@@ -49,6 +50,43 @@ const WorkflowRow = () =>
     );
   };
 
+export const WorkflowTemplateRef = ({ workflowTemplateRef, workflow }) => {
+  workflowTemplateRef.data.status = workflow.status; // 상태값은 workflow에서 가져옴
+  if (!workflowTemplateRef.loaded) {
+    return <LoadingBox className="loading-box loading-box__loading" />;
+  }
+  return (
+    <div className="co-m-pane__body">
+      <WorkflowVisualization workflow={workflowTemplateRef.data} />
+    </div>
+  );
+};
+
+const WorkflowGraph = ({ obj }) => {
+  if (obj.spec.workflowTemplateRef) {
+    // workflowTempalteRef 가 있는 경우 workflowTemplate을 조회하여 graph 표현
+    // 상태값은 workflow 객체에서 가져옴
+    const resources = [
+      {
+        kind: 'WorkflowTemplate',
+        name: obj.spec.workflowTemplateRef.name,
+        namespace: obj.metadata.namespace,
+        prop: 'workflowTemplateRef',
+      },
+    ];
+    return (
+      <Firehose resources={resources}>
+        <WorkflowTemplateRef workflow={obj} />
+      </Firehose>
+    );
+  }
+  return (
+    <div className="co-m-pane__body">
+      <WorkflowVisualization workflow={obj} />
+    </div>
+  );
+};
+
 const Details = ({ obj: workflow }) => {
   const { t } = useTranslation();
   return (
@@ -82,7 +120,22 @@ WorkflowPage.displayName = 'WorkflowPage';
 
 export const WorkflowDetailsPage = props => {
   const { t } = useTranslation();
-  return <DetailsPage {...props} kind="Workflow" menuActions={menuActions} pages={[navFactory.details(Details, t('CONTENT:OVERVIEW')), navFactory.editYaml()]} />;
+  return (
+    <DetailsPage
+      {...props}
+      kind="Workflow"
+      menuActions={menuActions}
+      pages={[
+        navFactory.details(Details, t('CONTENT:OVERVIEW')),
+        {
+          href: 'workflow',
+          name: t('RESOURCE:WORKFLOW'),
+          component: WorkflowGraph,
+        },
+        navFactory.editYaml(),
+      ]}
+    />
+  );
 };
 
 WorkflowDetailsPage.displayName = 'WorkflowDetailsPage';

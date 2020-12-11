@@ -41,6 +41,10 @@ export class Terminal extends React.Component {
     this.isFullscreen = fullscreen;
     this.focus();
     this.onResize();
+    
+    document.getElementsByClassName('co-masthead')[0].style.visibility = "visible";
+    document.getElementById('sidebar').style.visibility = "visible";
+    document.getElementsByTagName('body')[0].style.overflow = "";
   }
 
   onConnectionClosed (reason) {

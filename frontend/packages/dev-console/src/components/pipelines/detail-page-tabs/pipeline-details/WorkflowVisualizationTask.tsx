@@ -1,38 +1,22 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as cx from 'classnames';
-import { Link } from 'react-router-dom';
-import { Tooltip } from '@patternfly/react-core';
 import {
   K8sResourceKind,
-  referenceForModel
 } from '../../../../../../../public/module/k8s';
 import {
   Firehose,
-  resourcePathFromModel
 } from '../../../../../../../public/components/utils';
-import { runStatus } from '../../../../utils/pipeline-augment';
-// import {
-//   PipelineRunModel,
-//   TaskModel,
-//   ClusterTaskModel
-// } from '../../../../models';
 import {
-  PipelineRunModel,
-  TaskModel,
   ClusterTaskModel
 } from '../../../../../../../public/models';
-import { ColoredStatusIcon } from './StatusIcon';
-import { PipelineVisualizationStepList } from './PipelineVisualizationStepList';
-import TaskComponentTaskStatus from './TaskComponentTaskStatus';
+import { ColoredStatusIconWorkFlow } from './StatusIcon';
 import {
   createStepStatus,
   StepStatus,
   TaskStatus
 } from './pipeline-step-utils';
-
-import './PipelineVisualizationTask.scss';
-import { ContextMenu } from 'packages/topology/src';
+import './WorkflowVisualizationTask.scss';
 
 interface TaskProps {
   pipelineRunName?: string;
@@ -49,7 +33,7 @@ interface TaskProps {
   selected?: boolean;
 }
 
-interface PipelineVisualizationTaskProp {
+interface WorkflowVisualizationTaskProp {
   pipelineRunName?: string;
   namespace: string;
   task: {
@@ -66,7 +50,7 @@ interface PipelineVisualizationTaskProp {
   selected?: boolean;
 }
 
-export const PipelineVisualizationTask: React.FC<PipelineVisualizationTaskProp> = ({
+export const WorkflowVisualizationTask: React.FC<WorkflowVisualizationTaskProp> = ({
   pipelineRunName,
   task,
   namespace,
@@ -74,24 +58,7 @@ export const PipelineVisualizationTask: React.FC<PipelineVisualizationTaskProp> 
   disableTooltip,
   selected,
 }) => {
-  const taskStatus = task.status || {
-    duration: '',
-    reason: runStatus.Idle
-  };
-
-  if (
-    pipelineRunStatus === runStatus.Failed ||
-    pipelineRunStatus === runStatus.Cancelled
-  ) {
-    if (
-      task.status &&
-      task.status.reason !== runStatus.Succeeded &&
-      task.status.reason !== runStatus.Failed
-    ) {
-      taskStatus.reason = runStatus.Cancelled;
-    }
-  }
-
+  const taskStatus = task.status;
   const taskComponent = (
     <TaskComponent
       pipelineRunName={pipelineRunName}
@@ -146,23 +113,7 @@ const TaskComponent: React.FC<TaskProps> = ({
     createStepStatus(step, status)
   );
   const showStatusState: boolean = isPipelineRun && !!status && !!status.reason;
-  const visualName = name || _.get(task, ['metadata', 'name'], '');
-
-  const path = pipelineRunName
-    ? `${resourcePathFromModel(
-        PipelineRunModel,
-        pipelineRunName,
-        namespace
-      )}/logs/${name}`
-    : task && task.loaded
-    ? task.data.kind === 'Task'
-      ? `${resourcePathFromModel(
-          TaskModel,
-          task.data.metadata.name,
-          namespace
-        )}`
-      : `${resourcePathFromModel(ClusterTaskModel, task.data.metadata.name)}`
-    : undefined;
+  const visualName = name;
 
   let taskPill = (
     <div
@@ -176,35 +127,16 @@ const TaskComponent: React.FC<TaskProps> = ({
         })}
       >
         <div className="odc-pipeline-vis-task__title">{visualName}</div>
-        {showStatusState && <TaskComponentTaskStatus steps={stepStatusList} />}
       </div>
       {isPipelineRun && (
         <div className="odc-pipeline-vis-task__status">
           {showStatusState && (
-            <ColoredStatusIcon status={status.reason} height={18} width={18} />
+            <ColoredStatusIconWorkFlow status={status.reason} height={18} width={18} />
           )}
         </div>
       )}
     </div>
   );
-  if (!disableTooltip) {
-    taskPill = (
-      <Tooltip
-        className={cx('tooltip-bg', { 'tooltip-bg-pipeline': !isPipelineRun })}
-        position="top"
-        enableFlip={false}
-        content={
-          <PipelineVisualizationStepList
-            isSpecOverview={!isPipelineRun}
-            taskName={visualName}
-            steps={stepStatusList}
-          />
-        }
-      >
-        {taskPill}
-      </Tooltip>
-    );
-  }
 
   const visTask = (
     <>
@@ -214,13 +146,7 @@ const TaskComponent: React.FC<TaskProps> = ({
   );
   return (
     <div className="odc-pipeline-vis-task">
-      {path ? (
-        <Link to={path} style={{ textDecoration: 'none' }}>
-          {visTask}
-        </Link>
-      ) : (
-        visTask
-      )}
+      {visTask}
     </div>
   );
 };
