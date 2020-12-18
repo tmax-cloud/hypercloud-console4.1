@@ -100,7 +100,7 @@ class IngressFormComponent extends React.Component<IngressProps_, IngressState_>
           if (cur.spec.type !== 'ExternalName') {
             let portList = cur.spec.ports.map(port => {
               return {
-                name: port.name,
+                name: !!port.name ? port.name : "",
                 value: port.port,
               };
             });

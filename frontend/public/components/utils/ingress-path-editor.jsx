@@ -159,7 +159,7 @@ class IngressPairElement extends React.Component {
       ? servicePortList.map((port, i) => {
           return (
             <option key={i} value={port.value}>
-              {port.name}
+              {port.value}
             </option>
           );
         })
