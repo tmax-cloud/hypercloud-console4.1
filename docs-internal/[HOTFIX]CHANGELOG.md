@@ -1,11 +1,8 @@
 # hypercloud-console patch note
 ## [Product Name]_[major].[minor].[patch].[hotfix]
-Version: hypercloud-console_4.1.4.15
-2020-12-29  05:16:41 AM
-- [patch] GNB '계정 관리' 버튼 누르면 포탈 회원정보수정 페이지로 이동하게 수정 (SoMinJin) 
+Version: hypercloud-console_4.1.4.16
+2020-12-29  08:57:03 AM
+- [patch] 콘솔 hdcmode 설정 값에 따라 회원정보수정 페이지 다르게 나오도록 수정 (SoMinJin) 
     Message: 
-- [bugfix] [patch] 호스트 > 노드 > 예약 기능 동작하게 수정 (yeonggyulim) 
-    Message: [IMS]: 244730
-
-- [refactor] [patch] Namespace Claim Status 추가 된 것 반영 (Namespace Deleted) (yeonggyulim) 
-    Message: [IMS]: 247339
+- [patch] 콘솔 hdcmode 설정 값에 따라 회원정보수정 페이지 다르게 나오도록 수정 (SoMinJin) 
+    Message: 
