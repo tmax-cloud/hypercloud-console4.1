@@ -129,13 +129,14 @@ export const NamespaceClaimsPage = props => {
   const filters = [
     {
       type: 'namespaceclaim-status',
-      selected: ['Success', 'Awaiting', 'Reject', 'Error'],
+      selected: ['Success', 'Awaiting', 'Reject', 'Error', 'Namespace Deleted'],
       reducer: namespaceclaimPhaseFilterReducer,
       items: [
         { id: 'Awaiting', title: t('CONTENT:Awaiting') },
         { id: 'Success', title: t('CONTENT:Success') },
         { id: 'Reject', title: t('CONTENT:Reject') },
         { id: 'Error', title: t('CONTENT:Error') },
+        { id: 'Namespace Deleted', title: t('CONTENT:Namespace Deleted') },
       ],
     },
   ];

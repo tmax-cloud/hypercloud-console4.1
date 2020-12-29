@@ -27,7 +27,7 @@ const MarkAsSchedulable = (kind, obj) => {
   return {
     label: t('CONTENT:MARKASSCHEDULABLE'),
     hidden: !_.get(obj, 'spec.unschedulable', false),
-    callback: () => makeNodeSchedulable({ obj, t: t }),
+    callback: () => makeNodeSchedulable(obj),
   };
 };
 
