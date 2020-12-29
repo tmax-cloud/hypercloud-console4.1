@@ -50,7 +50,12 @@ const UserMenuWrapper = connectToFlags(
   const manageAccount = e => {
     // console.log('manageAccount');
     // window.open(props.keycloak.createAccountUrl());
-    window.open(window.SERVER_FLAGS.TmaxCloudPortalURL + "#!/mypage/setting/privacy");
+
+    if (window.SERVER_FLAGS.HDCModeFlag) {
+      window.open(window.SERVER_FLAGS.TmaxCloudPortalURL + '#!/mypage/setting/privacy');
+    } else {
+      window.open(props.keycloak.createAccountUrl());
+    }
   };
   const logout = e => {
     console.log('logout');
