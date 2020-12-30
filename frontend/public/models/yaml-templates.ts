@@ -19,6 +19,100 @@ export const yamlTemplates = ImmutableMap<GroupVersionKind, ImmutableMap<string,
 `,
   )
   .setIn(
+    [referenceForModel(k8sModels.VolumeSnapshotModel), 'default'],
+    `
+    apiVersion: snapshot.storage.k8s.io/v1beta1
+    kind: VolumeSnapshot
+    metadata:
+      name: rbd-pvc-snapshot
+      namespace: default
+    spec:
+      volumeSnapshotClassName: csi-rbdplugin-snapclass
+      source:
+        persistentVolumeClaimName: rbd-pvc
+    `,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.VolumeSnapshotContentModel), 'default'],
+    `
+    apiVersion: snapshot.storage.k8s.io/v1beta1
+    kind: VolumeSnapshotContent
+    metadata:
+      name: manually-created-block-snapshot-content
+    spec:
+      deletionPolicy: Delete
+      driver: rook-ceph.rbd.csi.ceph.com
+      source:
+        snapshotHandle: 7bdd0de3-aaeb-11e8-9aae-0242ac110002
+      volumeSnapshotRef:
+        name: test-snapshot-block
+        namespace: default
+    `,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.VolumeSnapshotClassModel), 'default'],
+    `
+    apiVersion: snapshot.storage.k8s.io/v1beta1
+    kind: VolumeSnapshotClass
+    metadata:
+      name: csi-rbdplugin-snapclass
+    driver: rook-ceph.rbd.csi.ceph.com
+    parameters:
+      # Specify a string that identifies your cluster. Ceph CSI supports any
+      # unique string. When Ceph CSI is deployed by Rook use the Rook namespace,
+      # for example "rook-ceph".
+      clusterID: rook-ceph
+      csi.storage.k8s.io/snapshotter-secret-name: rook-csi-rbd-provisioner
+      csi.storage.k8s.io/snapshotter-secret-namespace: rook-ceph
+    deletionPolicy: Delete
+    `,
+  )
+  .setIn(
+    [referenceForModel(k8sModels.VirtualMachineInstanceReplicaSetModel), 'default'],
+    `
+      apiVersion: kubevirt.io/v1alpha3
+      kind: VirtualMachineInstanceReplicaSet
+      metadata:
+        name: windows-vm
+        namespace: default
+      spec:
+        replicas: 3
+        selector:
+          matchLabels:
+            myvmi: myvmi
+        template:
+          metadata:
+            name: test
+            labels:
+              myvmi: myvmi
+          spec:
+            domain:
+              devices:
+                disks:
+                - name: containerdisk
+                  disk:
+                    bus: virtio
+                - name: cloudinitdisk
+                  disk:
+                    bus: virtio
+              resources:
+                requests:
+                  memory: 1024M
+                limits:
+                  memory: 2048M
+            volumes:
+            - name: containerdisk
+              containerDisk:
+                image: kubevirt/fedora-cloud-container-disk-demo:latest
+            - name: cloudinitdisk
+              cloudInitNoCloud:
+                userData: |-
+                  #cloud-config
+                  password: tmax123
+                  chpasswd: { expire: False }
+    `,
+  )
+  .setIn(
     [referenceForModel(k8sModels.VirtualMachineModel), 'default'],
     `
       apiVersion: kubevirt.io/v1alpha3

@@ -5,6 +5,9 @@ import { Map as ImmutableMap } from 'immutable';
 import { ReportReference, ReportGenerationQueryReference } from './chargeback';
 import { referenceForModel, GroupVersionKind } from '../module/k8s';
 import {
+  VolumeSnapshotModel,
+  VolumeSnapshotContentModel,
+  VolumeSnapshotClassModel,
   ConditionModel,
   UserGroupModel,
   LimitRangeModel,
@@ -96,15 +99,20 @@ import {
   WorkflowTemplateModel,
   WorkflowModel,
   CatalogServiceClaimModel,
+  VirtualMachineInstanceReplicaSetModel,
 } from '../models';
 
 export const resourceDetailPages = ImmutableMap<GroupVersionKind | string, () => Promise<React.ComponentType<any>>>()
+.set(referenceForModel(VolumeSnapshotClassModel), () => import('./volume-snapshot-class' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotClassDetailsPage))
+.set(referenceForModel(VolumeSnapshotContentModel), () => import('./volume-snapshot-content' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotContentDetailsPage))
+.set(referenceForModel(VolumeSnapshotModel), () => import('./volume-snapshot' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotsDetailsPage))
   .set(referenceForModel(ImageModel), () => import('./image' /* webpackChunkName: "task" */).then(m => m.ImagesDetailsPage))
   .set(referenceForModel(UserGroupModel), () => import('./usergroup' /* webpackChunkName: "task" */).then(m => m.UsergroupsDetailsPage))
   .set(referenceForModel(LimitRangeModel), () => import('./limit-range' /* webpackChunkName: "task" */).then(m => m.LimitRangesDetailsPage))
   .set(referenceForModel(DataVolumeModel), () => import('./data-volume' /* webpackChunkName: "task" */).then(m => m.DataVolumesDetailsPage))
   .set(referenceForModel(VirtualMachineModel), () => import('./virtual-machine' /* webpackChunkName: "task" */).then(m => m.VirtualMachinesDetailsPage))
   .set(referenceForModel(VirtualMachineInstanceModel), () => import('./virtual-machine-instance' /* webpackChunkName: "task" */).then(m => m.VirtualMachineInstancesDetailsPage))
+  .set(referenceForModel(VirtualMachineInstanceReplicaSetModel), () => import('./vmir' /* webpackChunkName: "task" */).then(m => m.VirtualMachineInstanceReplicaSetsDetailsPage))
   .set(referenceForModel(ClusterServiceBrokerModel), () => import('./cluster-service-broker' /* webpackChunkName: "task" */).then(m => m.ClusterServiceBrokersDetailsPage))
   .set(referenceForModel(NamespaceClaimModel), () => import('./namespace-claim' /* webpackChunkName: "task" */).then(m => m.NamespaceClaimsDetailsPage))
   .set(referenceForModel(ResourceQuotaClaimModel), () => import('./resource-quota-claim' /* webpackChunkName: "task" */).then(m => m.ResourceQuotaClaimsDetailsPage))
@@ -190,6 +198,9 @@ export const resourceDetailPages = ImmutableMap<GroupVersionKind | string, () =>
   .set(referenceForModel(CatalogServiceClaimModel), () => import('./catalog-service-claim' /* webpackChunkName: "task" */).then(m => m.CatalogServiceClaimsDetailsPage));
 
 export const resourceListPages = ImmutableMap<GroupVersionKind | string, () => Promise<React.ComponentType<any>>>()
+.set(referenceForModel(VolumeSnapshotClassModel), () => import('./volume-snapshot-class' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotClassPage))
+.set(referenceForModel(VolumeSnapshotContentModel), () => import('./volume-snapshot-content' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotContentPage))
+.set(referenceForModel(VolumeSnapshotModel), () => import('./volume-snapshot' /* webpackChunkName: "task" */).then(m => m.VolumeSnapshotPage))
   .set(referenceForModel(CatalogServiceClaimModel), () => import('./catalog-service-claim' /* webpackChunkName: "task" */).then(m => m.CatalogServiceClaimPage))
   .set(referenceForModel(NotebookModel), () => import('./notebook' /* webpackChunkName: "task" */).then(m => m.NotebookPage))
   .set(referenceForModel(ExperimentModel), () => import('./experiment' /* webpackChunkName: "task" */).then(m => m.ExperimentPage))
@@ -217,6 +228,7 @@ export const resourceListPages = ImmutableMap<GroupVersionKind | string, () => P
   .set(referenceForModel(DataVolumeModel), () => import('./data-volume' /* webpackChunkName: "task" */).then(m => m.DataVolumesPage))
   .set(referenceForModel(VirtualMachineModel), () => import('./virtual-machine' /* webpackChunkName: "task" */).then(m => m.VirtualMachinesPage))
   .set(referenceForModel(VirtualMachineInstanceModel), () => import('./virtual-machine-instance' /* webpackChunkName: "task" */).then(m => m.VirtualMachineInstancesPage))
+  .set(referenceForModel(VirtualMachineInstanceReplicaSetModel), () => import('./vmir' /* webpackChunkName: "task" */).then(m => m.VirtualMachineInstanceReplicaSetsPage))
   .set(referenceForModel(ClusterServiceBrokerModel), () => import('./cluster-service-broker' /* webpackChunkName: "task" */).then(m => m.ClusterServiceBrokersPage))
   .set(referenceForModel(PodSecurityPolicyModel), () => import('./pod-security-policy' /* webpackChunkName: "task" */).then(m => m.PodSecurityPoliciesPage))
   .set(referenceForModel(NamespaceClaimModel), () => import('./namespace-claim' /* webpackChunkName: "task" */).then(m => m.NamespaceClaimsPage))
