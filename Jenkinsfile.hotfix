@@ -14,15 +14,13 @@ def PRE_VERSION = (("${params.hotfix_version}" as int) - 1).toString()
 def HOTFIX_VERSION = "${params.hotfix_version}"
 def DOCKER_REGISTRY = "tmaxcloudck"
 def PRODUCT = "hypercloud-console"
-//def PRODUCT = "hypercloud-console-tta"
 def VER = "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION}"
 def PRE_VER = "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${PRE_VERSION}"
 // def VER = "1.1.38.1"
 def REALM = "${params.realm}"
 def KEYCLOAK = "${params.keycloak}"
 def CLIENTID = "${params.clientid}"
-//def BRANCH = "hc-release"
-def BRANCH = "TTA"
+def BRANCH = "hc-release"
  
 // k8s environment 
 def NAME_NS = "console-system"
@@ -58,8 +56,8 @@ volumes: [
           usernameVariable: 'DOCKER_USER',
           passwordVariable: 'DOCKER_PWD')]){
           sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PWD}"
-          sh "docker build -t ${DOCKER_REGISTRY}/${PRODUCT}:${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION}-tta -f ./Dockerfile.jenkins ."
-          sh "docker push ${DOCKER_REGISTRY}/${PRODUCT}:${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION}-tta"
+          sh "docker build -t ${DOCKER_REGISTRY}/${PRODUCT}:${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION} -f ./Dockerfile.jenkins ."
+          sh "docker push ${DOCKER_REGISTRY}/${PRODUCT}:${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.${HOTFIX_VERSION}"
           }
       }
     }
@@ -107,10 +105,9 @@ volumes: [
           git config --global credential.username ${username}
           git config --global credential.helper "!echo password=${password}; echo"          
         """
-        sh "git tag ${PRODUCT}_${VER}_tta"
+        sh "git tag ${PRODUCT}_${VER}"
         sh "git push origin HEAD:${BRANCH} --tags"    
 
-/*
         sh """
           echo '# hypercloud-console patch note' > ./docs-internal/[HOTFIX]CHANGELOG.md
           echo '## [Product Name]_[major].[minor].[patch].[hotfix]' >> ./docs-internal/[HOTFIX]CHANGELOG.md
@@ -125,9 +122,8 @@ volumes: [
 
         //// sh "rm -r ./temp-yaml"
         sh "git add -A"
-        sh "git commit -m 'build ${PRODUCT}_${VER}_tta' "
+        sh "git commit -m 'build ${PRODUCT}_${VER}' "
         sh "git push origin HEAD:${BRANCH}"        
-        */
 
       }
     }
