@@ -455,6 +455,9 @@
     "TEMPLATE-SIDEBAR_7": "WAS(nodejs) &DB(mysql) 템플릿"
   },
   "CONTENT": {
+    "VOLUMESNAPSHOT": "볼륨 스냅샷",
+    "VOLUMESNAPSHOTCONTENT": "볼륨 스냅샷 컨텐츠",
+    "VOLUMESNAPSHOTCLASS": "볼륨 스냅샷 클래스",
     "AVAILABLEFUNCTIONS": "제공 기능",
     "SERVICEPLANCHARGES": "플랜 요금",
     "ADD": "추가",
@@ -991,6 +994,7 @@
     "STATEFULSET": "스테이트 풀셋",
     "VIRTUALMACHINE": "가상머신",
     "VIRTUALMACHINEINSTANCE": "가상머신 인스턴스",
+    "VIRTUALMACHINEINSTANCEREPLICASET": "VMIRS",
     "CONFIGMAP": "컨피그 맵",
     "SECRET": "시크릿",
     "JOB": "잡",
@@ -1064,6 +1068,9 @@
     "DASHBOARD": "대시보드",
     "GRAFANA": "그라파나",
     "KIALI": "키알리",
-    "NAMESPACESERVICECLASS": "네임스페이스 서비스 클래스 "
+    "NAMESPACESERVICECLASS": "네임스페이스 서비스 클래스 ",
+    "VOLUMESNAPSHOT": "볼륨 스냅샷",
+    "VOLUMESNAPSHOTCONTENT": "볼륨 스냅샷 컨텐츠",
+    "VOLUMESNAPSHOTCLASS": "볼륨 스냅샷 클래스"
   }
 }

@@ -84,6 +84,8 @@ const defaultMenu = `
       type: resourcenslink
     - name: VirtualMachineInstance
       type: resourcenslink
+    - name: virtualmachineinstancereplicaset
+      type: resourcenslink
     - name: ConfigMap
       type: resourcenslink
     - name: Secret
@@ -130,6 +132,12 @@ const defaultMenu = `
     - name: PersistentVolumeClaim
       type: resourcenslink
     - name: PersistentVolume
+      type: resourceclusterlink
+    - name: VolumeSnapshot
+      type: resourceclusterlink
+    - name: VolumeSnapshotContent
+      type: resourceclusterlink
+    - name: VolumeSnapshotClass
       type: resourceclusterlink
 - name: cicd
   menu:
@@ -311,7 +319,7 @@ class AuthAdminLink extends NavLink {
     const { isActive, name, resource } = this.props;
     const onClick = () => {
       window.open(`${window.SERVER_FLAGS.KeycloakAuthURL}/admin/${SERVER_FLAGS.KeycloakRealm}/console/#/realms/${SERVER_FLAGS.KeycloakRealm}/${resource}`);
-    }
+    };
 
     return (
       <li className={classNames('co-m-nav-link', { active: isActive, 'co-m-nav-link__external': true })}>
@@ -529,23 +537,37 @@ class CustomNav extends React.Component {
     const ko = kindObj('ClusterMenuPolicy');
     const { t } = this.props;
 
-    k8sGet(ko, getId())
+    k8sGet(ko)
       .then(response => {
-        this.setNav(response.menus, t);
+        const obj = response.items.find(item => item.metadata.annotations?.user === getId()).menus 
+          || response.items.find(item => item.metadata.name === "default").menus || safeLoad(defaultMenu);
+        this.setNav(obj, t);
       })
       .catch(err => {
-        k8sGet(ko, 'default')
-          .then(response => {
-            this.setNav(response.menus, t);
-          })
-          .catch(err => {
-            const obj = safeLoad(defaultMenu);
-            if (obj === this.state.nav) {
-              return;
-            }
-            this.setNav(obj, t);
-          });
+        const obj = safeLoad(defaultMenu);
+        if (obj === this.state.nav) {
+          return;
+        }
+        this.setNav(obj, t);
       });
+
+    // k8sGet(ko, getId())
+    //   .then(response => {
+    //     this.setNav(response.menus, t);
+    //   })
+    //   .catch(err => {
+    //     k8sGet(ko, 'default')
+    //       .then(response => {
+    //         this.setNav(response.menus, t);
+    //       })
+    //       .catch(err => {
+    //         const obj = safeLoad(defaultMenu);
+    //         if (obj === this.state.nav) {
+    //           return;
+    //         }
+    //         this.setNav(obj, t);
+    //       });
+    //   });
   }
 
   setNav_(data, t) {
@@ -581,6 +603,10 @@ class CustomNav extends React.Component {
                 temp = 'HPAs';
                 resource = 'horizontalpodautoscalers';
                 break;
+              case 'virtualmachineinstancereplicaset':
+                temp = 'VMIRS';
+                resource = 'virtualmachineinstancereplicasets';
+                break;
               default:
                 resource = ResourcePlural(menuItem.name)
                   .replace(/ /g, '')
@@ -612,12 +638,12 @@ class CustomNav extends React.Component {
             if (menuItem.name.indexOf('role') !== -1) {
               menuItem.name === 'roles' ? (startsWith = rolesStartsWith) : (startsWith = rolebindingsStartsWith);
             }
-            return <ResourceNSLink key={menuItem.name}  resource={resource} name={temp} onClick={this.close} startsWith={startsWith} />;
+            return <ResourceNSLink key={menuItem.name} resource={resource} name={temp} onClick={this.close} startsWith={startsWith} />;
           }
           case 'resourceclusterlink':
             return (
               <ResourceClusterLink
-                key={menuItem.name} 
+                key={menuItem.name}
                 resource={ResourcePlural(menuItem.name)
                   .replace(/ /g, '')
                   .toLowerCase()}
@@ -627,7 +653,7 @@ class CustomNav extends React.Component {
             );
           case 'authadminlink': {
             let resource;
-            switch(menuItem.name.toLowerCase()) {
+            switch (menuItem.name.toLowerCase()) {
               case 'user':
                 resource = 'users';
                 break;
