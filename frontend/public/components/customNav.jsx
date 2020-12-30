@@ -529,23 +529,37 @@ class CustomNav extends React.Component {
     const ko = kindObj('ClusterMenuPolicy');
     const { t } = this.props;
 
-    k8sGet(ko, getId())
+    k8sGet(ko)
       .then(response => {
-        this.setNav(response.menus, t);
+        const obj = response.items.find(item => item.metadata.annotations?.user === getId()).menus 
+          || response.items.find(item => item.metadata.name === "default").menus || safeLoad(defaultMenu);
+        this.setNav(obj, t);
       })
       .catch(err => {
-        k8sGet(ko, 'default')
-          .then(response => {
-            this.setNav(response.menus, t);
-          })
-          .catch(err => {
-            const obj = safeLoad(defaultMenu);
-            if (obj === this.state.nav) {
-              return;
-            }
-            this.setNav(obj, t);
-          });
+        const obj = safeLoad(defaultMenu);
+        if (obj === this.state.nav) {
+          return;
+        }
+        this.setNav(obj, t);
       });
+
+    // k8sGet(ko, getId())
+    //   .then(response => {
+    //     this.setNav(response.menus, t);
+    //   })
+    //   .catch(err => {
+    //     k8sGet(ko, 'default')
+    //       .then(response => {
+    //         this.setNav(response.menus, t);
+    //       })
+    //       .catch(err => {
+    //         const obj = safeLoad(defaultMenu);
+    //         if (obj === this.state.nav) {
+    //           return;
+    //         }
+    //         this.setNav(obj, t);
+    //       });
+    //   });
   }
 
   setNav_(data, t) {
