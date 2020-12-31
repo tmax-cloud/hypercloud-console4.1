@@ -134,7 +134,7 @@ const defaultMenu = `
     - name: PersistentVolume
       type: resourceclusterlink
     - name: VolumeSnapshot
-      type: resourceclusterlink
+      type: resourcenslink
     - name: VolumeSnapshotContent
       type: resourceclusterlink
     - name: VolumeSnapshotClass
@@ -539,8 +539,7 @@ class CustomNav extends React.Component {
 
     k8sGet(ko)
       .then(response => {
-        const obj = response.items.find(item => item.metadata.annotations?.user === getId()).menus 
-          || response.items.find(item => item.metadata.name === "default").menus || safeLoad(defaultMenu);
+        const obj = response.items.find(item => item.metadata.annotations?.user === getId()).menus || response.items.find(item => item.metadata.name === 'default').menus || safeLoad(defaultMenu);
         this.setNav(obj, t);
       })
       .catch(err => {
