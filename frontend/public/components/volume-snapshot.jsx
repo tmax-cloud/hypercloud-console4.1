@@ -74,11 +74,6 @@ export const VolumeSnapshotPage = props => {
     yaml: t('CONTENT:YAMLEDITOR'),
   };
 
-  // const createProps = {
-  //   items: createItems,
-  //   createLink: type => `/k8s/ns/${props.namespace || 'default'}/volumesnapshots/new`
-  // };
-
   return <ListPage {...props} ListComponent={VolumeSnapshotList} canCreate={true} kind="VolumeSnapshot" createButtonText={t('ADDITIONAL:CREATEBUTTON', { something: ResourcePlural(props.kind, t) })} />;
 };
 VolumeSnapshotPage.displayName = 'VolumeSnapshotPage';
