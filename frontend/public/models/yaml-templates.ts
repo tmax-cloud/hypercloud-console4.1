@@ -4751,7 +4751,9 @@ spec:
     apiVersion: ui.tmax.io/v1
     kind: ClusterMenuPolicy
     metadata:
-      name: admin-tmax.co.kr
+      name: admin
+      annotations:
+        user: admin@tmax.co.kr
     menus: 
       - name: home
         menu:
