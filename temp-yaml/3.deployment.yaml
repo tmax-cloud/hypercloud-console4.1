@@ -39,7 +39,7 @@ spec:
         - --keycloak-realm=tmax
         - --keycloak-auth-url=https://172.22.6.11/auth
         - --keycloak-client-id=hypercloud4        
-        image: tmaxcloudck/hypercloud-console:4.1.4.22
+        image: tmaxcloudck/hypercloud-console:4.1.4.23
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - mountPath: /var/https-cert
@@ -57,8 +57,11 @@ spec:
           protocol: TCP
         resources:
           limits:
-            cpu: '1'
-            memory: '2Gi'
+            cpu: '400m'
+            memory: '500Mi'
+          requests:
+            cpu: '400m'
+            memory: '500Mi'            
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
