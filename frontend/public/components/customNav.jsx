@@ -443,7 +443,7 @@ class NavSection_ extends React.Component {
 
     const { id, icon, img, text, children, activeNamespace, flags, href = null, activeImg, klass } = this.props;
     const isActive = !!this.state.activeChild;
-    const maxHeight = !this.state.isOpen ? 0 : 29 * _.get(this.props.children, 'length', 1);
+    const maxHeight = !this.state.isOpen ? 0 : 34 * _.get(this.props.children, 'length', 1);
 
     const iconClassName = icon && `${icon} navigation-container__section__title__icon ${isActive ? 'navigation-container__section__title__icon--active' : ''}`;
     const secionTitleClassName = `navigation-container__section__title ${isActive ? 'navigation-container__section__title--active' : ''}`;
