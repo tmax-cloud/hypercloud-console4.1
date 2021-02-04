@@ -1,15 +1,15 @@
 // nav stuff
 $link-padding-left: 40px;
-$section-padding-left: 13px;
+$section-padding-left: 8px;
 $active-border: 3px;
 
 .co-m-nav-link {
   display: block;
   float: none;
   font-size: 13px;
-  line-height: 23px;
+  line-height: 28px;
   overflow-x: hidden;
-  padding: 2px 0 2px 30px;
+  padding: 2px 5px;
   white-space: nowrap;
 
   a,
@@ -23,7 +23,6 @@ $active-border: 3px;
   }
 
   &.active {
-    padding-left: 30px;
     background-color: #90a1b3;
     // border-left: $active-border solid $color-os-nav-border-left-active;
     a,

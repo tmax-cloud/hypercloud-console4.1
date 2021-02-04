@@ -59,7 +59,7 @@ const Requestform = (SubForm) => class SecretFormComponent extends React.Compone
     this.setState({ templateInstance });
   }
   getParams() {
-    const namespace = document.location.href.split('ns/')[1].split('/')[0];
+    const namespace = document.location.href.split('/ns/')[1].split('/')[0];
     let templateInstance = { ...this.state.templateInstance };
     let template = this.state.selectedTemplate;
     if (template) {
@@ -135,7 +135,7 @@ const Requestform = (SubForm) => class SecretFormComponent extends React.Compone
     }, err => this.setState({ error: err.message, inProgress: false }));
   }
   getTemplateList() {
-    const namespace = document.location.href.split('ns/')[1].split('/')[0];
+    const namespace = document.location.href.split('/ns/')[1].split('/')[0];
     coFetch('/api/kubernetes/apis/' + k8sModels.TemplateModel.apiGroup + '/' + k8sModels.TemplateModel.apiVersion + '/namespaces/' + namespace + '/templates')
       .then(res => res.json())
       .then((myJson) => {

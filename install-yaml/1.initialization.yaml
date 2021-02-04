@@ -30,7 +30,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: @@NAME_NS@@-admin
-  namespace: @@NAME_NS@@
 rules:
   - apiGroups: ["*"]
     resources: ["*"]
@@ -45,7 +44,6 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: @@NAME_NS@@-admin
-    namespace: @@NAME_NS@@
 roleRef:
   kind: ClusterRole
   name: @@NAME_NS@@-admin
