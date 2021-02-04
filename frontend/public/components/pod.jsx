@@ -197,14 +197,16 @@ const PodGraphs = requirePrometheus(({ pod }) => {
     <React.Fragment>
       <div className="row">
         <div className="col-md-4">
-          <Line title={t('CONTENT:RAM')} query={`pod:container_memory_usage_bytes:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'}`} />
+          {/* <Line title={t('CONTENT:RAM')} query={`pod:container_memory_usage_bytes:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'}`} /> */}
+          <Line title={t('CONTENT:RAM')} query={`sum(container_memory_working_set_bytes{pod="${pod.metadata.name}",namespace='${pod.metadata.namespace}', container!=""})`} />
         </div>
         <div className="col-md-4">
-          <Line title={t('CONTENT:CPUSHARES')} query={`pod:container_cpu_usage:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'} * 1000`} />
+          {/* <Line title={t('CONTENT:CPUSHARES')} query={`pod:container_cpu_usage:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'} * 1000`} /> */}
+          <Line title={t('CONTENT:CPUSHARES')} query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='${pod.metadata.namespace}', pod='${pod.metadata.name}', container!='POD', cluster=''})`} />
         </div>
-        <div className="col-md-4">
+        {/* <div className="col-md-4">
           <Line title={t('CONTENT:FILESYSTEM')} query={`pod:container_fs_usage_bytes:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'}`} />
-        </div>
+        </div> */}
       </div>
 
       <br />
