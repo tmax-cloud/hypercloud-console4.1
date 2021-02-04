@@ -460,7 +460,7 @@ const withServiceInstanceForm = SubForm =>
                         <div>
                           <div className="row">
                             <div className={'col-xs-2 form-group ' + (isRequired ? 'required' : '')}>
-                              <div className="control-label">{parameter.displayName}</div>
+                              <div className="control-label">{!!parameter.displayName ? parameter.displayName : parameter.name}</div>
                             </div>
                             <div className="col-xs-5" id={parameter.name}>
                               <input onChange={this.onParamValueChanged} className="form-control" type="text" placeholder={defaultValue} id={parameter.name} required={isRequired} />
