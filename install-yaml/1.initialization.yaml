@@ -44,6 +44,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: @@NAME_NS@@-admin
+    namespace: @@NAME_NS@@
 roleRef:
   kind: ClusterRole
   name: @@NAME_NS@@-admin
