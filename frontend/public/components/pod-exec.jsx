@@ -115,6 +115,14 @@ export const PodExec = connectToFlags(FLAGS.OPENSHIFT)(
       this.connect_();
     }
 
+    componentDidUpdate() {
+      const isFullScreen = document.querySelector('.terminal.xterm.fullscreen');
+      if (!isFullScreen) {
+        console.log('fullScreen');
+        this.setFullscreen(false);
+      }
+    }
+
     componentWillUnmount() {
       this.ws && this.ws.destroy();
       delete this.ws;
@@ -151,10 +159,16 @@ export const PodExec = connectToFlags(FLAGS.OPENSHIFT)(
     }
 
     setFullscreen(fullscreen) {
-      this.terminal.current.setFullscreen(fullscreen);
-      document.getElementsByClassName('co-masthead')[0].style.visibility = "hidden";
-      document.getElementById('sidebar').style.visibility = "hidden";
-      document.getElementsByTagName('body')[0].style.overflow = "hidden";
+      this.terminal?.current?.setFullscreen(fullscreen);
+      if (fullscreen) {
+        document.getElementsByClassName('co-masthead')[0].style.visibility = 'hidden';
+        document.getElementById('sidebar').style.visibility = 'hidden';
+        document.getElementsByTagName('body')[0].style.overflow = 'hidden';
+      } else {
+        document.getElementsByClassName('co-masthead')[0].style.visibility = 'visible';
+        document.getElementById('sidebar').style.visibility = 'visible';
+        document.getElementsByTagName('body')[0].style.overflow = 'visible';
+      }
     }
 
     onData_(data) {
