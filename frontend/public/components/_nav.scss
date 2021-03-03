@@ -1,19 +1,20 @@
 // nav stuff
 $link-padding-left: 40px;
-$section-padding-left: 8px;
+$section-padding-left: 19px; //
 $active-border: 3px;
 
 .co-m-nav-link {
   display: block;
   float: none;
   font-size: 13px;
-  line-height: 28px;
+  line-height: 22px;
   overflow-x: hidden;
-  padding: 2px 5px;
+  padding: 5px 10px 5px 30px; //
   white-space: nowrap;
 
   a,
   div {
+    white-space: pre-line;
     background-color: inherit;
     color: #787878;
     display: inline-block;
@@ -68,7 +69,7 @@ $active-border: 3px;
 .navigation-container__section__separator {
   // border-bottom: 1px solid $color-os-nav-item-seperator;
   border-bottom: 1px solid #bcbdbe;
-  margin: 0 7px;
+  margin: 0 10px 0 $section-padding-left; //
 }
 
 .navigation-container__section--active {
@@ -96,7 +97,7 @@ $active-border: 3px;
   font-size: 15px;
   font-weight: bold;
   line-height: 20px;
-  padding: 20px 0px 20px $section-padding-left;
+  padding: 20px 0px;
   width: 100%;
   img {
     margin-right: 12px;
