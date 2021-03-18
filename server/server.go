@@ -84,12 +84,13 @@ type jsGlobals struct {
 	// ClusterName          string `json:"clusterName"`
 	// GoogleTagManagerID   string `json:"googleTagManagerID"`
 	// LoadTestFactor       int    `json:"loadTestFactor"`
-	ReleaseModeFlag    bool   `json:"releaseModeFlag"`
-	HDCModeFlag        bool   `json:"HDCModeFlag"`
-	TmaxCloudPortalURL string `json:tmaxCloudPortalURL`
-	KeycloakRealm      string `json:keycloakRealm`
-	KeycloakAuthURL    string `json:keycloakAuthURL`
-	KeycloakClientId   string `json:keycloakClientId`
+	ReleaseModeFlag         bool   `json:"releaseModeFlag"`
+	HDCModeFlag             bool   `json:"HDCModeFlag"`
+	TmaxCloudPortalURL      string `json:tmaxCloudPortalURL`
+	KeycloakRealm           string `json:keycloakRealm`
+	KeycloakAuthURL         string `json:keycloakAuthURL`
+	KeycloakClientId        string `json:keycloakClientId`
+	KeycloakUseHiddenIframe bool   `json:keycloakUseHiddenIframe`
 }
 
 type Server struct {
@@ -113,9 +114,11 @@ type Server struct {
 	ReleaseModeFlag      bool
 	HDCModeFlag          bool
 	TmaxCloudPortalURL   string
-	KeycloakRealm        string
-	KeycloakAuthURL      string
-	KeycloakClientId     string
+
+	KeycloakRealm           string
+	KeycloakAuthURL         string
+	KeycloakClientId        string
+	KeycloakUseHiddenIframe bool
 	// Add loger
 	InfoLog *log.Logger
 	// infoLog  *log.Logger
@@ -592,12 +595,13 @@ func (s *Server) indexHandler(w http.ResponseWriter, r *http.Request) {
 		// DocumentationBaseURL: s.DocumentationBaseURL.String(),
 		// GoogleTagManagerID:   s.GoogleTagManagerID,
 		// LoadTestFactor:       s.LoadTestFactor,
-		ReleaseModeFlag:    s.ReleaseModeFlag,
-		HDCModeFlag:        s.HDCModeFlag,
-		TmaxCloudPortalURL: s.TmaxCloudPortalURL,
-		KeycloakRealm:      s.KeycloakRealm,
-		KeycloakAuthURL:    s.KeycloakAuthURL,
-		KeycloakClientId:   s.KeycloakClientId,
+		ReleaseModeFlag:         s.ReleaseModeFlag,
+		HDCModeFlag:             s.HDCModeFlag,
+		TmaxCloudPortalURL:      s.TmaxCloudPortalURL,
+		KeycloakRealm:           s.KeycloakRealm,
+		KeycloakAuthURL:         s.KeycloakAuthURL,
+		KeycloakClientId:        s.KeycloakClientId,
+		KeycloakUseHiddenIframe: s.KeycloakUseHiddenIframe,
 	}
 
 	if s.prometheusProxyEnabled() {
