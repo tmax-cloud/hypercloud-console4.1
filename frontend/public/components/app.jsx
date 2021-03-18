@@ -381,7 +381,7 @@ keycloak.logout = keycloak.logout.bind(keycloak, { redirectUri: document.locatio
 
 keycloak
   .init({
-    checkLoginIframe : window.SERVER_FLAGS.KeycloakUseHiddenIframe
+    checkLoginIframe: window.SERVER_FLAGS.KeycloakUseHiddenIframe,
   })
   .then(auth => {
     if (!auth) {
