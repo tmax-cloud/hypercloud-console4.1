@@ -357,13 +357,13 @@ class NamespaceDropdown_ extends React.Component {
 
     if (loadError && loadError.response && loadError.response.status === 403) {
       if (!window.location.href.includes('roles') && !window.location.href.includes('rolebindings') && !window.location.href.includes('tasks')) {
-        // if (window.SERVER_FLAGS.HDCModeFlag) {
-        //   // HDC 모드에서 할당된 네임 스페이스 없는 경우 Trial 신청 화면으로 리다이렉트하는 로직 추가
-        //   window.location.href = window.SERVER_FLAGS.TmaxCloudPortalURL + '/#!/pricing/policy/trial';
-        //   return;
-        // } else {
-        // }
-        window.location.href = '/noNamespace';
+        if (window.SERVER_FLAGS.HDCModeFlag) {
+          // HDC 모드에서 할당된 네임 스페이스 없는 경우 Trial 신청 화면으로 리다이렉트하는 로직 추가
+          window.location.href = window.SERVER_FLAGS.TmaxCloudPortalURL + '/#!/pricing/policy/trial';
+          return;
+        } else {
+          window.location.href = '/noNamespace';
+        }
       }
     }
 
@@ -381,7 +381,7 @@ class NamespaceDropdown_ extends React.Component {
 
     if (data.length > 1) {
       // 객체는 iterable한 값이 아니어서 최상위 값을 고를 수가 없음 그래서 data를 다시 sorting해서 그 첫번째 값을 선택되는 namespace로 지정
-      data.sort(function(a, b) {
+      data.sort(function (a, b) {
         return a.metadata.name < b.metadata.name ? -1 : a.metadata.name > b.metadata.name ? 1 : 0;
       });
     }
@@ -489,10 +489,10 @@ const NamespaceSelector_ = ({ useProjects, inFlight }) =>
   inFlight ? (
     <div className="co-namespace-selector" />
   ) : (
-    <Firehose resources={[{ kind: getModel(useProjects).kind, prop: 'namespace', isList: true }]}>
-      <NamespaceDropdown useProjects={useProjects} />
-    </Firehose>
-  );
+      <Firehose resources={[{ kind: getModel(useProjects).kind, prop: 'namespace', isList: true }]}>
+        <NamespaceDropdown useProjects={useProjects} />
+      </Firehose>
+    );
 
 const namespaceSelectorStateToProps = ({ k8s }) => ({
   inFlight: k8s.getIn(['RESOURCES', 'inFlight']),

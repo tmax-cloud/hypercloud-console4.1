@@ -106,6 +106,7 @@ func main() {
 	fKeycloakRealm := fs.String("keycloak-realm", "", "Keycloak Realm Name")
 	fKeycloakAuthURL := fs.String("keycloak-auth-url", "", "URL of the Keycloak Auth server.")
 	fKeycloakClientId := fs.String("keycloak-client-id", "", "Keycloak Client Id")
+	fKeycloakUseHiddenIframe := fs.Bool("keycloak-use-hidden-iframe", false, "Use keycloak Hidden Iframe")
 
 	// NOTE: Grafana 연동 추가 // 윤진수
 	fGrafanaEndpoint := fs.String("grafana-endpoint", "", "URL of the Grafana API server.")
@@ -195,24 +196,25 @@ func main() {
 	}
 
 	srv := &server.Server{
-		PublicDir:            *fPublicDir,
-		TectonicVersion:      *fTectonicVersion,
-		BaseURL:              baseURL,
-		LogoutRedirect:       logoutRedirect,
-		TectonicCACertFile:   caCertFilePath,
-		ClusterName:          *fTectonicClusterName,
-		DeveloperConsoleURL:  *fDeveloperConsoleURL,
-		Branding:             branding,
-		DocumentationBaseURL: documentationBaseURL,
-		GoogleTagManagerID:   *fGoogleTagManagerID,
-		LoadTestFactor:       *fLoadTestFactor,
-		MasterToken:          *fMasterToken,
-		ReleaseModeFlag:      *fReleaseModeFlag,
-		HDCModeFlag:          *fHDCModeFlag,
-		TmaxCloudPortalURL:   *fTmaxCloudPortalURL,
-		KeycloakRealm:        *fKeycloakRealm,
-		KeycloakAuthURL:      *fKeycloakAuthURL,
-		KeycloakClientId:     *fKeycloakClientId,
+		PublicDir:               *fPublicDir,
+		TectonicVersion:         *fTectonicVersion,
+		BaseURL:                 baseURL,
+		LogoutRedirect:          logoutRedirect,
+		TectonicCACertFile:      caCertFilePath,
+		ClusterName:             *fTectonicClusterName,
+		DeveloperConsoleURL:     *fDeveloperConsoleURL,
+		Branding:                branding,
+		DocumentationBaseURL:    documentationBaseURL,
+		GoogleTagManagerID:      *fGoogleTagManagerID,
+		LoadTestFactor:          *fLoadTestFactor,
+		MasterToken:             *fMasterToken,
+		ReleaseModeFlag:         *fReleaseModeFlag,
+		HDCModeFlag:             *fHDCModeFlag,
+		TmaxCloudPortalURL:      *fTmaxCloudPortalURL,
+		KeycloakRealm:           *fKeycloakRealm,
+		KeycloakAuthURL:         *fKeycloakAuthURL,
+		KeycloakClientId:        *fKeycloakClientId,
+		KeycloakUseHiddenIframe: *fKeycloakUseHiddenIframe,
 		// Add loger
 		InfoLog: infoLog,
 	}
