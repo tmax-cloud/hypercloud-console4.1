@@ -246,9 +246,20 @@ func (s *Server) HTTPHandler() http.Handler {
 
 				// Authorization Header 가져오기
 				headerTokens := r.Header["Authorization"]
+				// headerToken := r.Header.Clone().Get("Authorization")
 
 				// Query에서 Token이 있다면 가져오기
 				queryTokens, _ := r.URL.Query()["token"]
+				// queryTokens := r.URL.Query().Get("token")
+
+				// // Token check
+				// if headerTokens == nil && queryTokens == nil {
+				// 	plog.Infof("[CHECK token] header: %v , body: %v \n", headerTokens, queryTokens)
+				// 	w.WriteHeader(http.StatusForbidden)
+				// 	w.Write([]byte("Token is empty"))
+				// 	// log.Panicf("Token can't get from body \n")
+				// 	return
+				// }
 
 				// otp, login, refresh 서비스
 				if strings.Contains(string(r.URL.Path), "otp") || strings.Contains(string(r.URL.Path), "login") || strings.Contains(string(r.URL.Path), "refresh") {
@@ -256,13 +267,17 @@ func (s *Server) HTTPHandler() http.Handler {
 					// id나 token을 가져오기 위해 body를 parse
 					body, err := ioutil.ReadAll(r.Body)
 					if err != nil {
-						panic(err)
+						w.WriteHeader(http.StatusForbidden)
+						w.Write([]byte("failed to read Body"))
+						// log.Panicf("Token can't get from body \n")
 					}
 					requestBodyString = string(body) // body가 소모된 뒤 복구해주기 위한 사본 생성
 
 					err = json.Unmarshal(body, &authData)
 					if err != nil {
-						panic(err)
+						w.WriteHeader(http.StatusForbidden)
+						w.Write([]byte("Token can't get from body"))
+						log.Fatalf("Token can't get from body %v \n", err)
 					}
 
 					bodyId = authData.Id
@@ -415,6 +430,8 @@ func (s *Server) HTTPHandler() http.Handler {
 		grafanaProxy := httputil.NewSingleHostReverseProxy(s.GrafanaProxyConfig.Endpoint)
 		handle(grafanaProxyAPIPath, http.StripPrefix(
 			proxy.SingleJoiningSlash(s.BaseURL.Path, grafanaProxyAPIPath),
+			// authHandlerWithUser(func(user *auth.User, w http.ResponseWriter, r *http.Request) {
+			// r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", user.Token))
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				grafanaProxy.ServeHTTP(w, r)
 			})),
