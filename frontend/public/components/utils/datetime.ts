@@ -119,3 +119,11 @@ export const formatDuration = (ms: number) => {
 
   return formatted;
 };
+
+const zeroPad = (number: number) => (number < 10 ? `0${number}` : number);
+
+export const twentyFourHourTime = (date: Date): string => {
+  const hours = zeroPad(date.getHours());
+  const minutes = zeroPad(date.getMinutes());
+  return `${hours}:${minutes}`;
+};

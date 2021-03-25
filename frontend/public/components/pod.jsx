@@ -6,9 +6,12 @@ import { getVolumeType, getVolumeLocation, getVolumeMountPermissions, getVolumeM
 import { getContainerState, getContainerStatus } from '../module/k8s/docker';
 import { ResourceEventStream } from './events';
 import { ColHead, DetailsPage, List, ListHeader, ListPage, ResourceRow } from './factory';
-import { SectionHeading, Cog, LabelList, navFactory, NodeLink, Overflow, ResourceCog, ResourceIcon, ResourceLink, ResourceSummary, ScrollToTopOnMount, Selector, Timestamp, VolumeIcon, units, AsyncComponent } from './utils';
+import { SectionHeading, Cog, LabelList, navFactory, NodeLink, Overflow, ResourceCog, ResourceIcon, ResourceLink, ResourceSummary, ScrollToTopOnMount, Selector, Timestamp, VolumeIcon, units, AsyncComponent, humanizeBinaryBytes, humanizeDecimalBytesPerSec, humanizeCpuCores } from './utils';
 import { PodLogs } from './pod-logs';
-import { Line, requirePrometheus } from './graphs';
+import { Line, Area, requirePrometheus } from './graphs';
+
+import { ByteDataTypes } from '../../packages/console-shared/src/graph-helper/data-utils';
+
 import { breadcrumbsForOwnerRefs } from './utils/breadcrumbs';
 import { EnvironmentPage } from './environment';
 import { formatDuration } from './utils/datetime';
@@ -45,11 +48,11 @@ export const PodRow = ({ obj: pod }) => {
   const status = validStatuses.has(phase) ? (
     <CamelCaseWrap value={phase} />
   ) : (
-    <span className="co-error co-icon-and-text">
-      <i className="fa fa-times-circle co-icon-and-text__icon" aria-hidden="true" />
-      <CamelCaseWrap value={phase} />
-    </span>
-  );
+      <span className="co-error co-icon-and-text">
+        <i className="fa fa-times-circle co-icon-and-text__icon" aria-hidden="true" />
+        <CamelCaseWrap value={phase} />
+      </span>
+    );
 
   return (
     <ResourceRow obj={pod}>
@@ -197,17 +200,32 @@ const PodGraphs = requirePrometheus(({ pod }) => {
     <React.Fragment>
       <div className="row">
         <div className="col-md-4">
-          {/* <Line title={t('CONTENT:RAM')} query={`pod:container_memory_usage_bytes:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'}`} /> */}
-          <Line title={t('CONTENT:RAM')} query={`sum(container_memory_working_set_bytes{pod="${pod.metadata.name}",namespace='${pod.metadata.namespace}', container!=""})`} />
+          <Line title={t('CONTENT:RAMBYTE')} query={`sum(container_memory_working_set_bytes{pod="${pod.metadata.name}",namespace='${pod.metadata.namespace}', container!=""})`} />
         </div>
         <div className="col-md-4">
-          {/* <Line title={t('CONTENT:CPUSHARES')} query={`pod:container_cpu_usage:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'} * 1000`} /> */}
-          <Line title={t('CONTENT:CPUSHARES')} query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='${pod.metadata.namespace}', pod='${pod.metadata.name}', container!='POD', cluster=''})`} />
+          <Line title={t('CONTENT:CPUSHARESCORE')} query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='${pod.metadata.namespace}', pod='${pod.metadata.name}', container!='POD', cluster=''})`} />
         </div>
-        {/* <div className="col-md-4">
-          <Line title={t('CONTENT:FILESYSTEM')} query={`pod:container_fs_usage_bytes:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'}`} />
+      </div>
+
+      <div className="row">
+        <div className="col-md-12 col-lg-4">
+          <Area title="Memory Usage" humanize={humanizeBinaryBytes} byteDataType={ByteDataTypes.BinaryBytes} namespace={pod.metadata.namespace} query={`sum(container_memory_working_set_bytes{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}',container='',}) BY (pod, namespace)`} />
+        </div>
+        {/* <div className="col-md-12 col-lg-4">
+          <Area title="CPU Usage" humanize={humanizeCpuCores} namespace={pod.metadata.namespace} query={`pod:container_cpu_usage:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'}`} />
+        </div> */}
+        {/* <div className="col-md-12 col-lg-4">
+          <Area title="Filesystem" humanize={humanizeBinaryBytes} byteDataType={ByteDataTypes.BinaryBytes} namespace={pod.metadata.namespace} query={`pod:container_fs_usage_bytes:sum{pod='${pod.metadata.name}',namespace='${pod.metadata.namespace}'}`} />
         </div> */}
       </div>
+      {/* <div className="row">
+        <div className="col-md-12 col-lg-4">
+          <Area title="Network In" humanize={humanizeDecimalBytesPerSec} namespace={pod.metadata.namespace} query={`sum(irate(container_network_receive_bytes_total{pod='${pod.metadata.name}', namespace='${pod.metadata.namespace}'}[5m])) by (pod, namespace)`} />
+        </div>
+        <div className="col-md-12 col-lg-4">
+          <Area title="Network Out" humanize={humanizeDecimalBytesPerSec} namespace={pod.metadata.namespace} query={`sum(irate(container_network_transmit_bytes_total{pod='${pod.metadata.name}', namespace='${pod.metadata.namespace}'}[5m])) by (pod, namespace)`} />
+        </div>
+      </div> */}
 
       <br />
     </React.Fragment>

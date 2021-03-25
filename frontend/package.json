@@ -60,6 +60,7 @@
   },
   "dependencies": {
     "@patternfly/patternfly": "2.71.5",
+    "@patternfly/react-charts": "6.14.2",
     "@patternfly/react-core": "3.153.13",
     "@patternfly/react-tokens": "2.8.13",
     "brace": "0.11.x",

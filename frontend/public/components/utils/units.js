@@ -7,42 +7,56 @@ const TYPES = {
   numeric: {
     units: ['', 'k', 'm', 'b'],
     space: false,
-    divisor: 1000
+    divisor: 1000,
   },
   percentage: {
     units: ['%'],
     space: false,
-    divisor: 1000
+    divisor: 1000,
   },
   decimalBytes: {
     units: ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'],
     space: true,
-    divisor: 1000
+    divisor: 1000,
   },
   binaryBytes: {
     units: ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'],
     space: true,
-    divisor: 1024
+    divisor: 1024,
   },
   binaryBytesWithoutB: {
     units: ['i', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei'],
     space: true,
-    divisor: 1024
+    divisor: 1024,
   },
   SI: {
     units: ['', 'K', 'M', 'G', 'T', 'P', 'E'],
     space: false,
-    divisor: 1000
+    divisor: 1000,
   },
 };
 
-const getType = (name) => {
+export const humanizeBinaryBytes = (v, initialUnit, preferredUnit) => humanize(v, 'binaryBytes', true, initialUnit, preferredUnit);
+export const humanizeDecimalBytesPerSec = (v, initialUnit, preferredUnit) =>
+  humanize(v, 'decimalBytesPerSec', true, initialUnit, preferredUnit);
+
+export const humanizeCpuCores = v => {
+  const value = v < 1 ? round(v * 1000) : v;
+  const unit = v < 1 ? 'm' : '';
+  return {
+    string: `${formatValue(value)}${unit}`,
+    unit,
+    value,
+  };
+};
+
+export const getType = name => {
   const type = TYPES[name];
   if (!_.isPlainObject(type)) {
     return {
       units: [],
       space: false,
-      divisor: 1000
+      divisor: 1000,
     };
   }
   return type;
@@ -96,7 +110,7 @@ const convertValueWithUnitsToBaseValue = (value, unitArray, divisor) => {
   return { value, unit };
 };
 
-const round = units.round = (value) => {
+const round = (units.round = value => {
   if (!isFinite(value)) {
     return 0;
   }
@@ -110,9 +124,9 @@ const round = units.round = (value) => {
   }
   const multiplier = Math.pow(10, digits);
   return Math.round(value * multiplier) / multiplier;
-};
+});
 
-const humanize = units.humanize = (value, typeName, useRound = false) => {
+const humanize = (units.humanize = (value, typeName, useRound = false) => {
   const type = getType(typeName);
 
   if (!isFinite(value)) {
@@ -133,9 +147,9 @@ const humanize = units.humanize = (value, typeName, useRound = false) => {
   return {
     string: converted.value + converted.unit,
     value: converted.value,
-    unit: converted.unit
+    unit: converted.unit,
   };
-};
+});
 
 export const humanizeMem = v => humanize(v, 'binaryBytes', true).string;
 export const humanizeCPU = v => humanize(v, 'numeric', true).string;
@@ -168,7 +182,7 @@ const baseUnitedValidation = value => {
   }
 };
 
-const validateNumber = (float='') => {
+const validateNumber = (float = '') => {
   if (float < 0) {
     return 'must be positive';
   }
@@ -177,14 +191,14 @@ const validateNumber = (float='') => {
   }
 };
 const validCPUUnits = new Set(['p', 'm', 'c', 'd', 'n', 'K', 'M', 'G']);
-const validateCPUUnit = (value='') => {
+const validateCPUUnit = (value = '') => {
   if (validCPUUnits.has(value)) {
     return;
   }
   return `unrecongnized unit: ${value}`;
 };
 
-validate.CPU = (value='') => {
+validate.CPU = (value = '') => {
   if (!value) {
     return;
   }
@@ -203,7 +217,7 @@ validate.CPU = (value='') => {
 };
 
 const validMemUnits = new Set(['E', 'P', 'T', 'G', 'M', 'k', 'Pi', 'Ti', 'Gi', 'Mi', 'Ki']);
-const validateMemUnit = (value='') => {
+const validateMemUnit = (value = '') => {
   if (validMemUnits.has(value)) {
     return;
   }
@@ -211,14 +225,14 @@ const validateMemUnit = (value='') => {
 };
 
 const validTimeUnits = new Set(['s', 'm', 'h', 'd', 'M', 'y']);
-const validateTimeUnit = (value='') => {
+const validateTimeUnit = (value = '') => {
   if (validTimeUnits.has(value)) {
     return;
   }
   return `unrecongnized unit: ${value}`;
 };
 
-validate.time = (value='') => {
+validate.time = (value = '') => {
   if (!value) {
     return;
   }
@@ -236,7 +250,7 @@ validate.time = (value='') => {
   return validateNumber(number) || validateTimeUnit(unit);
 };
 
-validate.memory = (value='') => {
+validate.memory = (value = '') => {
   if (!value) {
     return;
   }
@@ -253,5 +267,3 @@ validate.memory = (value='') => {
 
   return validateNumber(number) || validateMemUnit(unit);
 };
-
-
