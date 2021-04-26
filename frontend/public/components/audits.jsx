@@ -35,7 +35,7 @@ class Inner extends React.PureComponent {
   render() {
     const { klass, status, verb, objectRef, user, stageTimestamp, responseStatus, t } = this.props;
     let timestamp = Date.parse(stageTimestamp);
-    // timestamp -= 9 * 60 * 60 * 1000;
+    timestamp -= 9 * 60 * 60 * 1000;
     timestamp = new Date(timestamp).toISOString();
 
     return (
@@ -47,7 +47,7 @@ class Inner extends React.PureComponent {
         <div className="co-sysevent__box">
           <div className="co-sysevent__header">
             <div className="co-sysevent__subheader">
-              {objectRef.resource}
+              {objectRef.resource} ({objectRef.name})
               <Timestamp timestamp={timestamp} t={t} />
             </div>
             <div
