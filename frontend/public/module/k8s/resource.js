@@ -3,7 +3,7 @@ import { coFetchJSON } from '../../co-fetch';
 import { k8sBasePath } from './k8s';
 import { selectorToString } from './selector';
 import { WSFactory } from '../ws-factory';
-import { getId } from '../../components/utils/auth';
+import { getId, getUserGroup } from '../../components/utils/auth';
 import store from '../../redux';
 
 /** @type {(model: K8sKind) => string} */
@@ -108,7 +108,7 @@ export const k8sList = (kind, params = {}, raw = false, options = {}) => {
     }).join('&') || '';
 
   if (kind.kind === 'Namespace') {
-    listURL = `${document.location.origin}/api/hypercloud/nameSpace?userId=${getId()}`;
+    listURL = `${document.location.origin}/api/hypercloud/nameSpace?userId=${getId()}${getUserGroup()}`;
     return coFetchJSON(`${listURL}${query && '&' + query}`, 'GET', options).then(result => (raw ? result : result.items));
   } else if (kind.kind === 'NamespaceClaim') {
     listURL = `${document.location.origin}/api/hypercloud/nameSpaceClaim?userId=${getId()}`;
