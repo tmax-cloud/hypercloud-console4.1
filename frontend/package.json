@@ -119,7 +119,7 @@
     "redux": "3.x",
     "redux-form": "7.x",
     "redux-thunk": "2.x",
-    "sanitize-html": "1.x",
+    "sanitize-html": "2.x",
     "showdown": "1.8.x",
     "styled-components": "^5.1.1",
     "text-encoding": "0.x",
