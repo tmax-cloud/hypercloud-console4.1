@@ -29,7 +29,10 @@ const updateTimestamps = () => {
 export class Timestamp extends SafetyFirst {
   constructor(props) {
     super(props);
-
+    this.state = {
+      mdate: props.isUnix ? new Date(timestamp * 1000) : new Date(timestamp),
+      timestampe: '-',
+    };
     this.intervalCB = null;
     this.reset(props.timestamp, props.t);
   }
@@ -91,7 +94,10 @@ export class Timestamp extends SafetyFirst {
       a = 'pm';
     }
 
-    const minuteStr = mdate.getMinutes().toString().padStart(2, '00');
+    const minuteStr = mdate
+      .getMinutes()
+      .toString()
+      .padStart(2, '00');
     let timeStr = `${hours}:${minuteStr} ${a}`;
     if (mdate.getFullYear() !== now.getFullYear()) {
       timeStr = `${mdate.getFullYear()} ${timeStr}`;
