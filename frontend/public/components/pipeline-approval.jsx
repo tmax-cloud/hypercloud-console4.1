@@ -13,8 +13,8 @@ const menuActionsWaiting = [Cog.factory.ModifyLabels, Cog.factory.ModifyAnnotati
 const menuActions = [Cog.factory.ModifyLabels, Cog.factory.ModifyAnnotations, Cog.factory.Edit, Cog.factory.Delete];
 
 const ApprovalStatus = ({ approval }) => {
-  const status = approval.status.result;
-  switch (approval.status.result) {
+  const status = approval.status?.result || '';
+  switch (approval.status?.result) {
     case 'Waiting':
       return (
         <span className="approval-waiting">
@@ -74,7 +74,7 @@ const PipelineApprovalRow = () =>
     return (
       <div className="row co-resource-list__item">
         <div className="col-sm-4 col-xs-6 co-resource-link-wrapper">
-          <ResourceCog actions={obj.status.result === 'Waiting' ? menuActionsWaiting : menuActions} kind="Approval" resource={obj} />
+          <ResourceCog actions={obj.status?.result === 'Waiting' ? menuActionsWaiting : menuActions} kind="Approval" resource={obj} />
           <ResourceLink kind="Approval" name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
         </div>
         <div className="col-sm-3 col-xs-6 co-break-word">{obj.metadata.namespace ? <ResourceLink kind="Namespace" name={obj.metadata.namespace} title={obj.metadata.namespace} /> : 'None'}</div>
@@ -124,11 +124,11 @@ const DetailsForKind = kind =>
                 <dd>
                   <ResourceLink kind="TaskRun" name={taskRun} displayName={pipelineTask} />
                 </dd>
-                {(obj.status.result === 'Approved' || obj.status.result === 'Rejected') && (
+                {(obj.status?.result === 'Approved' || obj.status?.result === 'Rejected') && (
                   <React.Fragment>
                     <dt>{t('CONTENT:DECIDEDAT')}</dt>
                     <dd>
-                      <Timestamp timestamp={obj.status.decisionTime} />
+                      <Timestamp timestamp={obj.status?.decisionTime} />
                     </dd>
                   </React.Fragment>
                 )}
@@ -149,7 +149,7 @@ export const PipelineApprovalList = props => {
 PipelineApprovalList.displayName = PipelineApprovalList;
 
 export const approvalType = approval => {
-  switch (approval.status.result) {
+  switch (approval.status?.result) {
     case 'Approved':
       return 'Approved';
     case 'Canceled':
@@ -199,7 +199,7 @@ export const PipelineApprovalDetailsPage = props => {
     if (!obj || !obj.status) {
       return null;
     }
-    return obj.status.result === 'Waiting' ? menuActionsWaiting : menuActions;
+    return obj.status?.result === 'Waiting' ? menuActionsWaiting : menuActions;
   };
   return (
     <DetailsPage
