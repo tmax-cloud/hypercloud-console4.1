@@ -1,6 +1,6 @@
 # hypercloud-console patch note
 ## [Product Name]_[major].[minor].[patch].[hotfix]
-Version: hypercloud-console_4.1.4.26
-2021-04-26  06:03:23 AM
-- [refactor] [patch] Audit 로그 시간표기 수정, 리소스이름 부분 추가, namespace GET 쿼리에 userGroup정보 추가 (SoMinJin) 
+Version: hypercloud-console_4.1.4.27
+2021-06-02  04:44:46 AM
+- [patch] [bugfix] 250322 : PipelineApproval 승인 후 디테일화면 진입 시 화면 안뜨는 현상 수정 (mjsso) 
     Message: 
