@@ -130,7 +130,7 @@ const listFilters = {
     if (!statuses || !statuses.selected || !statuses.selected.size) {
       return true;
     }
-    const status = approval.status.result;
+    const status = approval?.status?.result;
     return statuses.selected.has(status) || !_.includes(statuses.all, status);
   },
   
