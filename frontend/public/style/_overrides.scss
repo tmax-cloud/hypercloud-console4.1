@@ -477,3 +477,9 @@ tags-input .autocomplete .suggestion-item em {
     max-width: 150px;
   }
 }
+
+.dropdown-menu {
+  max-height: 60vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
