@@ -238,6 +238,10 @@ const Details = ({ obj: pod }) => {
   const activeDeadlineSeconds = _.get(pod, 'spec.activeDeadlineSeconds');
   const { t } = useTranslation();
 
+  const isVolumeExist = pod => {
+    return !!pod?.spec?.volumes;
+  };
+
   return (
     <React.Fragment>
       <ScrollToTopOnMount />
@@ -285,24 +289,26 @@ const Details = ({ obj: pod }) => {
       {pod.spec.initContainers && <ContainerTable key="initContainerTable" heading="Init Containers" containers={pod.spec.initContainers} pod={pod} />}
       <ContainerTable key="containerTable" heading={t('CONTENT:CONTAINERS')} containers={pod.spec.containers} pod={pod} />
 
-      <div className="co-m-pane__body">
-        <SectionHeading text={t('CONTENT:PODVOLUMES')} />
-        <div className="row">
-          <div className="co-m-table-grid co-m-table-grid--bordered">
-            <div className="row co-m-table-grid__head">
-              <div className="col-sm-3 col-xs-4">{t('CONTENT:NAME')}</div>
-              <div className="col-sm-3 col-xs-4">{t('CONTENT:TYPE')}</div>
-              <div className="col-sm-3 hidden-xs">{t('CONTENT:PERMISSIONS')}</div>
-              <div className="col-sm-3 col-xs-4">{t('CONTENT:UTILIZEDBY')}</div>
-            </div>
-            <div className="co-m-table-grid__body">
-              {getVolumeMountsByPermissions(pod).map((v, i) => (
-                <Volume key={i} pod={pod} volume={v} />
-              ))}
+      {isVolumeExist && (
+        <div className="co-m-pane__body">
+          <SectionHeading text={t('CONTENT:PODVOLUMES')} />
+          <div className="row">
+            <div className="co-m-table-grid co-m-table-grid--bordered">
+              <div className="row co-m-table-grid__head">
+                <div className="col-sm-3 col-xs-4">{t('CONTENT:NAME')}</div>
+                <div className="col-sm-3 col-xs-4">{t('CONTENT:TYPE')}</div>
+                <div className="col-sm-3 hidden-xs">{t('CONTENT:PERMISSIONS')}</div>
+                <div className="col-sm-3 col-xs-4">{t('CONTENT:UTILIZEDBY')}</div>
+              </div>
+              <div className="co-m-table-grid__body">
+                {getVolumeMountsByPermissions(pod).map((v, i) => (
+                  <Volume key={i} pod={pod} volume={v} />
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </React.Fragment>
   );
 };
