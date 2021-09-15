@@ -28,6 +28,10 @@ def NODE_PORT = "31304"
 def HDC_FLAG = "false"
 def PORTAL = "false"
 
+def USER_TOKEN = "jinsoo-access-token"
+def USER_NAME = "jinsoo-youn"
+def USER_EMAIL = "jinsoo_youn@tmax.co.kr"
+
 podTemplate(cloud: "${CHOICE}", containers: [
 //   podTemplate(containers: [
 // // podTemplate(cloud: 'kubernetes', containers: [
@@ -97,15 +101,13 @@ volumes: [
     }
 
     stage('GIT Commit & Push'){
-      withCredentials([usernamePassword(credentialsId: 'jinsoo-youn', usernameVariable: 'username', passwordVariable: 'password')]) {      
+      withCredentials([string(credentialsId: "${USER_TOKEN}", variable: 'GITHUB_ACCESS_TOKEN')]) {      
         sh """
-          git config --global user.name ${username}
-          git config --global user.email jinsoo_youn@tmax.co.kr
-          git config --global credential.username ${username}
-          git config --global credential.helper "!echo password=${password}; echo"          
+          git config --global user.name ${USER_NAME}
+          git config --global user.email ${USER_EMAIL}        
         """
         sh "git tag ${PRODUCT}_${VER}"
-        sh "git push origin HEAD:${BRANCH} --tags"    
+        sh "git push https://${GITHUB_ACCESS_TOKEN}@github.com/tmax-cloud/hypercloud-console4.1.git HEAD:${BRANCH} --tags"    
 
         // NOTE: 4.1.3.0 정기 배포관련된 패치 노트는 젠킨스 이용 x tag가 꼬여서 직접 만들어서 업로드 함 
         sh """
@@ -123,7 +125,7 @@ volumes: [
         //// sh "rm -r ./temp-yaml"
         sh "git add -A"
         sh "git commit -m 'build ${PRODUCT}_${VER}' "
-        sh "git push origin HEAD:${BRANCH}"        
+        sh "git push https://${GITHUB_ACCESS_TOKEN}@github.com/tmax-cloud/hypercloud-console4.1.git HEAD:${BRANCH}"        
 
       }
     }
