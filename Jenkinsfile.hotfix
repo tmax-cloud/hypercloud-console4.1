@@ -106,10 +106,8 @@ volumes: [
       withCredentials([string(credentialsId: "${USER_TOKEN}", variable: 'GITHUB_ACCESS_TOKEN')]) {          
       
         sh """
-          git config --global user.name ${username}
-          git config --global user.email jinsoo_youn@tmax.co.kr
-          git config --global credential.username ${username}
-          git config --global credential.helper "!echo password=${password}; echo"          
+          git config --global user.name ${USER_NAME}
+          git config --global user.email ${USER_EMAIL}  
         """
         sh "git tag ${PRODUCT}_${VER}"
         sh "git push https://${GITHUB_ACCESS_TOKEN}@github.com/tmax-cloud/hypercloud-console4.1.git HEAD:${BRANCH} --tags"    
