@@ -37,9 +37,9 @@ spec:
         - --hyperauth-endpoint=https://hyperauth.hyperauth.svc:8080/
         - --webhook-endpoint=https://hypercloud4-webhook-svc.hypercloud4-system.svc/api/webhook/
         - --keycloak-realm=tmax
-        - --keycloak-auth-url=https://172.22.6.15/auth
+        - --keycloak-auth-url=https://172.22.6.8/auth
         - --keycloak-client-id=hypercloud4        
-        image: tmaxcloudck/hypercloud-console:4.1.4.29
+        image: tmaxcloudck/hypercloud-console:4.1.4.30
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - mountPath: /var/https-cert
