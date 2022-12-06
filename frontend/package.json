@@ -120,7 +120,7 @@
     "redux-form": "7.x",
     "redux-thunk": "2.x",
     "sanitize-html": "1.x",
-    "showdown": "1.8.x",
+    "showdown": "1.9.x",
     "styled-components": "^5.1.1",
     "text-encoding": "0.x",
     "url-polyfill": "^1.0.12",
